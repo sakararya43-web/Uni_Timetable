@@ -1,7 +1,7 @@
 databases:
   - name: exam-scheduler-db
     databaseName: exam_scheduler
-    user: postgres
+    user: exam_user
     plan: free
     region: oregon
 
