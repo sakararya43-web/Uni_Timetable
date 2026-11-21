@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ReactFlow,
   Background,
@@ -16,6 +17,7 @@ import { SchedulingCycle } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
+import { EmptyState } from "../components/ui/EmptyState";
 
 interface GraphSummary {
   vertexCount: number;
@@ -44,6 +46,7 @@ interface RawGraphData {
 }
 
 export const GraphPage: React.FC = () => {
+  const navigate = useNavigate();
   const [cycles, setCycles] = useState<SchedulingCycle[]>([]);
   const [selectedCycleId, setSelectedCycleId] = useState<string>("");
   const [summary, setSummary] = useState<GraphSummary | null>(null);
@@ -59,12 +62,20 @@ export const GraphPage: React.FC = () => {
 
   // Load cycles
   useEffect(() => {
+    setIsLoading(true);
     api.get<SchedulingCycle[]>("/api/v1/cycles")
       .then((data) => {
         setCycles(data);
-        if (data.length > 0) setSelectedCycleId(data[0].id);
+        if (data.length > 0) {
+          setSelectedCycleId(data[0].id);
+        } else {
+          setIsLoading(false);
+        }
       })
-      .catch((err) => console.error("Error loading cycles:", err));
+      .catch((err) => {
+        console.error("Error loading cycles:", err);
+        setIsLoading(false);
+      });
   }, []);
 
   // Load graph data for selected cycle
@@ -198,19 +209,25 @@ export const GraphPage: React.FC = () => {
           <select
             value={selectedCycleId}
             onChange={(e) => setSelectedCycleId(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={cycles.length === 0}
+            className="px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           >
-            {cycles.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
+            {cycles.length === 0 ? (
+              <option value="">No cycles available</option>
+            ) : (
+              cycles.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))
+            )}
           </select>
 
           <Button
             variant="outline"
             size="sm"
             isLoading={isRebuilding}
+            disabled={!selectedCycleId}
             leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
             onClick={handleRebuild}
           >
@@ -220,6 +237,7 @@ export const GraphPage: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
+            disabled={!selectedCycleId}
             leftIcon={<Download className="w-3.5 h-3.5" />}
             onClick={() => handleExport("csv")}
           >
@@ -280,10 +298,30 @@ export const GraphPage: React.FC = () => {
       </div>
 
       {/* Main Graph Canvas Area */}
-      <div className="relative w-full h-[620px] bg-slate-100 border border-slate-200 rounded-xl shadow-inner overflow-hidden">
+      <div className="relative w-full h-[620px] bg-slate-100 border border-slate-200 rounded-xl shadow-inner overflow-hidden flex items-center justify-center">
         {isLoading ? (
-          <div className="p-8">
+          <div className="p-8 w-full">
             <LoadingSkeleton rows={8} />
+          </div>
+        ) : cycles.length === 0 ? (
+          <div className="p-8 max-w-md w-full">
+            <EmptyState
+              icon={<Network className="w-8 h-8 text-blue-600" />}
+              title="No Scheduling Cycle Found"
+              description="There are currently no examination cycles in the database. Please load the demonstration dataset in Settings or create a cycle to explore the conflict graph."
+              actionLabel="Load Demo Data in Settings"
+              onAction={() => navigate("/settings")}
+            />
+          </div>
+        ) : nodes.length === 0 ? (
+          <div className="p-8 max-w-md w-full">
+            <EmptyState
+              icon={<Network className="w-8 h-8 text-blue-600" />}
+              title="No Conflict Graph Data Yet"
+              description="The conflict graph for this cycle has not been built yet, or there are no student course enrollments. Click Rebuild to construct the graph."
+              actionLabel={isRebuilding ? "Building Graph..." : "Rebuild Conflict Graph"}
+              onAction={handleRebuild}
+            />
           </div>
         ) : (
           <ReactFlow

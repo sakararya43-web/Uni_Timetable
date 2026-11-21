@@ -98,12 +98,20 @@ export const TimetablePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     api.get<SchedulingCycle[]>("/api/v1/cycles")
       .then((data) => {
         setCycles(data);
-        if (data.length > 0) setSelectedCycleId(data[0].id);
+        if (data.length > 0) {
+          setSelectedCycleId(data[0].id);
+        } else {
+          setIsLoading(false);
+        }
       })
-      .catch((err) => console.error("Error loading cycles:", err));
+      .catch((err) => {
+        console.error("Error loading cycles:", err);
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
