@@ -282,20 +282,20 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 13. Phase 11 — Frontend Foundation and Data Pages
 
-- [ ] **P11.1** Generate TypeScript types from backend OpenAPI specification. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.2** Implement authentication flow, login page, session refresh, protected routes. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.3** Implement role-aware application navigation (Staff vs Student). `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.4** Implement reusable UI design primitives (`Button`, `Table`, `Dialog`, `Badge`, etc.). `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.5** Implement global error boundary rendering standard error response objects with request IDs. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.6** Enforce accessibility baseline: semantic tags, focus rings, WCAG AA contrast. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.7** Implement global stale-data notification banner. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.8** Implement Overview Dashboard Page (A) with active cycle selector and key metrics. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.9** Implement Scheduling Cycles Page (B) with cycle creation, session editor, holiday picker. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.10** Implement Subjects Page (C) with paginated table, filters, drawer, edit modal. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.11** Implement Students and Enrollments Page (D) with search and data validation view. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.12** Implement multi-step CSV Import Wizard (templates, dropzone, preview, commit). `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.13** Implement Admin User Management and Audit Log Viewer pages. `[phase-11]` `[P0]` `[frontend]`
-- [ ] **P11.14** Verify all four UI states (Loading, Empty, Error, Forbidden) across all data pages. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.1** Generate TypeScript types from backend OpenAPI specification. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.2** Implement authentication flow, login page, session refresh, protected routes. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.3** Implement role-aware application navigation (Staff vs Student). `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.4** Implement reusable UI design primitives (`Button`, `Table`, `Dialog`, `Badge`, etc.). `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.5** Implement global error boundary rendering standard error response objects with request IDs. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.6** Enforce accessibility baseline: semantic tags, focus rings, WCAG AA contrast. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.7** Implement global stale-data notification banner. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.8** Implement Overview Dashboard Page (A) with active cycle selector and key metrics. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.9** Implement Scheduling Cycles Page (B) with cycle creation, session editor, holiday picker. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.10** Implement Subjects Page (C) with paginated table, filters, drawer, edit modal. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.11** Implement Students and Enrollments Page (D) with search and data validation view. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.12** Implement multi-step CSV Import Wizard (templates, dropzone, preview, commit). `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.13** Implement Admin User Management and Audit Log Viewer pages. `[phase-11]` `[P0]` `[frontend]`
+- [x] **P11.14** Verify all four UI states (Loading, Empty, Error, Forbidden) across all data pages. `[phase-11]` `[P0]` `[frontend]`
 
 ---
 

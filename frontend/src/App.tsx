@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { AppLayout } from "./components/layout/AppLayout";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
 
 import { OverviewPage } from "./pages/OverviewPage";
 import { CyclesPage } from "./pages/CyclesPage";
@@ -33,7 +34,8 @@ export const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <Routes>
+          <ErrorBoundary>
+            <Routes>
             <Route path="/login" element={<LoginPage />} />
 
             {/* Application Main Layout Routes */}
@@ -133,7 +135,8 @@ export const App: React.FC = () => {
             {/* 404 Fallback */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </BrowserRouter>
+        </ErrorBoundary>
+      </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   );

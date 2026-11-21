@@ -31,13 +31,22 @@ export class ApiError extends Error {
 
 const BASE_URL = import.meta.env.VITE_API_URL || "";
 
+function getOrigin(): string {
+  if (typeof window !== "undefined" && window.location?.origin && window.location.origin !== "null") {
+    return window.location.origin;
+  }
+  return "http://localhost:8000";
+}
+
 function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? decodeURIComponent(match[2]) : null;
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = BASE_URL ? `${BASE_URL}${cleanEndpoint}` : `${getOrigin()}${cleanEndpoint}`;
 
   const headers = new Headers(options.headers || {});
   if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
