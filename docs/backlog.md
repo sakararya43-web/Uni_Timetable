@@ -41,9 +41,9 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 - [x] **P0.3** Define domain glossary in `docs/glossary.md` and enforce consistent code identifiers. `[phase-0]` `[P0]` `[docs]`
 - [x] **P0.4** Define coding conventions, formatting, linting, git strategy, and PR DoD template. `[phase-0]` `[P0]` `[docs]`
 - [x] **P0.5** Create project work breakdown and tracked task backlog (`docs/backlog.md`). `[phase-0]` `[P0]` `[docs]`
-- [ ] **P0.6** Define standard error model and comprehensive error code registry (`docs/error-registry.md`). `[phase-0]` `[P0]` `[docs]`
-- [ ] **P0.7** Define API pagination and query contracts in `docs/api-conventions.md`. `[phase-0]` `[P0]` `[docs]`
-- [ ] **P0.8** Define standard time, date, and timezone handling rules. `[phase-0]` `[P0]` `[docs]`
+- [x] **P0.6** Define standard error model and comprehensive error code registry (`docs/error-registry.md`). `[phase-0]` `[P0]` `[docs]`
+- [x] **P0.7** Define API pagination and query contracts in `docs/api-conventions.md`. `[phase-0]` `[P0]` `[docs]`
+- [x] **P0.8** Define standard time, date, and timezone handling rules. `[phase-0]` `[P0]` `[docs]`
 
 ---
 
