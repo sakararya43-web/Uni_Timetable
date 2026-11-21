@@ -262,7 +262,8 @@ def run_demo_seed(db: Session | None = None) -> dict[str, Any]:
         # -------------------------------------------------------------
         cycle_name = "June 2026 Demo Final Exams"
         cycle = db.scalar(select(SchedulingCycle).where(SchedulingCycle.name == cycle_name))
-        cycle_cfg = {
+        special_restrictions: list[dict[str, Any]] = []
+        cycle_cfg: dict[str, Any] = {
             "sessions": [
                 {"label": "Morning", "startTime": "09:00", "endTime": "12:00", "enabled": True},
                 {"label": "Afternoon", "startTime": "14:00", "endTime": "17:00", "enabled": True},
@@ -270,7 +271,7 @@ def run_demo_seed(db: Session | None = None) -> dict[str, Any]:
             "examDaysOfWeek": [1, 2, 3, 4, 5, 6],  # Mon - Sat
             "holidays": ["2026-06-15"],  # University Holiday
             "maxExamsPerSession": 4,
-            "specialRestrictions": [],
+            "specialRestrictions": special_restrictions,
         }
 
         if not cycle:
