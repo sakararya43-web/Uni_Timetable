@@ -67,3 +67,32 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 
     with TestClient(app) as test_client:
         yield test_client
+
+
+def make_auth_user(
+    db: Session,
+    role: str = "admin",
+    email: str = "admin@university.edu",
+    department_id: str | None = None,
+    full_name: str = "Test User",
+):
+    from app.models.enums import RoleEnum, UserStatus
+    from app.models.user import User
+    from app.utils.security import create_token, hash_password
+
+    role_enum = RoleEnum(role) if isinstance(role, str) else role
+    user = User(
+        email=email,
+        password_hash=hash_password("Password123!"),
+        full_name=full_name,
+        role=role_enum,
+        department_id=department_id,
+        status=UserStatus.ACTIVE,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    token, _, _ = create_token(
+        subject=user.id, claims={"role": role_enum.value, "department_id": department_id}
+    )
+    return user, {"Authorization": f"Bearer {token}"}

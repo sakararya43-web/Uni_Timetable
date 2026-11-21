@@ -102,23 +102,23 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 5. Phase 3 — Academic Data Management
 
-- [ ] **P3.1** Academic structure CRUD: academic years, semesters, departments, programs. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.2** Seed baseline reference data for development. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.3** Subject schemas with comprehensive validation (code format, duration, preferences). `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.4** Subject CRUD endpoints with pagination, search, and department scoping. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.5** Compute enrollment counts dynamically via query; never accept from client. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.6** Implement `GET /subjects/{id}/students` for authorized staff. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.7** Provide conflict degree and scheduling state placeholders on subject details. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.8** Enforce coordinator department scoping on all subject operations. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.9** Student CRUD with validation: unique immutable `student_number`, name, department. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.10** Implement `GET /students` and `GET /students/{id}/subjects`. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.11** Implement student archiving logic excluding archived students from conflict graphs. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.12** Implement `POST /enrollments` with referential validation and duplicate rejection. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.13** Implement `DELETE /enrollments/{id}` (withdrawal status transition). `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.14** Implement `GET /enrollments` with multi-entity filtering and pagination. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.15** Implement `GET /enrollments/validate` data integrity diagnostic report. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.16** Implement automatic cycle `data_version` incrementing / staleness signaling on data changes. `[phase-3]` `[P0]` `[backend]`
-- [ ] **P3.17** Record before/after audit entries for all subject and enrollment mutations. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.1** Academic structure CRUD: academic years, semesters, departments, programs. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.2** Seed baseline reference data for development. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.3** Subject schemas with comprehensive validation (code format, duration, preferences). `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.4** Subject CRUD endpoints with pagination, search, and department scoping. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.5** Compute enrollment counts dynamically via query; never accept from client. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.6** Implement `GET /subjects/{id}/students` for authorized staff. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.7** Provide conflict degree and scheduling state placeholders on subject details. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.8** Enforce coordinator department scoping on all subject operations. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.9** Student CRUD with validation: unique immutable `student_number`, name, department. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.10** Implement `GET /students` and `GET /students/{id}/subjects`. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.11** Implement student archiving logic excluding archived students from conflict graphs. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.12** Implement `POST /enrollments` with referential validation and duplicate rejection. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.13** Implement `DELETE /enrollments/{id}` (withdrawal status transition). `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.14** Implement `GET /enrollments` with multi-entity filtering and pagination. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.15** Implement `GET /enrollments/validate` data integrity diagnostic report. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.16** Implement automatic cycle `data_version` incrementing / staleness signaling on data changes. `[phase-3]` `[P0]` `[backend]`
+- [x] **P3.17** Record before/after audit entries for all subject and enrollment mutations. `[phase-3]` `[P0]` `[backend]`
 
 ---
 

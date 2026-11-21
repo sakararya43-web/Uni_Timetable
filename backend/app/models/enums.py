@@ -97,3 +97,10 @@ class AuditAction(str, Enum):
     SCHEDULE_PUBLISH = "SCHEDULE_PUBLISH"
     EXPORT = "EXPORT"
     ADMIN_OP_FAILED = "ADMIN_OP_FAILED"
+
+
+def enum_val(item: object) -> str:
+    """Safely return string value for enums or plain strings."""
+    if hasattr(item, "value"):
+        return str(item.value)
+    return str(item)
