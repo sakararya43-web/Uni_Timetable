@@ -1,0 +1,4 @@
+student_number,full_name,email,department_code,semester
+ERR-001,Bad Email User,not-an-email,CS,1
+ERR-002,Missing Dept,err2@univ.edu,NON_EXISTENT_DEPT,1
+ERR-003,Negative Semester,err3@univ.edu,CS,-2

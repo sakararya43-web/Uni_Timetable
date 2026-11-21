@@ -4,128 +4,159 @@ An enterprise-grade, explainable, constraint-based university examination schedu
 
 ---
 
-## 1. System Overview
+## 1. System Overview & Problem Statement
 
-The University Examination Timetable Scheduling System automates the generation, validation, visualization, optimization, and publishing of university examination timetables.
+### The Examination Timetabling Problem
+University examination scheduling requires partitioning a large set of examinations $E = \{e_1, e_2, \dots, e_n\}$ into conflict-free calendar time slots $\{T_1, T_2, \dots, T_k\}$ such that no student is scheduled to sit two exams simultaneously.
 
-By modeling examinations as vertices in an undirected graph and student overlap as weighted conflict edges, the system produces conflict-free examination schedules where no student has overlapping examinations.
+Mathematically, this maps to the **Vertex Coloring Problem** on an undirected **Conflict Graph** $G = (V, E_G)$:
+- **Vertices ($V$):** Each examination $e_i \in E$.
+- **Edges ($E_G$):** An edge exists between exams $u$ and $v$ if and only if at least one student is enrolled in both: $|Enroll(u) \cap Enroll(v)| \ge 1$.
+- **Edge Weights ($w$):** The number of shared students.
+- **Coloring ($c: V \to \{0, 1, \dots, k-1\}$):** A proper vertex coloring guarantees $\forall (u, v) \in E_G \implies c(u) \ne c(v)$.
 
-### Core Stack
-- **Backend:** Python 3.11+, FastAPI, SQLAlchemy 2.0, Alembic, Pydantic v2, ReportLab, OpenPyXL
-- **Algorithms:** DSATUR (Primary), Welsh–Powell, Greedy Coloring, Bipartite Matching
-- **Frontend:** React 18+, Vite, TypeScript (strict), Tailwind CSS, React Flow, Recharts, TanStack Query
-- **Database:** PostgreSQL with full relational integrity and audit logging
+Each color represents an independent conflict-free session group, which is subsequently mapped to physical calendar time slots while optimizing soft constraints (minimizing back-to-back exams, same-day multiple exams, and session imbalances).
 
 ---
 
-## 2. Quick-Start Guide
+## 2. System Architecture
 
-### Prerequisites
-- Python 3.11+
-- Node.js 20+ and npm
-- (Optional) Docker & Docker Compose for containerized PostgreSQL
+```mermaid
+flowchart TD
+    subgraph Client ["Frontend (React 18 + TypeScript + Vite)"]
+        UI["Tailwind CSS + HeadlessUI UI"]
+        Cytoscape["Cytoscape.js & Canvas Conflict Graph"]
+        TimetableGrid["Interactive Timetable & Move Modal"]
+        ReportsView["Reports & Student Personal Timetable"]
+    end
 
-### Option A: Running with Docker Compose (Recommended)
-```bash
-# Start PostgreSQL, Backend (with hot-reload), and Frontend (Vite)
-docker compose -f docker-compose.dev.yml up --build
+    subgraph Gateway ["Nginx / FastAPI HTTP Gateway"]
+        AuthMiddleware["JWT Authentication & RBAC"]
+        SecurityHeaders["CSP, HSTS, Rate Limiting, Idempotency"]
+        ErrorHandler["Standard Error Envelope Handler"]
+    end
+
+    subgraph CoreEngine ["Backend Application Core"]
+        GraphService["Conflict Graph Construction O(m*k^2)"]
+        AlgorithmEngine["Pure Coloring Engine (DSATUR / WP / Greedy)"]
+        SlotMapper["Bipartite Slot Mapping & Penalty Minimizer"]
+        ScheduleValidator["Independent Constraint Verification Engine"]
+        AuditService["Immutable Audit Trail & Exporter"]
+    end
+
+    subgraph Storage ["Persistent Relational Database"]
+        Postgres[("PostgreSQL 16 / SQLite Relational Store")]
+    end
+
+    Client -->|REST JSON + JWT| Gateway
+    Gateway --> CoreEngine
+    CoreEngine --> Storage
 ```
-- Frontend UI: `http://localhost:5173`
-- Backend API & OpenAPI Docs: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/health`
 
 ---
 
-### Option B: Running Locally
+## 3. Core Tech Stack
+
+- **Backend:** Python 3.11+, FastAPI, SQLAlchemy 2.0 (Mapped Columns), Alembic, Pydantic v2, ReportLab, OpenPyXL
+- **Algorithms:** DSATUR (Brélaz, 1979), Welsh–Powell (1967), Greedy Coloring, Bipartite Slot Mapping
+- **Frontend:** React 18, Vite, TypeScript (strict), Tailwind CSS, Lucide Icons, Canvas / Cytoscape
+- **Database:** PostgreSQL 16 (production) / SQLite (zero-dependency development)
+- **Quality Assurance:** Pytest, Vitest, Hypothesis (property-based testing), Playwright E2E
+
+---
+
+## 4. Quickstart Guide
+
+### Option A: Running Locally with Pre-configured Demo Data (Fastest)
 
 #### 1. Backend Setup
 ```bash
-# Navigate to backend and install dependencies
-cd backend
+# Clone the repository
+git clone https://github.com/sakararya43-web/Uni_Timetable.git
+cd Uni_Timetable/backend
+
+# Create virtual environment and install dependencies
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 
-# Configure environment (copy .env.example if needed)
 # Run database migrations
 python -m alembic upgrade head
 
-# Start development server
+# Seed demonstration dataset (Departments, Subjects, 50 Students, Cycle, Graph)
+python -m app.scripts.seed_demo
+
+# Start backend server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+- API & Interactive OpenAPI Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health Check: [http://localhost:8000/health](http://localhost:8000/health)
 
 #### 2. Frontend Setup
 ```bash
-# Navigate to frontend and install dependencies
-cd frontend
+# In a new terminal:
+cd Uni_Timetable/frontend
 npm install
-
-# Start Vite dev server
 npm run dev
 ```
+- Web Application: [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 3. Running Automated Tests
+## 5. Demo Accounts & Seed Dataset
 
-### Backend Tests
+The seed script (`python -m app.scripts.seed_demo`) generates a complete demo university environment:
+
+| Role | Email | Password | Scope & Permissions |
+|---|---|---|---|
+| **Administrator** | `admin@univ.edu` | `AdminPass123!` | Full system access, publishing, user management, audit logs |
+| **Coordinator** | `coordinator@univ.edu` | `CoordPass123!` | Department scheduling, manual moves, exam locking, regeneration |
+| **Faculty** | `faculty@univ.edu` | `FacultyPass123!` | Read-only inspection of master schedule and department timetable |
+| **Student** | `student@univ.edu` | `StudentPass123!` | Personal timetable view (`/me/timetable`) with FERPA isolation |
+
+*Alternatively, Administrators can load demo data at any time directly in the UI under **Settings -> Demo & Help -> Load Demo Data**.*
+
+---
+
+## 6. Running Automated Tests
+
 ```bash
-# Run unit & integration tests with coverage
-pytest backend/tests --cov=backend/app
+# Run all backend unit, integration, and Hypothesis property-based tests (129 tests)
+pytest backend/tests -v
 
-# Run linter and type checker
-python -m ruff check backend/
+# Run backend linting and strict type checking (82 source files)
+python -m ruff check backend/app backend/tests
 python -m mypy backend/app
-```
 
-### Frontend Tests
-```bash
-cd frontend
-npm run test:run
-npm run lint
-npm run typecheck
-npm run build
+# Run frontend unit & component tests (21 tests)
+npm --prefix frontend run test:run
+
+# Verify frontend production build
+npm --prefix frontend run build
 ```
 
 ---
 
-## 4. Target Repository Layout
+## 7. Comprehensive Architecture Documentation
 
-```text
-exam-scheduler/
-├── backend/
-│   ├── app/
-│   │   ├── main.py            # FastAPI app factory, CORS, health & ready endpoints
-│   │   ├── config/            # settings.py, database.py, logging.py
-│   │   ├── api/v1/            # API v1 routes & endpoints
-│   │   ├── models/            # SQLAlchemy 2.0 ORM models
-│   │   ├── schemas/           # Pydantic v2 request/response schemas
-│   │   ├── services/          # Business logic, imports, graph, scheduling, validation
-│   │   ├── algorithms/        # PURE algorithms (DSATUR, Welsh-Powell, Greedy, metrics)
-│   │   ├── repositories/      # Database queries & department-scoped lookups
-│   │   ├── middleware/        # Request ID propagation & centralized error handlers
-│   │   └── utils/
-│   ├── migrations/            # Alembic database migration scripts
-│   ├── tests/                 # Unit, integration, and property-based test suites
-│   └── pyproject.toml
-├── frontend/
-│   ├── src/
-│   │   ├── components/        # Layout, tables, dialogs, forms, design primitives
-│   │   ├── pages/             # PRD §16.3 pages (Overview, Cycles, Subjects, Timetable, etc.)
-│   │   ├── services/          # Typed API client with error normalization
-│   │   ├── context/           # Auth and session context
-│   │   └── styles/            # Tailwind CSS design tokens
-│   ├── package.json
-│   └── vite.config.ts
-├── docker/                    # Dockerfiles, init SQL, and Nginx configurations
-├── docs/                      # Architectural Decision Records (ADRs), glossary, backlog
-├── .github/workflows/         # Continuous Integration (CI) configuration
-└── README.md
-```
+- [Formal Conflict Graph Mathematical Model](docs/graph-model.md): Mathematical formulations, vertex degree metrics, and $O(m)$ construction proofs.
+- [Coloring Algorithms & Complexity Analysis](docs/algorithms.md): Pseudocode, correctness invariant proofs, heap vs linear scan trade-offs, and empirical benchmarks.
+- [Scheduling & Constraint Optimization Engine](docs/scheduling.md): Hard vs soft constraints, penalty weight formulations, and locked-exam precoloring.
+- [API Reference Guide](docs/api.md): REST endpoints, error envelopes, curl examples, and exported Postman collection.
+- [Operations & Runbook](docs/operations.md): Production deployment, Alembic migration release step, WAL archiving, backup/restore, and alerting thresholds.
 
 ---
 
-## 5. Architectural Invariants (PRD §20, §36)
+## 8. Known Limitations & Roadmap
 
-- **Pure Algorithm Isolation:** The `app/algorithms/` module has **zero dependencies** on FastAPI, SQLAlchemy, or the database. It operates strictly on plain Python data structures (`dict`, `set`, `list`, `dataclass`).
-- **Separation of Coloring from Scheduling:** Coloring produces abstract independent sets; the scheduling service independently handles calendar date mapping, session times, holidays, and durations.
-- **Independent Schedule Validator:** Verification runs on an independent code path from schedule generation.
-- **Zero Raw Exceptions:** All API errors adhere to the standard envelope `{ "error": { "code", "message", "details", "requestId" } }`.
+### Known Limitations (MVP Scope)
+1. **Heuristic Approximations:** Graph vertex coloring is NP-hard. DSATUR and Welsh-Powell provide polynomial-time heuristics that guarantee valid, proper colorings within $1-2$ colors of the chromatic number $\chi(G)$, but are not guaranteed to find the absolute theoretical minimum for arbitrary dense graphs.
+2. **Fixed Duration Sessions:** The current version assumes exams map into configured calendar session windows (e.g. 180 min Morning/Afternoon blocks).
+3. **Single Campus & Room Modeling:** Classroom and invigilator allocation are intentionally modeled as secondary post-coloring resource assignments.
+4. **Synchronous Generation:** Algorithmic generation runs synchronously in-process. Benchmarks confirm $\le 500$ exams complete in under $100\text{ ms}$, but enterprise scales ($\ge 10,000$ exams) should utilize the Redis task queue outlined in `docs/task-queue-architecture.md`.
+
+### Post-MVP Enhancements (P2 Backlog)
+- Room entity capacity allocation and invigilator assignment.
+- Exact branch-and-bound solver for small subgraphs.
+- Automated iCalendar (.ics) calendar sync and email notifications.
+- Genetic algorithm local search for fine-grained soft penalty minimization.

@@ -1,0 +1,184 @@
+{
+  "info": {
+    "name": "University Examination Timetable Scheduling API",
+    "_postman_id": "a9b8c7d6-e5f4-4321-ba98-76543210fedc",
+    "description": "Production API Collection for the University Examination Timetable Scheduling System.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cycleId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "versionId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@univ.edu\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/me", "host": ["{{baseUrl}}"], "path": ["me"] }
+          }
+        },
+        {
+          "name": "Student Timetable View",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/me/timetable", "host": ["{{baseUrl}}"], "path": ["me", "timetable"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cycles & Slots",
+      "item": [
+        {
+          "name": "List Cycles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/cycles", "host": ["{{baseUrl}}"], "path": ["cycles"] }
+          }
+        },
+        {
+          "name": "Get Cycle Time Slots",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/cycles/{{cycleId}}/slots", "host": ["{{baseUrl}}"], "path": ["cycles", "{{cycleId}}", "slots"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conflict Graph",
+      "item": [
+        {
+          "name": "Build Graph Snapshot",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/cycles/{{cycleId}}/graph/build", "host": ["{{baseUrl}}"], "path": ["cycles", "{{cycleId}}", "graph", "build"] }
+          }
+        },
+        {
+          "name": "Get Conflict Graph (Nodes & Edges)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/cycles/{{cycleId}}/graph", "host": ["{{baseUrl}}"], "path": ["cycles", "{{cycleId}}", "graph"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scheduling Engine",
+      "item": [
+        {
+          "name": "Generate Schedule (DSATUR)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"algorithm\": \"dsatur\",\n  \"deterministic\": true,\n  \"preserveLockedExams\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/cycles/{{cycleId}}/schedule/generate", "host": ["{{baseUrl}}"], "path": ["cycles", "{{cycleId}}", "schedule", "generate"] }
+          }
+        },
+        {
+          "name": "Publish Candidate Version",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirm\": true,\n  \"notes\": \"Official Examination Timetable Release\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/schedules/{{versionId}}/publish", "host": ["{{baseUrl}}"], "path": ["schedules", "{{versionId}}", "publish"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exports",
+      "item": [
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/schedules/{{versionId}}/export/csv", "host": ["{{baseUrl}}"], "path": ["schedules", "{{versionId}}", "export", "csv"] }
+          }
+        },
+        {
+          "name": "Export PDF",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/schedules/{{versionId}}/export/pdf", "host": ["{{baseUrl}}"], "path": ["schedules", "{{versionId}}", "export", "pdf"] }
+          }
+        },
+        {
+          "name": "Export Excel",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/schedules/{{versionId}}/export/excel", "host": ["{{baseUrl}}"], "path": ["schedules", "{{versionId}}", "export", "excel"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demo & Admin",
+      "item": [
+        {
+          "name": "Seed Demo Dataset",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dev/seed-demo", "host": ["{{baseUrl}}"], "path": ["dev", "seed-demo"] }
+          }
+        }
+      ]
+    }
+  ]
+}

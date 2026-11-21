@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Filter, Sliders, CheckCircle } from "lucide-react";
+import { Plus, Filter, Sliders, CheckCircle, Database, Sparkles, HelpCircle, AlertTriangle } from "lucide-react";
 import { api } from "../services/api";
 import { UserProfile, AuditLogItem, Role } from "../types/api";
 import { Button } from "../components/ui/Button";
@@ -17,12 +17,17 @@ const roleVariants: Record<string, BadgeVariant> = {
 };
 
 export const SettingsPage: React.FC = () => {
-  const [tab, setTab] = useState<"users" | "audit" | "weights">("users");
+  const [tab, setTab] = useState<"users" | "audit" | "weights" | "demo">("users");
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>([]);
   const [totalLogs, setTotalLogs] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCreateUserOpen, setIsCreateUserOpen] = useState<boolean>(false);
+
+  // Demo loading state (Task P16.4)
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const [demoResult, setDemoResult] = useState<Record<string, any> | null>(null);
+  const [demoError, setDemoError] = useState<string | null>(null);
 
   // User form state
   const [newUserEmail, setNewUserEmail] = useState("");
@@ -50,6 +55,21 @@ export const SettingsPage: React.FC = () => {
       console.error("Failed to load users:", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleLoadDemoData = async () => {
+    setIsDemoLoading(true);
+    setDemoError(null);
+    setDemoResult(null);
+    try {
+      const resp = await api.post<{ success: boolean; message: string; data: Record<string, any> }>("/api/v1/dev/seed-demo");
+      setDemoResult(resp.data);
+      fetchUsers();
+    } catch (err: any) {
+      setDemoError(err.message || "Failed to load demonstration dataset.");
+    } finally {
+      setIsDemoLoading(false);
     }
   };
 
@@ -168,6 +188,17 @@ export const SettingsPage: React.FC = () => {
           <Sliders className="w-3.5 h-3.5" />
           <span>Soft-Constraint Penalty Weights</span>
         </button>
+        <button
+          onClick={() => setTab("demo")}
+          className={`py-2 px-4 text-xs font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
+            tab === "demo"
+              ? "border-blue-600 text-blue-600 font-bold"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Database className="w-3.5 h-3.5" />
+          <span>Demo & Help</span>
+        </button>
       </div>
 
       {tab === "users" ? (
@@ -284,7 +315,7 @@ export const SettingsPage: React.FC = () => {
             </div>
           )}
         </div>
-      ) : (
+      ) : tab === "weights" ? (
         /* Soft-Constraint Penalty Weights (Task P13.18) */
         <div className="p-6 bg-white border border-slate-200 rounded-xl shadow-sm space-y-6">
           <div>
@@ -407,6 +438,115 @@ export const SettingsPage: React.FC = () => {
               </Button>
             </div>
           </form>
+        </div>
+      ) : (
+        /* Demo Dataset & Key Concepts Help Tab (Task P16.4, P16.13) */
+        <div className="space-y-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Database className="w-4 h-4 text-blue-600" />
+                  <span>Demonstration Dataset Seeder</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 max-w-xl">
+                  Quickly populates 2 departments, 12 realistic exam courses (including a dense hub and an isolated subject), 50 synthetic students, and a pre-configured scheduling cycle with calendar slots and an initial conflict graph.
+                </p>
+              </div>
+              <Button
+                variant="primary"
+                size="md"
+                leftIcon={<Sparkles className="w-4 h-4" />}
+                onClick={handleLoadDemoData}
+                isLoading={isDemoLoading}
+              >
+                Load Demo Data
+              </Button>
+            </div>
+
+            {demoError && (
+              <div className="mt-4 p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-center gap-2 text-xs text-rose-800">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{demoError}</span>
+              </div>
+            )}
+
+            {demoResult && (
+              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-emerald-800">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  <span>Demonstration Dataset Successfully Loaded!</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[11px] pt-1">
+                  <div className="bg-white/80 p-2 rounded border border-emerald-100">
+                    <span className="text-slate-500 block">Cycle Name</span>
+                    <span className="font-bold text-slate-900">{demoResult.cycle_name}</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded border border-emerald-100">
+                    <span className="text-slate-500 block">Students</span>
+                    <span className="font-bold text-slate-900">{demoResult.students} enrolled</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded border border-emerald-100">
+                    <span className="text-slate-500 block">Hub Exam</span>
+                    <span className="font-bold text-purple-700">{demoResult.hub_subject}</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded border border-emerald-100">
+                    <span className="text-slate-500 block">Isolated</span>
+                    <span className="font-bold text-emerald-700">{demoResult.isolated_subjects?.join(", ")}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Key Concepts Reference (Task P16.13) */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>Core Scheduling Concepts & Algorithmic Principles</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-sm">
+                <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>
+                  <span>Color = Slot Group</span>
+                </h4>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  In graph vertex coloring, each integer color partition represents a conflict-free set of exams scheduled concurrently within the same calendar session window. Two exams connected by an edge share enrolled students and must have distinct colors.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-sm">
+                <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span>
+                  <span>Saturation Degree &rho;(v)</span>
+                </h4>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  The count of distinct colors assigned to adjacent neighbors in the conflict graph. In DSATUR, the vertex with maximum saturation degree is selected next, resolving tightly constrained scheduling bottlenecks before degrees of freedom decrease.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-sm">
+                <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                  <span>Exam Locking & Pre-coloring</span>
+                </h4>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  Manual administrative locks freeze an exam to its assigned slot. When regenerating or modifying schedules, locked exams serve as pre-colored fixed vertices, and algorithms assign remaining unlocked exams around them without disrupting the locked slots.
+                </p>
+              </div>
+
+              <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-sm">
+                <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                  <span>Hard vs. Soft Constraints</span>
+                </h4>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  Hard constraints (zero student conflicts, session capacity limits, duration limits) are absolute invariants that cannot be violated under any circumstance. Soft constraints (avoiding back-to-back exams, same-day multiple exams, and clustering) are minimized using weighted penalty scoring.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

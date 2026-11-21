@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.v1.academic import router as academic_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.cycles import router as cycles_router
+from app.api.v1.dev import router as dev_router
 from app.api.v1.enrollments import router as enrollments_router
 from app.api.v1.graph import router as graph_router
 from app.api.v1.imports import router as imports_router
@@ -37,3 +38,4 @@ api_v1_router.include_router(graph_router)
 api_v1_router.include_router(schedule_router)
 api_v1_router.include_router(schedule_versions_router)
 api_v1_router.include_router(publishing_router)
+api_v1_router.include_router(dev_router)

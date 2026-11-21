@@ -400,23 +400,23 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 18. Phase 16 — Demo Data, Documentation & Deployment
 
-- [ ] **P16.1** Generate synthetic demo CSV files (30–100 students, 8–15 subjects, 2 departments). `[phase-16]` `[P0]` `[demo]`
-- [ ] **P16.2** Curate demo graph topology highlighting algorithmic trade-offs between Greedy, WP, and DSATUR. `[phase-16]` `[P0]` `[demo]`
-- [ ] **P16.3** Create CLI seed command `python -m app.scripts.seed_demo`. `[phase-16]` `[P0]` `[demo]`
-- [ ] **P16.4** Implement "Load Demo Data" administrative button for development environments. `[phase-16]` `[P1]` `[demo]`
-- [ ] **P16.5** Create scripted test fixtures for CSV import error, invalid move, and lock preservation demos. `[phase-16]` `[P0]` `[demo]`
-- [ ] **P16.6** Author comprehensive root `README.md` with architecture diagrams and quickstart guides. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.7** Author `docs/graph-model.md` detailing formal mathematical model and complexity bounds. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.8** Author `docs/algorithms.md` with pseudocode, invariants, heap vs linear trade-offs, and benchmarks. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.9** Author `docs/scheduling.md` detailing bipartite mapping, precoloring, and constraint mechanics. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.10** Author verified `docs/api.md` and export Postman / Bruno API collection. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.11** Author `docs/security-privacy.md` and `docs/operations.md` operational runbooks. `[phase-16]` `[P0]` `[docs]`
-- [ ] **P16.12** Capture high-resolution system screenshots for documentation. `[phase-16]` `[P1]` `[docs]`
-- [ ] **P16.13** Embed comprehensive contextual help tooltips across all frontend features. `[phase-16]` `[P1]` `[frontend]`
-- [ ] **P16.14** Build production multi-stage Dockerfiles for backend and frontend. `[phase-16]` `[P0]` `[ops]`
-- [ ] **P16.15** Author `docker-compose.prod.yml` with Nginx reverse proxy and TLS configuration. `[phase-16]` `[P0]` `[ops]`
-- [ ] **P16.16** Establish automated Alembic database migration release step. `[phase-16]` `[P0]` `[ops]`
-- [ ] **P16.17** Configure continuous deployment pipeline to staging and production. `[phase-16]` `[P1]` `[ops]`
-- [ ] **P16.18** Complete staging environment smoke tests and production deployment checklist. `[phase-16]` `[P0]` `[ops]`
-- [ ] **P16.19** Configure monitoring, health checks, and alerting thresholds. `[phase-16]` `[P1]` `[ops]`
-- [ ] **P16.20** Tag official release `v1.0.0` and finalize project handover documentation. `[phase-16]` `[P0]` `[ops]`
+- [x] **P16.1** Generate synthetic demo CSV files (30–100 students, 8–15 subjects, 2 departments). `[phase-16]` `[P0]` `[demo]`
+- [x] **P16.2** Curate demo graph topology highlighting algorithmic trade-offs between Greedy, WP, and DSATUR. `[phase-16]` `[P0]` `[demo]`
+- [x] **P16.3** Create CLI seed command `python -m app.scripts.seed_demo`. `[phase-16]` `[P0]` `[demo]`
+- [x] **P16.4** Implement "Load Demo Data" administrative button for development environments. `[phase-16]` `[P1]` `[demo]`
+- [x] **P16.5** Create scripted test fixtures for CSV import error, invalid move, and lock preservation demos. `[phase-16]` `[P0]` `[demo]`
+- [x] **P16.6** Author comprehensive root `README.md` with architecture diagrams and quickstart guides. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.7** Author `docs/graph-model.md` detailing formal mathematical model and complexity bounds. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.8** Author `docs/algorithms.md` with pseudocode, invariants, heap vs linear trade-offs, and benchmarks. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.9** Author `docs/scheduling.md` detailing bipartite mapping, precoloring, and constraint mechanics. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.10** Author verified `docs/api.md` and export Postman / Bruno API collection. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.11** Author `docs/security-privacy.md` and `docs/operations.md` operational runbooks. `[phase-16]` `[P0]` `[docs]`
+- [x] **P16.12** Capture high-resolution system screenshots for documentation. `[phase-16]` `[P1]` `[docs]`
+- [x] **P16.13** Embed comprehensive contextual help tooltips across all frontend features. `[phase-16]` `[P1]` `[frontend]`
+- [x] **P16.14** Build production multi-stage Dockerfiles for backend and frontend. `[phase-16]` `[P0]` `[ops]`
+- [x] **P16.15** Author `docker-compose.prod.yml` with Nginx reverse proxy and TLS configuration. `[phase-16]` `[P0]` `[ops]`
+- [x] **P16.16** Establish automated Alembic database migration release step. `[phase-16]` `[P0]` `[ops]`
+- [x] **P16.17** Configure continuous deployment pipeline to staging and production. `[phase-16]` `[P1]` `[ops]`
+- [x] **P16.18** Complete staging environment smoke tests and production deployment checklist. `[phase-16]` `[P0]` `[ops]`
+- [x] **P16.19** Configure monitoring, health checks, and alerting thresholds. `[phase-16]` `[P1]` `[ops]`
+- [x] **P16.20** Tag official release `v1.0.0` and finalize project handover documentation. `[phase-16]` `[P0]` `[ops]`
