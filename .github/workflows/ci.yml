@@ -43,12 +43,12 @@ jobs:
 
       - name: Run Ruff Lint & Format Checks
         run: |
-          ruff check backend/
-          ruff format --check backend/
+          python -m ruff check backend/
+          python -m ruff format --check backend/
 
       - name: Run Mypy Strict Type Checking
         run: |
-          mypy backend/app
+          python -m mypy backend/app
 
       - name: Run Pytest with Coverage
         env:
@@ -56,12 +56,12 @@ jobs:
           DATABASE_URL: postgresql+psycopg://postgres:postgrespassword@localhost:5432/exam_scheduler_test
           JWT_SECRET: ci_test_jwt_secret_key_minimum_32_characters_long
         run: |
-          pytest backend/tests --cov=backend/app/algorithms --cov-fail-under=95
+          python -m pytest backend/tests --cov=backend/app/algorithms --cov-fail-under=95
 
       - name: Run Dependency Vulnerability Audit (non-blocking)
         continue-on-error: true
         run: |
-          pip-audit
+          python -m pip_audit
 
   frontend-checks:
     name: Frontend Lint, Typecheck, Tests & Build

@@ -16,6 +16,21 @@ const roleVariants: Record<string, BadgeVariant> = {
   student: "neutral",
 };
 
+interface DemoSeedSummary {
+  departments: number;
+  programs: number;
+  users: number;
+  subjects: number;
+  students: number;
+  enrollments_added: number;
+  cycle_id: string;
+  cycle_name: string;
+  graph_snapshot_id: string;
+  graph_version: number;
+  isolated_subjects?: string[];
+  hub_subject?: string;
+}
+
 export const SettingsPage: React.FC = () => {
   const [tab, setTab] = useState<"users" | "audit" | "weights" | "demo">("users");
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -26,7 +41,7 @@ export const SettingsPage: React.FC = () => {
 
   // Demo loading state (Task P16.4)
   const [isDemoLoading, setIsDemoLoading] = useState(false);
-  const [demoResult, setDemoResult] = useState<Record<string, any> | null>(null);
+  const [demoResult, setDemoResult] = useState<DemoSeedSummary | null>(null);
   const [demoError, setDemoError] = useState<string | null>(null);
 
   // User form state
@@ -63,11 +78,12 @@ export const SettingsPage: React.FC = () => {
     setDemoError(null);
     setDemoResult(null);
     try {
-      const resp = await api.post<{ success: boolean; message: string; data: Record<string, any> }>("/api/v1/dev/seed-demo");
+      const resp = await api.post<{ success: boolean; message: string; data: DemoSeedSummary }>("/api/v1/dev/seed-demo");
       setDemoResult(resp.data);
       fetchUsers();
-    } catch (err: any) {
-      setDemoError(err.message || "Failed to load demonstration dataset.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to load demonstration dataset.";
+      setDemoError(msg);
     } finally {
       setIsDemoLoading(false);
     }

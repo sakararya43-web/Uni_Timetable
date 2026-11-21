@@ -541,3 +541,48 @@ def test_subject_conflict_degree_populated_from_latest_snapshot(
     assert (
         resp_sub_post.json().get("conflict_degree") or resp_sub_post.json().get("conflictDegree")
     ) == 2
+
+
+def test_validate_conflict_graph_defect_branches():
+    """Covers defect branches in pure validate_graph (P6.5)."""
+    from app.algorithms.graph_builder import ConflictGraph, validate_graph
+
+    # 1. Missing and extra vertices
+    g_mismatch = ConflictGraph(
+        vertices={"A", "B"},
+        adjacency={"A": {"B"}, "B": {"A"}},
+        edge_weights={("A", "B"): 1},
+        vertex_metadata={},
+    )
+    val_mismatch = validate_graph(g_mismatch, exam_ids=["A", "C"], enrollments=[])
+    assert not val_mismatch.is_valid
+    assert any("missing 1 expected" in err for err in val_mismatch.errors)
+    assert any("unexpected exam vertices" in err for err in val_mismatch.errors)
+
+    # 2. Self-loop in edge_weights, non-normalized edge key, and non-positive weight
+    g_bad_edges = ConflictGraph(
+        vertices={"A", "B"},
+        adjacency={"A": {"B"}, "B": {"A"}},
+        edge_weights={
+            ("A", "A"): 1,  # Self-loop
+            ("B", "A"): 1,  # Non-normalized (u > v)
+            ("A", "B"): 0,  # Non-positive weight
+        },
+        vertex_metadata={},
+    )
+    val_bad_edges = validate_graph(g_bad_edges, exam_ids=["A", "B"], enrollments=[])
+    assert not val_bad_edges.is_valid
+    assert any("Self-loop edge key" in err for err in val_bad_edges.errors)
+    assert any("not normalized" in err for err in val_bad_edges.errors)
+    assert any("non-positive shared student count" in err for err in val_bad_edges.errors)
+
+    # 3. Vertex has neighbor not in vertices
+    g_bad_nbr = ConflictGraph(
+        vertices={"A"},
+        adjacency={"A": {"Z"}},
+        edge_weights={},
+        vertex_metadata={},
+    )
+    val_bad_nbr = validate_graph(g_bad_nbr, exam_ids=["A"], enrollments=[])
+    assert not val_bad_nbr.is_valid
+    assert any("neighbor 'Z' not in vertex set" in err for err in val_bad_nbr.errors)

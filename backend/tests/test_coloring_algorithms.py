@@ -317,3 +317,75 @@ def test_benchmark_suite_executes():
     assert "algorithm" in first
     assert "colors" in first
     assert first["valid"] is True
+
+
+def test_guards_additional_exception_branches():
+    """Covers precolored validation failure branches in guards.py."""
+    adj = {"A": {"B"}, "B": {"A"}}
+
+    # Unknown precolored vertex
+    with pytest.raises(ColoringException) as exc1:
+        validate_graph_input(adj, precolored={"NON_EXISTENT": 0})
+    assert exc1.value.code == "UNKNOWN_PRECOLORED_VERTEX"
+
+    # Negative precolor
+    with pytest.raises(ColoringException) as exc2:
+        validate_graph_input(adj, precolored={"A": -1})
+    assert exc2.value.code == "INVALID_PRECOLOR"
+
+    # Non-integer precolor
+    with pytest.raises(ColoringException) as exc3:
+        validate_graph_input(adj, precolored={"A": "zero"})  # type: ignore[arg-type]
+    assert exc3.value.code == "INVALID_PRECOLOR"
+
+
+def test_welsh_powell_non_deterministic():
+    """Covers non-deterministic Welsh-Powell sort branch."""
+    adj = {"A": {"B", "C"}, "B": {"A"}, "C": {"A"}}
+    res = welsh_powell(adj, deterministic=False)
+    assert res.color_count == 2
+
+
+def test_greedy_ordering_branches():
+    """Covers alternative vertex ordering branches in greedy_color."""
+    adj = {"A": {"B"}, "B": {"A", "C"}, "C": {"B"}}
+
+    # by_degree_desc with deterministic=True and deterministic=False
+    res1 = greedy_color(adj, order="by_degree_desc", deterministic=True)
+    assert res1.color_count == 2
+
+    res2 = greedy_color(adj, order="by_degree_desc", deterministic=False)
+    assert res2.color_count == 2
+
+    # as_given
+    res3 = greedy_color(adj, order="as_given")
+    assert res3.color_count == 2
+
+    # custom order permutation with missing/extra vertex
+    with pytest.raises(ColoringException) as exc1:
+        greedy_color(adj, order=["A", "B"])
+    assert exc1.value.code == "INVALID_ORDERING"
+
+    # unknown ordering string
+    with pytest.raises(ColoringException) as exc2:
+        greedy_color(adj, order="random_invalid_ordering")
+    assert exc2.value.code == "INVALID_ORDERING"
+
+
+def test_dsatur_heap_trace_and_stale_update():
+    """Covers heap-based DSATUR with tracing, stale updates, and non-deterministic linear."""
+    # Complete graph K_4 forces multiple saturation degree increments
+    adj_k4 = {
+        "1": {"2", "3", "4"},
+        "2": {"1", "3", "4"},
+        "3": {"1", "2", "4"},
+        "4": {"1", "2", "3"},
+    }
+    # Trace with heap variant
+    res_heap = dsatur(adj_k4, use_heap=True, trace=True)
+    assert res_heap.color_count == 4
+    assert len(res_heap.trace) == 4
+
+    # Non-deterministic linear variant
+    res_lin_nondet = dsatur(adj_k4, use_heap=False, deterministic=False)
+    assert res_lin_nondet.color_count == 4
