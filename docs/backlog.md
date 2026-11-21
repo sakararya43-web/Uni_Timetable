@@ -204,27 +204,27 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 10. Phase 8 — Scheduling Engine
 
-- [ ] **P8.1** Implement `map_colors_to_slots` via maximum bipartite matching. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.2** Compute eligible slots per color class respecting duration and date restrictions. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.3** Implement two-stage matching: feasibility matching followed by soft quality placement. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.4** Bind precolored locked exams directly to their assigned slots. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.5** Handle over-capacity classes with transparent diagnostics or verified same-day splits. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.6** Implement comprehensive infeasibility reporting for slot deficits. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.7** Implement pure `validation_service.validate_schedule` enforcing all 10 hard constraints. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.8** Implement structured validation report schema. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.9** Implement soft constraint penalty scoring engine (`soft_constraint_service`). `[phase-8]` `[P1]` `[backend]`
-- [ ] **P8.10** Enforce hard vs soft separation in API and database. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.11** Implement end-to-end `schedule_service.generate` workflow. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.12** Define structured generation outcome status enum. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.13** Implement timeout guard on generation runs. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.14** Implement optional local search improvement heuristic. `[phase-8]` `[P1]` `[backend]`
-- [ ] **P8.15** Implement schedule generation API endpoints. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.16** Transition cycle status to `Generated` upon saving first candidate. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.17** Record audit entries for schedule generation, save, and validate. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.18** Implement `POST /cycles/{id}/schedule/compare` running all 3 algorithms on the same snapshot. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.19** Persist each comparison outcome as a retrievable `schedule_run`. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.20** Include heuristic honesty notes and median timing in comparison payload. `[phase-8]` `[P0]` `[backend]`
-- [ ] **P8.21** Implement algorithm comparison export endpoint. `[phase-8]` `[P1]` `[backend]`
+- [x] **P8.1** Implement `map_colors_to_slots` via maximum bipartite matching. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.2** Compute eligible slots per color class respecting duration and date restrictions. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.3** Implement two-stage matching: feasibility matching followed by soft quality placement. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.4** Bind precolored locked exams directly to their assigned slots. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.5** Handle over-capacity classes with transparent diagnostics or verified same-day splits. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.6** Implement comprehensive infeasibility reporting for slot deficits. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.7** Implement pure `validation_service.validate_schedule` enforcing all 10 hard constraints. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.8** Implement structured validation report schema. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.9** Implement soft constraint penalty scoring engine (`soft_constraint_service`). `[phase-8]` `[P1]` `[backend]`
+- [x] **P8.10** Enforce hard vs soft separation in API and database. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.11** Implement end-to-end `schedule_service.generate` workflow. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.12** Define structured generation outcome status enum. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.13** Implement timeout guard on generation runs. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.14** Implement optional local search improvement heuristic. `[phase-8]` `[P1]` `[backend]`
+- [x] **P8.15** Implement schedule generation API endpoints. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.16** Transition cycle status to `Generated` upon saving first candidate. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.17** Record audit entries for schedule generation, save, and validate. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.18** Implement `POST /cycles/{id}/schedule/compare` running all 3 algorithms on the same snapshot. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.19** Persist each comparison outcome as a retrievable `schedule_run`. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.20** Include heuristic honesty notes and median timing in comparison payload. `[phase-8]` `[P0]` `[backend]`
+- [x] **P8.21** Implement algorithm comparison export endpoint. `[phase-8]` `[P1]` `[backend]`
 
 ---
 
