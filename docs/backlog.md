@@ -301,29 +301,29 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 14. Phase 12 — Frontend Scheduling Experience
 
-- [ ] **P12.1** Implement React Flow conflict graph node and edge components. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.2** Implement force-directed layout computation inside a Web Worker. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.3** Implement graph interactions: zoom, pan, search, neighbor highlighting, drawer inspectors. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.4** Implement original vs colored graph toggle with accessible text/slot legend. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.5** Implement visual node states (uncolored, colored, locked, selected, high-degree, invalid). `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.6** Implement graph metrics sidebar (|V|, |E|, degree distribution chart, density). `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.7** Optimize graph rendering for 500+ nodes (element virtualization, memoization). `[phase-12]` `[P1]` `[frontend]`
-- [ ] **P12.8** Implement graph rebuild action with staleness indicator and export buttons. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.9** Verify zero student PII appears in graph visualizer DOM. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.10** Implement Generate Schedule Page (F) with pre-flight checklist and algorithm picker. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.11** Implement pre-flight validation checklist component. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.12** Implement generation progress indicator, outcome display, and infeasibility report viewer. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.13** Implement interactive validation report viewer with links to conflicting exams. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.14** Implement save candidate action and optional DSATUR step-by-step trace viewer. `[phase-12]` `[P1]` `[frontend]`
-- [ ] **P12.15** Implement Algorithm Lab Page (G) side-by-side comparison table. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.16** Implement Recharts visualizations for color class distributions and runtime. `[phase-12]` `[P1]` `[frontend]`
-- [ ] **P12.17** Implement promote candidate action and comparison run history inspector. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.18** Implement algorithm benchmark view for DAA demonstration. `[phase-12]` `[P1]` `[frontend]`
-- [ ] **P12.19** Implement Timetable Calendar Grid Page (H) with date columns and session rows. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.20** Implement multi-scope timetable switching (Institution, Department, Program, Student). `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.21** Implement timetable search, filters, and version switcher. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.22** Implement print-friendly stylesheet (`@media print`) for timetable grid. `[phase-12]` `[P0]` `[frontend]`
-- [ ] **P12.23** Implement keyboard navigation and screen-reader accessibility for timetable cells. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.1** Implement React Flow conflict graph node and edge components. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.2** Implement force-directed layout computation inside a Web Worker. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.3** Implement graph interactions: zoom, pan, search, neighbor highlighting, drawer inspectors. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.4** Implement original vs colored graph toggle with accessible text/slot legend. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.5** Implement visual node states (uncolored, colored, locked, selected, high-degree, invalid). `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.6** Implement graph metrics sidebar (|V|, |E|, degree distribution chart, density). `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.7** Optimize graph rendering for 500+ nodes (element virtualization, memoization). `[phase-12]` `[P1]` `[frontend]`
+- [x] **P12.8** Implement graph rebuild action with staleness indicator and export buttons. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.9** Verify zero student PII appears in graph visualizer DOM. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.10** Implement Generate Schedule Page (F) with pre-flight checklist and algorithm picker. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.11** Implement pre-flight validation checklist component. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.12** Implement generation progress indicator, outcome display, and infeasibility report viewer. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.13** Implement interactive validation report viewer with links to conflicting exams. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.14** Implement save candidate action and optional DSATUR step-by-step trace viewer. `[phase-12]` `[P1]` `[frontend]`
+- [x] **P12.15** Implement Algorithm Lab Page (G) side-by-side comparison table. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.16** Implement Recharts visualizations for color class distributions and runtime. `[phase-12]` `[P1]` `[frontend]`
+- [x] **P12.17** Implement promote candidate action and comparison run history inspector. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.18** Implement algorithm benchmark view for DAA demonstration. `[phase-12]` `[P1]` `[frontend]`
+- [x] **P12.19** Implement Timetable Calendar Grid Page (H) with date columns and session rows. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.20** Implement multi-scope timetable switching (Institution, Department, Program, Student). `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.21** Implement timetable search, filters, and version switcher. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.22** Implement print-friendly stylesheet (`@media print`) for timetable grid. `[phase-12]` `[P0]` `[frontend]`
+- [x] **P12.23** Implement keyboard navigation and screen-reader accessibility for timetable cells. `[phase-12]` `[P0]` `[frontend]`
 
 ---
 
