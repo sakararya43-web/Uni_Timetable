@@ -319,7 +319,7 @@ export const LandingPage: React.FC = () => {
                   <span className="text-[var(--color-muted)] font-sans mr-1">Time:</span>
                   <select
                     value={selectedSession}
-                    onChange={(e) => setSelectedSession(e.target.value as any)}
+                    onChange={(e) => setSelectedSession(e.target.value as "all" | "morning" | "afternoon")}
                     className="px-2 py-1 text-xs border border-[var(--color-rule)] rounded bg-[var(--color-paper)] text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
                   >
                     <option value="all">All Sessions</option>

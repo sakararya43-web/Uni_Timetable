@@ -74,3 +74,4 @@ postgres_data/
 exports/
 temp/
 *.log
+.vercel/
