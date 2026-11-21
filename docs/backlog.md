@@ -124,21 +124,21 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 6. Phase 4 — CSV Import and Validation
 
-- [ ] **P4.1** Implement upload endpoints with preview (`?mode=preview`) and commit (`?mode=commit`). `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.2** Implement file safety guards: MIME sniffing, size limit, row limit, formula escaping. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.3** Implement CSV parsing with header normalization and alias resolution. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.4** Implement strict row-level validation for Students, Subjects, and Enrollments. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.5** Implement structured error report: row, field, value, error code, friendly suggestion. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.6** Implement preview summary payload with statistics and downloadable error CSV. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.7** Implement all-or-nothing transactional commit semantics. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.8** Implement upsert vs reject policies for duplicate records. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.9** Implement file hash idempotency check to warn on duplicate uploads. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.10** Invalidate downstream graph and schedule versions upon commit; return stale cycles. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.11** Implement batch expiration and preview cancellation. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.12** Enforce import dependency order: Subjects -> Students -> Enrollments. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.13** Optimize bulk database insertion via dictionaries and batch statements (avoid N+1). `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.14** Record audit entries for import preview, commit, cancel, and failure. `[phase-4]` `[P0]` `[backend]`
-- [ ] **P4.15** Provide downloadable CSV templates matching PRD specifications. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.1** Implement upload endpoints with preview (`?mode=preview`) and commit (`?mode=commit`). `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.2** Implement file safety guards: MIME sniffing, size limit, row limit, formula escaping. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.3** Implement CSV parsing with header normalization and alias resolution. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.4** Implement strict row-level validation for Students, Subjects, and Enrollments. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.5** Implement structured error report: row, field, value, error code, friendly suggestion. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.6** Implement preview summary payload with statistics and downloadable error CSV. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.7** Implement all-or-nothing transactional commit semantics. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.8** Implement upsert vs reject policies for duplicate records. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.9** Implement file hash idempotency check to warn on duplicate uploads. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.10** Invalidate downstream graph and schedule versions upon commit; return stale cycles. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.11** Implement batch expiration and preview cancellation. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.12** Enforce import dependency order: Subjects -> Students -> Enrollments. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.13** Optimize bulk database insertion via dictionaries and batch statements (avoid N+1). `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.14** Record audit entries for import preview, commit, cancel, and failure. `[phase-4]` `[P0]` `[backend]`
+- [x] **P4.15** Provide downloadable CSV templates matching PRD specifications. `[phase-4]` `[P0]` `[backend]`
 
 ---
 
