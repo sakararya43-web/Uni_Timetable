@@ -180,25 +180,25 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 9. Phase 7 — Graph Coloring Algorithms Suite
 
-- [ ] **P7.1** Define algorithm contracts, `ColoringResult`, and instrumentation interfaces. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.2** Implement input guards: detect self-loops, asymmetry, and contradictory precolors. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.3** Implement deterministic tie-breaking key `stable_key(vertex)`. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.4** Implement lightweight instrumentation metrics: vertex visits, color checks, wall runtime. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.5** Declare explicit algorithm version strings (`1.0.0`). `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.6** Implement **Greedy Coloring** algorithm. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.7** Support orderings: stable ID, degree descending, input order. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.8** Document Greedy time/space complexity. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.9** Implement **Welsh–Powell** algorithm as independent module. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.10** Document Welsh–Powell time/space complexity. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.11** Implement **DSATUR** algorithm (both linear scan and heap-based variants). `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.12** Implement optional step-by-step educational trace output for DSATUR. `[phase-7]` `[P1]` `[algorithm]`
-- [ ] **P7.13** Implement independent `validate_coloring` validator. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.14** Wire validator into all algorithm execution pathways; fail hard on invalid outputs. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.15** Implement coloring metrics module (class sizes, distribution, imbalance). `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.16** Implement precolored / locked vertex support across all three algorithms. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.17** Detect clashing precolored adjacent vertices with typed `LOCKED_CONFLICT` error. `[phase-7]` `[P0]` `[algorithm]`
-- [ ] **P7.18** Create benchmarking script `scripts/benchmark_algorithms.py`. `[phase-7]` `[P1]` `[tools]`
-- [ ] **P7.19** Implement verification test comparison against NetworkX reference oracle. `[phase-7]` `[P1]` `[algorithm]`
+- [x] **P7.1** Define algorithm contracts, `ColoringResult`, and instrumentation interfaces. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.2** Implement input guards: detect self-loops, asymmetry, and contradictory precolors. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.3** Implement deterministic tie-breaking key `stable_key(vertex)`. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.4** Implement lightweight instrumentation metrics: vertex visits, color checks, wall runtime. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.5** Declare explicit algorithm version strings (`1.0.0`). `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.6** Implement **Greedy Coloring** algorithm. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.7** Support orderings: stable ID, degree descending, input order. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.8** Document Greedy time/space complexity. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.9** Implement **Welsh–Powell** algorithm as independent module. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.10** Document Welsh–Powell time/space complexity. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.11** Implement **DSATUR** algorithm (both linear scan and heap-based variants). `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.12** Implement optional step-by-step educational trace output for DSATUR. `[phase-7]` `[P1]` `[algorithm]`
+- [x] **P7.13** Implement independent `validate_coloring` validator. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.14** Wire validator into all algorithm execution pathways; fail hard on invalid outputs. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.15** Implement coloring metrics module (class sizes, distribution, imbalance). `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.16** Implement precolored / locked vertex support across all three algorithms. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.17** Detect clashing precolored adjacent vertices with typed `LOCKED_CONFLICT` error. `[phase-7]` `[P0]` `[algorithm]`
+- [x] **P7.18** Create benchmarking script `scripts/benchmark_algorithms.py`. `[phase-7]` `[P1]` `[tools]`
+- [x] **P7.19** Implement verification test comparison against NetworkX reference oracle. `[phase-7]` `[P1]` `[algorithm]`
 
 ---
 

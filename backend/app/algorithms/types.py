@@ -94,3 +94,24 @@ class ValidationResult:
     total_vertices: int
     total_edges_checked: int
     error_message: str | None = None
+
+
+class ColoringException(Exception):
+    """Domain exception raised during graph coloring validation or execution."""
+
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+
+
+# Standardized Algorithm Version Constants (Task P7.5)
+GREEDY_VERSION = "1.0.0"
+WELSH_POWELL_VERSION = "1.0.0"
+DSATUR_VERSION = "1.0.0"
+
+
+def stable_key(v: Vertex) -> str:
+    """Deterministic tie-breaking sort key (PRD §12.4, Task P7.3)."""
+    return str(v)
+
