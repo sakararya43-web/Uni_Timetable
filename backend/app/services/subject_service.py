@@ -8,7 +8,8 @@ from app.api.deps import check_department_scope
 from app.middleware.error_handler import DomainException
 from app.models.academic import Department, Student, Subject
 from app.models.enums import AuditAction, EnrollmentStatus, EntityStatus, enum_val
-from app.models.scheduling import Enrollment
+from app.models.graph import ConflictGraphSnapshot
+from app.models.scheduling import Enrollment, Exam
 from app.models.user import User
 from app.schemas.student import StudentResponse
 from app.schemas.subject import SubjectCreate, SubjectResponse, SubjectUpdate
@@ -70,6 +71,25 @@ class SubjectService:
                 )
                 or 0
             )
+            deg_val: int | None = None
+            exam = db.scalar(
+                select(Exam)
+                .join(ConflictGraphSnapshot, ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id)
+                .where(Exam.subject_id == s.id)
+                .order_by(ConflictGraphSnapshot.version.desc())
+                .limit(1)
+            )
+            if exam:
+                snap = db.scalar(
+                    select(ConflictGraphSnapshot)
+                    .where(ConflictGraphSnapshot.scheduling_cycle_id == exam.scheduling_cycle_id)
+                    .order_by(ConflictGraphSnapshot.version.desc())
+                    .limit(1)
+                )
+                if snap and snap.graph_data_json:
+                    adj = snap.graph_data_json.get("adjacency", {})
+                    deg_val = len(adj.get(exam.id, []))
+
             resp = SubjectResponse(
                 id=s.id,
                 subject_code=s.subject_code,
@@ -84,7 +104,7 @@ class SubjectService:
                 restricted_dates=s.restricted_dates or [],
                 status=s.status,
                 enrollment_count=enr_count,
-                conflict_degree=None,
+                conflict_degree=deg_val,
                 scheduling_status=None,
             )
             subject_responses.append(resp)
@@ -109,6 +129,25 @@ class SubjectService:
             or 0
         )
 
+        deg_val: int | None = None
+        exam = db.scalar(
+            select(Exam)
+            .join(ConflictGraphSnapshot, ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id)
+            .where(Exam.subject_id == s.id)
+            .order_by(ConflictGraphSnapshot.version.desc())
+            .limit(1)
+        )
+        if exam:
+            snap = db.scalar(
+                select(ConflictGraphSnapshot)
+                .where(ConflictGraphSnapshot.scheduling_cycle_id == exam.scheduling_cycle_id)
+                .order_by(ConflictGraphSnapshot.version.desc())
+                .limit(1)
+            )
+            if snap and snap.graph_data_json:
+                adj = snap.graph_data_json.get("adjacency", {})
+                deg_val = len(adj.get(exam.id, []))
+
         return SubjectResponse(
             id=s.id,
             subject_code=s.subject_code,
@@ -123,7 +162,7 @@ class SubjectService:
             restricted_dates=s.restricted_dates or [],
             status=s.status,
             enrollment_count=enr_count,
-            conflict_degree=None,
+            conflict_degree=deg_val,
             scheduling_status=None,
         )
 

@@ -81,9 +81,13 @@ def require_role(*allowed_roles: RoleEnum) -> Callable[..., User]:
             if hasattr(current_user.role, "value")
             else str(current_user.role)
         )
-        allowed_str_set = {
-            r.value if hasattr(r, "value") else str(r) for r in allowed_roles
-        }
+        allowed_str_set: set[str] = set()
+        for r in allowed_roles:
+            if isinstance(r, (list, tuple, set)):
+                for item in r:
+                    allowed_str_set.add(item.value if hasattr(item, "value") else str(item))
+            else:
+                allowed_str_set.add(r.value if hasattr(r, "value") else str(r))
         if user_role_str not in allowed_str_set:
             req_id = request_id_ctx_var.get()
             audit_service.record(

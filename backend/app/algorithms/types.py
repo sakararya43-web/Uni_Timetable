@@ -15,6 +15,28 @@ EdgeWeights = dict[tuple[Vertex, Vertex], int]
 
 
 @dataclass
+class ConflictGraph:
+    """Pure in-memory conflict graph representation G = (V, E) (ADR-006, Task P6.1)."""
+
+    vertices: set[Vertex]
+    adjacency: AdjacencyList
+    edge_weights: EdgeWeights
+    vertex_metadata: dict[Vertex, dict[str, Any]]
+
+
+@dataclass
+class GraphValidationReport:
+    """Report produced by independent graph validator (PRD §11.6, Task P6.4)."""
+
+    is_valid: bool
+    errors: list[str]
+    warnings: list[str]
+    vertex_count_checked: int
+    edge_count_checked: int
+
+
+
+@dataclass
 class GraphMetrics:
     """Statistical summary of a conflict graph G=(V, E)."""
 

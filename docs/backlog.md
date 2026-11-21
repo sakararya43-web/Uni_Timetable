@@ -161,20 +161,20 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 8. Phase 6 — Conflict Graph Engine
 
-- [ ] **P6.1** Define pure graph data types in `algorithms/types.py`. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.2** Implement pure `build_conflict_graph` with $O(\sum k(k-1)/2)$ streaming builder. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.3** Enforce structural invariants: no self-loops, undirected symmetry, isolated node inclusion. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.4** Implement independent `validate_graph` cross-checking edges against raw enrollments. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.5** Implement `compute_stats`: degree distribution, components (iterative BFS), density, clique bound. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.6** Implement canonical SHA-256 enrollment hashing for staleness detection. `[phase-6]` `[P0]` `[algorithm]`
-- [ ] **P6.7** Implement `graph_service.build(cycle_id)` with efficient DB batch loading. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.8** Persist snapshot row and bulk-insert normalized `conflict_edges`. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.9** Implement idempotent no-op build when enrollment hash is unchanged. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.10** Implement `isStale` graph status detection and downstream publish blocking. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.11** Implement graph endpoints: build, query (PII-free), stats, export, and staff shared-student drilldown. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.12** Ensure snapshot immutability for referencing schedule runs. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.13** Update subject conflict degree attributes from latest snapshot. `[phase-6]` `[P0]` `[backend]`
-- [ ] **P6.14** Record audit entry for graph build. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.1** Define pure graph data types in `algorithms/types.py`. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.2** Implement pure `build_conflict_graph` with $O(\sum k(k-1)/2)$ streaming builder. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.3** Enforce structural invariants: no self-loops, undirected symmetry, isolated node inclusion. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.4** Implement independent `validate_graph` cross-checking edges against raw enrollments. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.5** Implement `compute_stats`: degree distribution, components (iterative BFS), density, clique bound. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.6** Implement canonical SHA-256 enrollment hashing for staleness detection. `[phase-6]` `[P0]` `[algorithm]`
+- [x] **P6.7** Implement `graph_service.build(cycle_id)` with efficient DB batch loading. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.8** Persist snapshot row and bulk-insert normalized `conflict_edges`. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.9** Implement idempotent no-op build when enrollment hash is unchanged. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.10** Implement `isStale` graph status detection and downstream publish blocking. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.11** Implement graph endpoints: build, query (PII-free), stats, export, and staff shared-student drilldown. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.12** Ensure snapshot immutability for referencing schedule runs. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.13** Update subject conflict degree attributes from latest snapshot. `[phase-6]` `[P0]` `[backend]`
+- [x] **P6.14** Record audit entry for graph build. `[phase-6]` `[P0]` `[backend]`
 
 ---
 
