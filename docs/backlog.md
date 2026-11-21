@@ -49,27 +49,27 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 3. Phase 1 — Scaffolding and Infrastructure
 
-- [ ] **P1.1** Initialize repository directory layout. `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.2** Add `.gitignore`, `.editorconfig`, `.env.example`. `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.3** Configure Python `pyproject.toml` with FastAPI, SQLAlchemy 2, Alembic, Pydantic v2, etc. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.4** Configure frontend with Vite, React, TypeScript strict, Tailwind CSS. `[phase-1]` `[P0]` `[frontend]`
-- [ ] **P1.5** Configure linting and pre-commit checks (`ruff`, `eslint`, `prettier`). `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.6** Create FastAPI application factory with CORS, `/api/v1` router, `/health` and `/ready`. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.7** Implement `config/settings.py` with Pydantic Settings for all environment variables. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.8** Implement `config/database.py` with engine, session factory, per-request dependency. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.9** Implement structured JSON logging and request-ID middleware. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.10** Implement central exception handlers for validation, domain, and unexpected errors. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.11** Configure OpenAPI/Swagger documentation generation. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.12** Configure Docker Compose for PostgreSQL development and test databases. `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.13** Initialize Alembic migration environment and verify migration lifecycle. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.14** Configure deterministic constraint naming conventions in SQLAlchemy `MetaData`. `[phase-1]` `[P0]` `[backend]`
-- [ ] **P1.15** Create frontend app shell, router, providers, and route placeholders for PRD §16.3. `[phase-1]` `[P0]` `[frontend]`
-- [ ] **P1.16** Implement API client module (`services/api.ts`) with error normalization. `[phase-1]` `[P0]` `[frontend]`
-- [ ] **P1.17** Configure Tailwind CSS with restrained neutral design tokens per PRD §16.1. `[phase-1]` `[P0]` `[frontend]`
-- [ ] **P1.18** Configure GitHub Actions CI workflow for backend and frontend test suites. `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.19** Configure dependency vulnerability audit checks (`pip-audit`, `npm audit`). `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.20** Create `docker-compose.dev.yml` for unified local development. `[phase-1]` `[P0]` `[infra]`
-- [ ] **P1.21** Author root `README.md` with quick-start instructions. `[phase-1]` `[P0]` `[docs]`
+- [x] **P1.1** Initialize repository directory layout. `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.2** Add `.gitignore`, `.editorconfig`, `.env.example`. `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.3** Configure Python `pyproject.toml` with FastAPI, SQLAlchemy 2, Alembic, Pydantic v2, etc. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.4** Configure frontend with Vite, React, TypeScript strict, Tailwind CSS. `[phase-1]` `[P0]` `[frontend]`
+- [x] **P1.5** Configure linting and pre-commit checks (`ruff`, `eslint`, `prettier`). `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.6** Create FastAPI application factory with CORS, `/api/v1` router, `/health` and `/ready`. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.7** Implement `config/settings.py` with Pydantic Settings for all environment variables. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.8** Implement `config/database.py` with engine, session factory, per-request dependency. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.9** Implement structured JSON logging and request-ID middleware. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.10** Implement central exception handlers for validation, domain, and unexpected errors. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.11** Configure OpenAPI/Swagger documentation generation. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.12** Configure Docker Compose for PostgreSQL development and test databases. `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.13** Initialize Alembic migration environment and verify migration lifecycle. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.14** Configure deterministic constraint naming conventions in SQLAlchemy `MetaData`. `[phase-1]` `[P0]` `[backend]`
+- [x] **P1.15** Create frontend app shell, router, providers, and route placeholders for PRD §16.3. `[phase-1]` `[P0]` `[frontend]`
+- [x] **P1.16** Implement API client module (`services/api.ts`) with error normalization. `[phase-1]` `[P0]` `[frontend]`
+- [x] **P1.17** Configure Tailwind CSS with restrained neutral design tokens per PRD §16.1. `[phase-1]` `[P0]` `[frontend]`
+- [x] **P1.18** Configure GitHub Actions CI workflow for backend and frontend test suites. `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.19** Configure dependency vulnerability audit checks (`pip-audit`, `npm audit`). `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.20** Create `docker-compose.dev.yml` for unified local development. `[phase-1]` `[P0]` `[infra]`
+- [x] **P1.21** Author root `README.md` with quick-start instructions. `[phase-1]` `[P0]` `[docs]`
 
 ---
 
