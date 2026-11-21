@@ -50,7 +50,7 @@ class SchedulingCycle(Base):
     data_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
 
     created_by: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False

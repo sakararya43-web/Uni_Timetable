@@ -11,6 +11,11 @@ from app.config.logging import setup_logging
 from app.config.settings import Settings, get_settings
 from app.middleware.error_handler import register_error_handlers
 from app.middleware.request_id import RequestIDMiddleware
+from app.middleware.security import (
+    IdempotencyMiddleware,
+    RateLimitMiddleware,
+    SecurityHeadersMiddleware,
+)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -35,8 +40,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/openapi.json" if docs_url else None,
     )
 
-    # Middlewares
+    # Middlewares (ordered: outer-most to inner-most)
+    app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(IdempotencyMiddleware)
+    app.add_middleware(RateLimitMiddleware, default_limit=200, window_seconds=60)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,

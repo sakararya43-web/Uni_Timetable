@@ -352,29 +352,29 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 16. Phase 14 — Security, Privacy, Reliability & Performance Hardening
 
-- [ ] **P14.1** Automated endpoint permission matrix introspection test. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.2** Configure HTTPS enforcement, HSTS, secure cookies, and CSP security headers. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.3** Implement rate limiting on auth, import, generation, and staff drilldown endpoints. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.4** Perform comprehensive input validation audit (Pydantic bounds, sort allowlists). `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.5** Secrets management audit: ensure zero secrets in logs, repo, or client builds. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.6** Configure container vulnerability scanning and non-root execution. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.7** Implement least-privilege PostgreSQL user roles for app and migrations. `[phase-14]` `[P1]` `[backend]`
-- [ ] **P14.8** Execute comprehensive security penetration test suite (broken auth, IDOR, formula injection). `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.9** Implement full error-code registry verification test asserting response shapes. `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.10** Execute data minimization audit ensuring zero student PII leakage in public views. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.11** Audit role-scoped filtering on all export pathways. `[phase-14]` `[P0]` `[security]`
-- [ ] **P14.12** Document data retention, cycle archival, and audit log policies. `[phase-14]` `[P0]` `[docs]`
-- [ ] **P14.13** Ensure all test seed and demo data is clearly labeled "SYNTHETIC". `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.14** Review all transactional boundaries across import, graph build, save, and publish. `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.15** Document and test PostgreSQL backup and restore procedure. `[phase-14]` `[P0]` `[ops]`
-- [ ] **P14.16** Implement idempotency guards against rapid double-click submissions. `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.17** Implement structured execution logging with request-ID propagation. `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.18** Verify graceful degradation and client retry handling for backend downtime. `[phase-14]` `[P0]` `[frontend]`
-- [ ] **P14.19** Implement synthetic dataset generator (500 exams, 15,000 enrollments). `[phase-14]` `[P0]` `[perf]`
-- [ ] **P14.20** Benchmark schedule generation against the 5-second target for 500 exams. `[phase-14]` `[P0]` `[perf]`
-- [ ] **P14.21** Verify database query performance and indexes using `EXPLAIN ANALYZE`. `[phase-14]` `[P0]` `[backend]`
-- [ ] **P14.22** Audit frontend bundle size, lazy loading, and Lighthouse performance scores. `[phase-14]` `[P1]` `[frontend]`
-- [ ] **P14.23** Document background worker task queue evolution architecture. `[phase-14]` `[P1]` `[docs]`
+- [x] **P14.1** Automated endpoint permission matrix introspection test. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.2** Configure HTTPS enforcement, HSTS, secure cookies, and CSP security headers. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.3** Implement rate limiting on auth, import, generation, and staff drilldown endpoints. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.4** Perform comprehensive input validation audit (Pydantic bounds, sort allowlists). `[phase-14]` `[P0]` `[security]`
+- [x] **P14.5** Secrets management audit: ensure zero secrets in logs, repo, or client builds. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.6** Configure container vulnerability scanning and non-root execution. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.7** Implement least-privilege PostgreSQL user roles for app and migrations. `[phase-14]` `[P1]` `[backend]`
+- [x] **P14.8** Execute comprehensive security penetration test suite (broken auth, IDOR, formula injection). `[phase-14]` `[P0]` `[security]`
+- [x] **P14.9** Implement full error-code registry verification test asserting response shapes. `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.10** Execute data minimization audit ensuring zero student PII leakage in public views. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.11** Audit role-scoped filtering on all export pathways. `[phase-14]` `[P0]` `[security]`
+- [x] **P14.12** Document data retention, cycle archival, and audit log policies. `[phase-14]` `[P0]` `[docs]`
+- [x] **P14.13** Ensure all test seed and demo data is clearly labeled "SYNTHETIC". `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.14** Review all transactional boundaries across import, graph build, save, and publish. `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.15** Document and test PostgreSQL backup and restore procedure. `[phase-14]` `[P0]` `[ops]`
+- [x] **P14.16** Implement idempotency guards against rapid double-click submissions. `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.17** Implement structured execution logging with request-ID propagation. `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.18** Verify graceful degradation and client retry handling for backend downtime. `[phase-14]` `[P0]` `[frontend]`
+- [x] **P14.19** Implement synthetic dataset generator (500 exams, 15,000 enrollments). `[phase-14]` `[P0]` `[perf]`
+- [x] **P14.20** Benchmark schedule generation against the 5-second target for 500 exams. `[phase-14]` `[P0]` `[perf]`
+- [x] **P14.21** Verify database query performance and indexes using `EXPLAIN ANALYZE`. `[phase-14]` `[P0]` `[backend]`
+- [x] **P14.22** Audit frontend bundle size, lazy loading, and Lighthouse performance scores. `[phase-14]` `[P1]` `[frontend]`
+- [x] **P14.23** Document background worker task queue evolution architecture. `[phase-14]` `[P1]` `[docs]`
 
 ---
 

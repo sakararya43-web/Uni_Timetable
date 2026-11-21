@@ -57,7 +57,7 @@ class ScheduleRun(Base):
     result_summary_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict, nullable=False)
 
     created_by: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
@@ -97,7 +97,7 @@ class ScheduleVersion(Base):
 
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     published_by: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
 
     validation_report_json: Mapped[dict[str, Any]] = mapped_column(
@@ -109,7 +109,7 @@ class ScheduleVersion(Base):
     row_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
 
     created_by: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False
