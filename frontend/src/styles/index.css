@@ -1,12 +1,35 @@
+/* Hallmark · shape: Registry · genre: editorial · theme: custom · job: attend · idea: "A collegiate academic registry for conflict-free examination scheduling powered by graph coloring algorithms." · vibe: "scholastic authoritative collegiate precision editorial"
+ * paper: oklch(97.2% 0.006 85) · accent: oklch(36% 0.15 260) · display: Marcellus · body: Public Sans · hero: stage header with real-time schedule preview ledger · nav: edge-aligned registry masthead · footer: collegiate colophon with governance links · imagery: live mathematical conflict graph and examination ledger · signature: interactive timetable and chromatic matrix
+ * axes: light/roman-serif/chromatic-blue · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: H, expanded hero with live faculty timetable switcher */
+@import url("./tokens.css");
+@import url("./base.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
+/* Hallmark Floor utility extensions */
+.hallmark-rule-double {
+  border-top: var(--rule-double) double var(--color-rule);
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
+.hallmark-rule-hairline {
+  border-top: var(--rule-hair) solid var(--color-rule);
+}
+
+.hallmark-focus-ring:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.font-inscriptional {
+  font-family: var(--font-display);
+}
+
+.font-grotesque {
+  font-family: var(--font-body);
+}
+
+.font-code {
+  font-family: var(--font-mono);
 }

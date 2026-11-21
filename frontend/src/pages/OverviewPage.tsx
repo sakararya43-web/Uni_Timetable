@@ -10,6 +10,7 @@ import {
   Upload,
   ArrowRight,
   ShieldCheck,
+  Globe,
 } from "lucide-react";
 import { api } from "../services/api";
 import { SchedulingCycle, CycleSummaryReport } from "../types/api";
@@ -88,30 +89,32 @@ export const OverviewPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner & Active Cycle Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white border border-slate-200 rounded-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white border border-[var(--color-rule)] rounded shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-slate-900">University Timetable Operations</h1>
+            <h1 className="font-display text-2xl font-normal text-[var(--color-ink)] tracking-tight">
+              University Timetable Operations
+            </h1>
             {activeCycle && (
               <Badge variant={cycleStatusVariants[activeCycle.status] || "default"}>
                 {activeCycle.status.toUpperCase()}
               </Badge>
             )}
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[var(--color-muted)] font-sans mt-0.5">
             Real-time conflict graph intelligence, coloring scheduling, and examination publications.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <label htmlFor="cycle-select" className="text-xs font-semibold text-slate-600 whitespace-nowrap">
-            Active Cycle:
+          <label htmlFor="cycle-select" className="text-xs font-mono text-[var(--color-muted)] whitespace-nowrap">
+            ACTIVE CYCLE:
           </label>
           <select
             id="cycle-select"
             value={selectedCycleId}
             onChange={(e) => setSelectedCycleId(e.target.value)}
-            className="px-3 py-1.5 text-xs font-medium bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-1.5 text-xs font-mono bg-[var(--color-paper)] border border-[var(--color-rule)] rounded focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] text-[var(--color-ink)]"
           >
             {cycles.map((c) => (
               <option key={c.id} value={c.id}>
@@ -119,6 +122,14 @@ export const OverviewPage: React.FC = () => {
               </option>
             ))}
           </select>
+          <Link
+            to="/"
+            className="px-3 py-1.5 text-xs font-mono text-[var(--color-accent)] border border-[var(--color-rule)] hover:border-[var(--color-accent)] rounded bg-[var(--color-paper)] flex items-center gap-1.5 transition-colors"
+            title="View Public Landing Page"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Public Portal</span>
+          </Link>
         </div>
       </div>
 
@@ -137,60 +148,60 @@ export const OverviewPage: React.FC = () => {
         <>
           {/* Key Performance Indicators Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Exams</span>
-                <BookOpen className="w-4 h-4 text-blue-500" />
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">EXAMS</span>
+                <BookOpen className="w-4 h-4 text-[var(--color-accent)]" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">{summary?.totalExams ?? 0}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Subjects: {summary?.totalSubjects ?? 0}</p>
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">{summary?.totalExams ?? 0}</p>
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">Subjects: {summary?.totalSubjects ?? 0}</p>
             </div>
 
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Students</span>
-                <Users className="w-4 h-4 text-indigo-500" />
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">STUDENTS</span>
+                <Users className="w-4 h-4 text-[var(--color-accent)]" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">{summary?.totalStudents ?? 0}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Enrollments: {summary?.totalEnrollments ?? 0}</p>
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">{summary?.totalStudents ?? 0}</p>
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">Enrollments: {summary?.totalEnrollments ?? 0}</p>
             </div>
 
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Graph Vertices</span>
-                <Network className="w-4 h-4 text-emerald-500" />
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">GRAPH VERTICES</span>
+                <Network className="w-4 h-4 text-emerald-600" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">{summary?.graphVertices ?? 0}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Edges: {summary?.graphEdges ?? 0}</p>
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">{summary?.graphVertices ?? 0}</p>
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">Edges: {summary?.graphEdges ?? 0}</p>
             </div>
 
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Avg Degree</span>
-                <Layers className="w-4 h-4 text-amber-500" />
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">AVG DEGREE</span>
+                <Layers className="w-4 h-4 text-amber-600" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">{summary?.averageDegree ?? 0.0}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Conflict Density</p>
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">{summary?.averageDegree ?? 0.0}</p>
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">Conflict Density</p>
             </div>
 
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Time Slots</span>
-                <Clock className="w-4 h-4 text-purple-500" />
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">TIME SLOTS</span>
+                <Clock className="w-4 h-4 text-[var(--color-accent)]" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">{summary?.totalSlots ?? 0}</p>
-              <p className="text-[11px] text-slate-400 mt-1">Slots Used: {summary?.slotsUsed ?? 0}</p>
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">{summary?.totalSlots ?? 0}</p>
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">Slots Used: {summary?.slotsUsed ?? 0}</p>
             </div>
 
-            <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase text-slate-500">Published</span>
+            <div className="p-4 bg-white border border-[var(--color-rule)] rounded shadow-sm">
+              <div className="flex items-center justify-between text-[var(--color-muted)] mb-2">
+                <span className="text-xs font-mono text-[var(--color-muted)]">PUBLISHED</span>
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
               </div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="font-mono text-2xl font-semibold text-[var(--color-ink)]">
                 {summary?.latestPublishedVersion ? `v${summary.latestPublishedVersion}` : "None"}
               </p>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] font-mono text-[var(--color-muted)] mt-1">
                 {summary?.latestPublishedAt ? new Date(summary.latestPublishedAt).toLocaleDateString() : "Draft mode"}
               </p>
             </div>
@@ -198,13 +209,13 @@ export const OverviewPage: React.FC = () => {
 
           {/* Quick Actions & Navigation Pathways */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col justify-between">
+            <div className="p-5 bg-white border border-[var(--color-rule)] rounded shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-slate-800 font-bold text-sm mb-1">
-                  <Upload className="w-4 h-4 text-blue-600" />
+                <div className="flex items-center gap-2 text-[var(--color-ink)] font-bold text-sm mb-1">
+                  <Upload className="w-4 h-4 text-[var(--color-accent)]" />
                   <span>Bulk Import Academic Data</span>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[var(--color-muted)] mb-4 font-sans leading-relaxed">
                   Upload CSV spreadsheets of subjects, registered students, and examination enrollments.
                 </p>
               </div>
@@ -218,13 +229,13 @@ export const OverviewPage: React.FC = () => {
               </Button>
             </div>
 
-            <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col justify-between">
+            <div className="p-5 bg-white border border-[var(--color-rule)] rounded shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-slate-800 font-bold text-sm mb-1">
+                <div className="flex items-center gap-2 text-[var(--color-ink)] font-bold text-sm mb-1">
                   <Network className="w-4 h-4 text-emerald-600" />
                   <span>Interactive Conflict Graph</span>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[var(--color-muted)] mb-4 font-sans leading-relaxed">
                   Inspect pairwise student examination conflicts, graph degree distribution, and clusters.
                 </p>
               </div>
@@ -235,13 +246,13 @@ export const OverviewPage: React.FC = () => {
               </Link>
             </div>
 
-            <div className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col justify-between">
+            <div className="p-5 bg-white border border-[var(--color-rule)] rounded shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-slate-800 font-bold text-sm mb-1">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
+                <div className="flex items-center gap-2 text-[var(--color-ink)] font-bold text-sm mb-1">
+                  <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
                   <span>Automated Timetable Generation</span>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[var(--color-muted)] mb-4 font-sans leading-relaxed">
                   Run DSATUR, Welsh–Powell, or Greedy algorithms to create clash-free candidate timetables.
                 </p>
               </div>

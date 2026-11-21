@@ -13,7 +13,9 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  GraduationCap
+  GraduationCap,
+  Globe,
+  ExternalLink,
 } from "lucide-react";
 
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -23,7 +25,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const isStudent = user?.role === "student";
 
   const staffNavItems = [
-    { label: "Overview", path: "/", icon: LayoutDashboard },
+    { label: "Overview", path: "/overview", icon: LayoutDashboard },
     { label: "Scheduling Cycles", path: "/cycles", icon: CalendarDays },
     { label: "Subjects", path: "/subjects", icon: BookOpen },
     { label: "Students & Enrollments", path: "/students", icon: Users },
@@ -43,34 +45,58 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   const navItems = isStudent ? studentNavItems : staffNavItems;
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="flex h-screen bg-[var(--color-paper)] text-[var(--color-ink)] font-sans">
       {/* Sidebar Navigation */}
-      <aside className="w-64 border-r border-slate-200 bg-white flex flex-col justify-between shrink-0">
+      <aside className="w-64 border-r border-[var(--color-rule)] bg-white flex flex-col justify-between shrink-0">
         <div>
           {/* Brand Header */}
-          <div className="h-16 flex items-center px-6 border-b border-slate-200">
-            <span className="font-semibold text-lg tracking-tight text-brand-600 flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-brand-600" />
-              <span>ExamScheduler</span>
-            </span>
+          <div className="h-16 flex items-center justify-between px-6 border-b border-[var(--color-rule)]">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded border border-[var(--color-ink)] flex items-center justify-center bg-[var(--color-paper-2)]">
+                <GraduationCap className="w-4 h-4 text-[var(--color-accent)]" />
+              </div>
+              <div>
+                <span className="font-display font-normal text-lg tracking-tight text-[var(--color-ink)] block leading-tight">
+                  ExamScheduler
+                </span>
+                <span className="text-[10px] font-mono text-[var(--color-muted)]">
+                  Academic Registry
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Quick Portal Switcher Banner */}
+          <div className="px-3 pt-3">
+            <Link
+              to="/"
+              className="flex items-center justify-between px-3 py-2 text-xs font-mono text-[var(--color-muted)] rounded border border-dashed border-[var(--color-rule)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)] bg-[var(--color-paper)] transition-colors"
+              title="Return to Public Landing & Schedule Portal"
+            >
+              <span className="flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+                <span>Public Portal</span>
+              </span>
+              <ExternalLink className="w-3 h-3 text-[var(--color-muted)]" />
+            </Link>
           </div>
 
           {/* Navigation Links */}
           <nav className="p-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname === item.path || (item.path === "/overview" && location.pathname === "/");
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2 text-xs font-medium rounded transition-colors ${
                     isActive
-                      ? "bg-brand-50 text-brand-700"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-[var(--color-paper-2)] text-[var(--color-accent)] border-l-2 border-[var(--color-accent)] font-semibold"
+                      : "text-[var(--color-ink-2)] hover:bg-[var(--color-paper)] hover:text-[var(--color-ink)]"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-brand-600" : "text-slate-400"}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? "text-[var(--color-accent)]" : "text-[var(--color-muted)]"}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -79,18 +105,20 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
         </div>
 
         {/* User Session Footer */}
-        <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-[var(--color-rule)] bg-[var(--color-paper)]">
           <div className="flex items-center justify-between">
             <div className="overflow-hidden mr-2">
-              <p className="text-sm font-medium text-slate-800 truncate">
-                {user?.fullName || "Staff User"}
+              <p className="text-xs font-medium text-[var(--color-ink)] truncate font-sans">
+                {user?.fullName || "Staff Registrar"}
               </p>
-              <p className="text-xs text-slate-500 capitalize">{user?.role || "Administrator"}</p>
+              <p className="text-[11px] text-[var(--color-muted)] font-mono capitalize">
+                {user?.role || "Administrator"}
+              </p>
             </div>
             <button
               onClick={() => logout()}
               title="Sign Out"
-              className="p-1.5 text-slate-400 hover:text-rose-600 rounded hover:bg-slate-100 transition-colors"
+              className="p-1.5 text-[var(--color-muted)] hover:text-[var(--color-error)] rounded hover:bg-white transition-colors"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -101,24 +129,31 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
       {/* Main Content Viewport */}
       <main className="flex-1 overflow-y-auto flex flex-col">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-slate-200 bg-white px-8 flex items-center justify-between shrink-0">
-          <div className="text-sm text-slate-500">
-            <span>University Examination System</span>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-slate-800">
-              {navItems.find((item) => item.path === location.pathname)?.label || "Dashboard"}
+        <header className="h-16 border-b border-[var(--color-rule)] bg-white px-8 flex items-center justify-between shrink-0">
+          <div className="text-xs text-[var(--color-muted)] font-mono flex items-center gap-2">
+            <span>University Registry</span>
+            <span>/</span>
+            <span className="font-semibold text-[var(--color-ink)] font-sans">
+              {navItems.find((item) => item.path === location.pathname)?.label || "Operations"}
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <div className="flex items-center gap-4">
+            <Link
+              to="/"
+              className="text-xs font-mono text-[var(--color-muted)] hover:text-[var(--color-accent)] flex items-center gap-1 transition-colors"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Landing Page</span>
+            </Link>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
               System Ready
             </span>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-8">{children}</div>
+        <div className="flex-1 p-8 bg-[var(--color-paper)]">{children}</div>
       </main>
     </div>
   );

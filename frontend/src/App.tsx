@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { AppLayout } from "./components/layout/AppLayout";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 
+import { LandingPage } from "./pages/LandingPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { CyclesPage } from "./pages/CyclesPage";
 import { SubjectsPage } from "./pages/SubjectsPage";
@@ -36,107 +37,112 @@ export const App: React.FC = () => {
         <BrowserRouter>
           <ErrorBoundary>
             <Routes>
-            <Route path="/login" element={<LoginPage />} />
+              {/* Public Collegiate Landing Page */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/landing" element={<LandingPage />} />
 
-            {/* Application Main Layout Routes */}
-            <Route
-              path="/"
-              element={
-                <AppLayout>
-                  <OverviewPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/cycles"
-              element={
-                <AppLayout>
-                  <CyclesPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/subjects"
-              element={
-                <AppLayout>
-                  <SubjectsPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/students"
-              element={
-                <AppLayout>
-                  <StudentsPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/graph"
-              element={
-                <AppLayout>
-                  <GraphPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/generate"
-              element={
-                <AppLayout>
-                  <GeneratePage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/lab"
-              element={
-                <AppLayout>
-                  <AlgorithmLabPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/timetable"
-              element={
-                <AppLayout>
-                  <TimetablePage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/student/timetable"
-              element={
-                <AppLayout>
-                  <StudentTimetablePage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/student/info"
-              element={<Navigate to="/student/timetable" replace />}
-            />
-            <Route
-              path="/reports"
-              element={
-                <AppLayout>
-                  <ReportsPage />
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <AppLayout>
-                  <SettingsPage />
-                </AppLayout>
-              }
-            />
+              {/* Staff Authentication */}
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* 404 Fallback */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </ErrorBoundary>
-      </BrowserRouter>
+              {/* Application Main Layout Routes */}
+              <Route
+                path="/overview"
+                element={
+                  <AppLayout>
+                    <OverviewPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/cycles"
+                element={
+                  <AppLayout>
+                    <CyclesPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/subjects"
+                element={
+                  <AppLayout>
+                    <SubjectsPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <AppLayout>
+                    <StudentsPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/graph"
+                element={
+                  <AppLayout>
+                    <GraphPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/generate"
+                element={
+                  <AppLayout>
+                    <GeneratePage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/lab"
+                element={
+                  <AppLayout>
+                    <AlgorithmLabPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/timetable"
+                element={
+                  <AppLayout>
+                    <TimetablePage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/student/timetable"
+                element={
+                  <AppLayout>
+                    <StudentTimetablePage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/student/info"
+                element={<Navigate to="/student/timetable" replace />}
+              />
+              <Route
+                path="/reports"
+                element={
+                  <AppLayout>
+                    <ReportsPage />
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <AppLayout>
+                    <SettingsPage />
+                  </AppLayout>
+                }
+              />
+
+              {/* 404 Fallback */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </ErrorBoundary>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   );
