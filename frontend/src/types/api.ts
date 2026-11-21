@@ -150,8 +150,17 @@ export interface ScheduleVersionSummary {
   createdAt: string;
 }
 
+export interface EditHistoryItem {
+  id: string;
+  action: string;
+  actorId?: string | null;
+  createdAt: string;
+  details?: Record<string, unknown> | null;
+}
+
 export interface ExamAssignmentItem {
   id: string;
+  scheduleVersionId?: string;
   examId: string;
   subjectCode: string;
   subjectName: string;
@@ -160,9 +169,13 @@ export interface ExamAssignmentItem {
   slotDate: string;
   startTime: string;
   endTime: string;
+  slotStartTime?: string;
+  slotEndTime?: string;
+  slotDurationMinutes?: number;
+  slotIndex?: number;
   sessionLabel: string;
   durationMinutes: number;
-  studentCount: number;
+  studentCount?: number;
   colorId: number;
   locked: boolean;
   manualOverride: boolean;
@@ -170,6 +183,7 @@ export interface ExamAssignmentItem {
 
 export interface ScheduleVersionDetail extends ScheduleVersionSummary {
   assignments: ExamAssignmentItem[];
+  editHistory?: EditHistoryItem[];
   validationReport: {
     valid: boolean;
     hardViolations: Array<{

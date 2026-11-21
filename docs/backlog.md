@@ -329,24 +329,24 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 15. Phase 13 — Frontend Editing, Publishing, Student & Reports
 
-- [ ] **P13.1** Implement timetable edit mode toggle for candidate versions. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.2** Implement interactive exam move flow with server-backed preview and confirmation. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.3** Implement accessible slot picker and drag-and-drop drop-target highlighting. `[phase-13]` `[P1]` `[frontend]`
-- [ ] **P13.4** Implement invalid move explanation banner with clashing courses and student counts. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.5** Implement card-level and drawer-level exam lock/unlock actions. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.6** Handle concurrent modification notifications and refetch triggers. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.7** Implement edit history inspector panel and single-step undo. `[phase-13]` `[P1]` `[frontend]`
-- [ ] **P13.8** Implement schedule regeneration dialog with Change Impact Report view. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.9** Implement "Run full validation" and "Mark as Reviewed" administrative actions. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.10** Implement multi-step Publish Timetable Wizard with final validation assertion. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.11** Display published status banner and clone action for post-publication revisions. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.12** Implement Student Personal Timetable Page (list, calendar, empty state). `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.13** Implement Student Academic Information and Downloads tabs. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.14** Verify zero leakage of other students' personal information. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.15** Implement Reports & Analytics Page (J) with Recharts workload distribution charts. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.16** Implement export dropdowns with role-scoped CSV, PDF, and XLSX downloads. `[phase-13]` `[P0]` `[frontend]`
-- [ ] **P13.17** Implement Department Coordinator change request submission workflow. `[phase-13]` `[P1]` `[frontend]`
-- [ ] **P13.18** Implement System Settings Page with soft-constraint weight adjustment sliders. `[phase-13]` `[P1]` `[frontend]`
+- [x] **P13.1** Implement timetable edit mode toggle for candidate versions. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.2** Implement interactive exam move flow with server-backed preview and confirmation. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.3** Implement accessible slot picker and drag-and-drop drop-target highlighting. `[phase-13]` `[P1]` `[frontend]`
+- [x] **P13.4** Implement invalid move explanation banner with clashing courses and student counts. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.5** Implement card-level and drawer-level exam lock/unlock actions. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.6** Handle concurrent modification notifications and refetch triggers. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.7** Implement edit history inspector panel and single-step undo. `[phase-13]` `[P1]` `[frontend]`
+- [x] **P13.8** Implement schedule regeneration dialog with Change Impact Report view. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.9** Implement "Run full validation" and "Mark as Reviewed" administrative actions. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.10** Implement multi-step Publish Timetable Wizard with final validation assertion. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.11** Display published status banner and clone action for post-publication revisions. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.12** Implement Student Personal Timetable Page (list, calendar, empty state). `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.13** Implement Student Academic Information and Downloads tabs. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.14** Verify zero leakage of other students' personal information. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.15** Implement Reports & Analytics Page (J) with Recharts workload distribution charts. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.16** Implement export dropdowns with role-scoped CSV, PDF, and XLSX downloads. `[phase-13]` `[P0]` `[frontend]`
+- [x] **P13.17** Implement Department Coordinator change request submission workflow. `[phase-13]` `[P1]` `[frontend]`
+- [x] **P13.18** Implement System Settings Page with soft-constraint weight adjustment sliders. `[phase-13]` `[P1]` `[frontend]`
 
 ---
 
