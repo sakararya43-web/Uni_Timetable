@@ -8,7 +8,9 @@ import {
   MapPin,
   Search,
   ArrowRight,
+  BookOpen,
 } from "lucide-react";
+import { QuickGuideBox } from "../components/common/QuickGuideBox";
 
 interface ScheduleSample {
   code: string;
@@ -173,6 +175,12 @@ export const LandingPage: React.FC = () => {
 
           {/* Institutional Primary Navigation */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-sans text-[var(--color-ink-2)]" aria-label="Main Navigation">
+            <a
+              href="#how-to-use"
+              className="hover:text-[var(--color-accent)] transition-colors py-1 border-b border-transparent hover:border-[var(--color-accent)] flex items-center gap-1.5"
+            >
+              <span>How It Works</span>
+            </a>
             <Link
               to="/overview"
               className="hover:text-[var(--color-accent)] transition-colors py-1 border-b border-transparent hover:border-[var(--color-accent)]"
@@ -256,8 +264,15 @@ export const LandingPage: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <a
+                  href="#how-to-use"
+                  className="px-5 py-3 border border-[var(--color-ink)] text-[var(--color-ink)] text-sm font-medium rounded hover:bg-[var(--color-paper-2)] transition-colors whitespace-nowrap flex items-center gap-2"
+                >
+                  <BookOpen className="w-4 h-4 text-[var(--color-accent)]" />
+                  <span>How to use</span>
+                </a>
+                <a
                   href="#schedule-ledger"
-                  className="px-5 py-3 border border-[var(--color-ink)] text-[var(--color-ink)] text-sm font-medium rounded hover:bg-[var(--color-paper-2)] transition-colors whitespace-nowrap"
+                  className="px-5 py-3 border border-[var(--color-rule)] text-[var(--color-ink)] text-sm font-medium rounded hover:bg-[var(--color-paper-2)] transition-colors whitespace-nowrap"
                 >
                   Inspect master ledger
                 </a>
@@ -387,6 +402,19 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 2.5 Quick Non-Technical User Guide */}
+      <section className="py-12 border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
+        <div className="max-w-[1360px] mx-auto px-6 lg:px-12">
+          <QuickGuideBox
+            id="how-to-use"
+            onSelectSampleStudent={(roll) => {
+              setStudentSearchId(roll);
+              setSearchedStudent(roll);
+            }}
+          />
         </div>
       </section>
 
@@ -535,7 +563,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* 5. Instant Student Seat & Schedule Lookup */}
-      <section className="py-20 border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
+      <section id="student-lookup" className="py-20 border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
         <div className="max-w-[1360px] mx-auto px-6 lg:px-12 space-y-10">
           <div className="max-w-[640px] space-y-2">
             <span className="text-xs font-sans text-[var(--color-muted)] border-b border-[var(--color-rule)] pb-0.5">

@@ -17,6 +17,7 @@ import { SchedulingCycle, CycleSummaryReport } from "../types/api";
 import { Badge, BadgeVariant } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { StaleDataBanner } from "../components/common/StaleDataBanner";
+import { QuickGuideBox } from "../components/common/QuickGuideBox";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
 import { ImportWizardModal } from "../components/imports/ImportWizardModal";
 
@@ -141,6 +142,13 @@ export const OverviewPage: React.FC = () => {
           isRebuilding={isRebuilding}
         />
       )}
+
+      {/* Non-Technical Quick Guide Callout (Collapsible) */}
+      <QuickGuideBox
+        variant="compact"
+        defaultExpanded={false}
+        id="operations-guide"
+      />
 
       {isLoading ? (
         <LoadingSkeleton rows={4} />
