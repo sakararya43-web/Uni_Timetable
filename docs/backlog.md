@@ -144,18 +144,18 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 7. Phase 5 — Scheduling Cycles and Slot Generation
 
-- [ ] **P5.1** Scheduling cycle CRUD with legal status state machine. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.2** Cycle configuration schema: dates, active weekdays, sessions, holidays, durations. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.3** Configuration validation rules: no overlapping sessions, valid calendar ranges. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.4** Cycle scope synchronization: populate `exams` from active subjects. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.5** Support per-exam overrides: duration, preferred dates, restricted dates. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.6** Implement pure calendar slot generation function `slot_service.generate_slots`. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.7** Apply special date restrictions and session disables. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.8** Deterministic slot indexing by calendar date and session start time. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.9** Slot regeneration endpoint with slot ID stability for unchanged slots. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.10** Implement `GET /cycles/{id}/slots` with date and session filtering. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.11** Capacity summary endpoint with chromatic lower-bound feasibility pre-check. `[phase-5]` `[P0]` `[backend]`
-- [ ] **P5.12** Duration compatibility validator: flag exams longer than every available slot. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.1** Scheduling cycle CRUD with legal status state machine. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.2** Cycle configuration schema: dates, active weekdays, sessions, holidays, durations. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.3** Configuration validation rules: no overlapping sessions, valid calendar ranges. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.4** Cycle scope synchronization: populate `exams` from active subjects. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.5** Support per-exam overrides: duration, preferred dates, restricted dates. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.6** Implement pure calendar slot generation function `slot_service.generate_slots`. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.7** Apply special date restrictions and session disables. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.8** Deterministic slot indexing by calendar date and session start time. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.9** Slot regeneration endpoint with slot ID stability for unchanged slots. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.10** Implement `GET /cycles/{id}/slots` with date and session filtering. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.11** Capacity summary endpoint with chromatic lower-bound feasibility pre-check. `[phase-5]` `[P0]` `[backend]`
+- [x] **P5.12** Duration compatibility validator: flag exams longer than every available slot. `[phase-5]` `[P0]` `[backend]`
 
 ---
 
