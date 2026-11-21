@@ -8,6 +8,7 @@ from sqlalchemy import engine_from_config, pool
 # Ensure backend root is on sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+import app.models  # noqa: F401 - ensure all models are registered in Base.metadata
 from app.config.database import Base
 from app.config.settings import get_settings
 

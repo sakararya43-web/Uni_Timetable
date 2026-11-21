@@ -75,28 +75,28 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 4. Phase 2 — Data Model, Authentication, Authorization, Audit
 
-- [ ] **P2.1** Implement SQLAlchemy models and initial Alembic migration for all 16 core PRD tables. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.2** Add supporting tables: `programs`, `import_batches`, `subject_date_preferences`, failed login tracking. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.3** Configure all database integrity constraints (uniqueness, checks, foreign keys). `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.4** Configure database indexes on foreign keys, lookups, and audit trails. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.5** Implement soft-delete and archive status transitions. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.6** Enforce published schedule immutability in service layer and database guards. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.7** Implement password hashing via Argon2id. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.8** Implement `POST /auth/login` endpoint with secure cookie and bearer support. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.9** Implement `POST /auth/logout` endpoint. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.10** Implement `GET /auth/me` returning authenticated user profile and roles. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.11** Implement brute-force protection (lockout after failures, rate limits). `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.12** Implement CSRF protection for cookie-based authentication. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.13** Create CLI command to seed the initial Administrator user from environment variables. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.14** Implement role enum: `admin`, `coordinator`, `faculty`, `student`. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.15** Implement permission matrix module encoding PRD §7 table as backend dependency. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.16** Implement department scoping query filters for coordinators and faculty. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.17** Implement student self-access guard restricting students to their own linked record. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.18** Implement standardized access-denied handling (401 vs 403) and security audits. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.19** Implement user management CRUD endpoints for administrators (`/users`). `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.20** Implement `audit_service.record(...)` for transparent audit logging. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.21** Implement payload redaction utility for passwords and PII before audit logging. `[phase-2]` `[P0]` `[backend]`
-- [ ] **P2.22** Define complete audit action catalogue enum. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.1** Implement SQLAlchemy models and initial Alembic migration for all 16 core PRD tables. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.2** Add supporting tables: `programs`, `import_batches`, `subject_date_preferences`, failed login tracking. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.3** Configure all database integrity constraints (uniqueness, checks, foreign keys). `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.4** Configure database indexes on foreign keys, lookups, and audit trails. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.5** Implement soft-delete and archive status transitions. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.6** Enforce published schedule immutability in service layer and database guards. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.7** Implement password hashing via Argon2id. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.8** Implement `POST /auth/login` endpoint with secure cookie and bearer support. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.9** Implement `POST /auth/logout` endpoint. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.10** Implement `GET /auth/me` returning authenticated user profile and roles. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.11** Implement brute-force protection (lockout after failures, rate limits). `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.12** Implement CSRF protection for cookie-based authentication. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.13** Create CLI command to seed the initial Administrator user from environment variables. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.14** Implement role enum: `admin`, `coordinator`, `faculty`, `student`. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.15** Implement permission matrix module encoding PRD §7 table as backend dependency. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.16** Implement department scoping query filters for coordinators and faculty. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.17** Implement student self-access guard restricting students to their own linked record. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.18** Implement standardized access-denied handling (401 vs 403) and security audits. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.19** Implement user management CRUD endpoints for administrators (`/users`). `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.20** Implement `audit_service.record(...)` for transparent audit logging. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.21** Implement payload redaction utility for passwords and PII before audit logging. `[phase-2]` `[P0]` `[backend]`
+- [x] **P2.22** Define complete audit action catalogue enum. `[phase-2]` `[P0]` `[backend]`
 
 ---
 
