@@ -34,6 +34,7 @@ class ExamInfo:
     preferred_dates: list[str]
     restricted_dates: list[str]
     locked_slot_id: str | None = None
+    prior_slot_id: str | None = None
 
 
 @dataclass
@@ -190,16 +191,23 @@ def map_colors_to_slots(
                 continue
             eligible_for_c.append(s)
 
-        # Quality sorting: prefer slots on preferred dates, then earlier slots (P8.3)
+        # Quality sorting: prefer prior slots (disruption minimization), preferred dates, then earlier slots (P8.3, P9.17)
         preferred_dates: set[str] = set()
+        prior_slots: set[str] = set()
         for e in class_exams:
             preferred_dates.update(e.preferred_dates)
+            if e.prior_slot_id:
+                prior_slots.add(e.prior_slot_id)
 
         pref_set = set(preferred_dates)
+        prior_set = set(prior_slots)
 
-        def slot_preference_key(s: SlotInfo, _pref: set[str] = pref_set) -> tuple[int, int, str]:
+        def slot_preference_key(
+            s: SlotInfo, _pref: set[str] = pref_set, _priors: set[str] = prior_set
+        ) -> tuple[int, int, int, str]:
+            prior_match = 0 if s.id in _priors else 1
             is_pref = 0 if str(s.date) in _pref else 1
-            return (is_pref, s.slot_index, s.start_time)
+            return (prior_match, is_pref, s.slot_index, s.start_time)
 
         eligible_for_c.sort(key=slot_preference_key)
         eligibility_graph[c_id] = [s.id for s in eligible_for_c]

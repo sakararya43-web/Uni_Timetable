@@ -230,27 +230,27 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 11. Phase 9 — Schedule Versions, Manual Editing, Locking, Regeneration
 
-- [ ] **P9.1** Implement schedule version query endpoints (`/schedules`). `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.2** Enforce candidate editability vs published immutability; implement `/clone`. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.3** Record assignment edit history and audit trails for manual revisions. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.4** Implement `POST /schedules/{id}/archive`. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.5** Implement dry-run `POST /schedules/{id}/assignments/{aid}/preview-move`. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.6** Implement validated `PATCH /schedules/{id}/assignments/{aid}` with `manual_override = true`. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.7** Implement incremental move validation returning conflicting exams and student counts. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.8** Return structured HTTP 409/422 on invalid moves without persisting data. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.9** Implement atomic slot swap endpoint for two examinations. `[phase-9]` `[P1]` `[backend]`
-- [ ] **P9.10** Implement optimistic concurrency locking via `row_version` / `updated_at`. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.11** Re-validate entire schedule and update soft scores after every edit. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.12** Implement `POST .../lock` and `POST .../unlock` endpoints for exam locks. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.13** Reject manual moves of locked exams with `EXAM_LOCKED` error. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.14** Implement bulk lock/unlock by calendar date or session. `[phase-9]` `[P1]` `[backend]`
-- [ ] **P9.15** Implement lock-set compatibility validation endpoint. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.16** Implement `POST /schedules/{id}/regenerate` with disruption minimization. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.17** Implement regeneration algorithm respecting precolored locked exams. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.18** Persist regenerated output as a new `Candidate` version. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.19** Implement Change Impact Report endpoint comparing old vs new version. `[phase-9]` `[P1]` `[backend]`
-- [ ] **P9.20** Handle enrollment data staleness during regeneration by auto-rebuilding graph if confirmed. `[phase-9]` `[P0]` `[backend]`
-- [ ] **P9.21** Implement repair mode for unassigned or newly conflicting exams. `[phase-9]` `[P1]` `[backend]`
+- [x] **P9.1** Implement schedule version query endpoints (`/schedules`). `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.2** Enforce candidate editability vs published immutability; implement `/clone`. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.3** Record assignment edit history and audit trails for manual revisions. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.4** Implement `POST /schedules/{id}/archive`. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.5** Implement dry-run `POST /schedules/{id}/assignments/{aid}/preview-move`. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.6** Implement validated `PATCH /schedules/{id}/assignments/{aid}` with `manual_override = true`. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.7** Implement incremental move validation returning conflicting exams and student counts. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.8** Return structured HTTP 409/422 on invalid moves without persisting data. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.9** Implement atomic slot swap endpoint for two examinations. `[phase-9]` `[P1]` `[backend]`
+- [x] **P9.10** Implement optimistic concurrency locking via `row_version` / `updated_at`. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.11** Re-validate entire schedule and update soft scores after every edit. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.12** Implement `POST .../lock` and `POST .../unlock` endpoints for exam locks. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.13** Reject manual moves of locked exams with `EXAM_LOCKED` error. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.14** Implement bulk lock/unlock by calendar date or session. `[phase-9]` `[P1]` `[backend]`
+- [x] **P9.15** Implement lock-set compatibility validation endpoint. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.16** Implement `POST /schedules/{id}/regenerate` with disruption minimization. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.17** Implement regeneration algorithm respecting precolored locked exams. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.18** Persist regenerated output as a new `Candidate` version. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.19** Implement Change Impact Report endpoint comparing old vs new version. `[phase-9]` `[P1]` `[backend]`
+- [x] **P9.20** Handle enrollment data staleness during regeneration by auto-rebuilding graph if confirmed. `[phase-9]` `[P0]` `[backend]`
+- [x] **P9.21** Implement repair mode for unassigned or newly conflicting exams. `[phase-9]` `[P1]` `[backend]`
 
 ---
 
