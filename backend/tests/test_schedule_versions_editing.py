@@ -3,7 +3,6 @@
 PRD §15, §17.14, §17.15, §18.7, §26.4, Tasks P9.1 - P9.21.
 """
 
-
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -15,7 +14,9 @@ from tests.conftest import make_auth_user
 from tests.test_scheduling_engine import setup_schedule_cycle_base
 
 
-def setup_version_test_fixture(db: Session, headers: dict[str, str], client: TestClient) -> tuple[SchedulingCycle, ScheduleVersion, list[TimeSlot]]:
+def setup_version_test_fixture(
+    db: Session, headers: dict[str, str], client: TestClient
+) -> tuple[SchedulingCycle, ScheduleVersion, list[TimeSlot]]:
     """Creates cycle, subjects, enrollments, slots, builds graph, runs DSATUR and saves candidate."""
     cycle, _, _ = setup_schedule_cycle_base(db, headers, client)
 
@@ -115,11 +116,15 @@ def test_version_archive(client: TestClient, db_session: Session):
 
     # Mutations on archived schedule are rejected
     aid = ver.assignments[0].id
-    resp_lock = client.post(f"/api/v1/schedules/{ver.id}/assignments/{aid}/lock", headers=admin_headers)
+    resp_lock = client.post(
+        f"/api/v1/schedules/{ver.id}/assignments/{aid}/lock", headers=admin_headers
+    )
     assert resp_lock.status_code == 409
 
 
-def test_preview_assignment_move_and_incremental_validation(client: TestClient, db_session: Session):
+def test_preview_assignment_move_and_incremental_validation(
+    client: TestClient, db_session: Session
+):
     """Verifies dry-run preview move with student conflict analysis and soft penalty delta (P9.5, P9.7)."""
     _, admin_headers = make_auth_user(db_session, role="admin", email="vprev_admin@univ.edu")
     _, ver, _ = setup_version_test_fixture(db_session, admin_headers, client)
@@ -145,7 +150,9 @@ def test_preview_assignment_move_and_incremental_validation(client: TestClient, 
     assert any((c.get("subjectCode") or c.get("subject_code")) == "EE102" for c in conflicts)
 
 
-def test_move_assignment_conflict_rejection_and_no_persistence(client: TestClient, db_session: Session):
+def test_move_assignment_conflict_rejection_and_no_persistence(
+    client: TestClient, db_session: Session
+):
     """Verifies that an invalid move is rejected with 422 and nothing is persisted (P9.6, P9.8)."""
     _, admin_headers = make_auth_user(db_session, role="admin", email="vmove_fail_admin@univ.edu")
     _, ver, _ = setup_version_test_fixture(db_session, admin_headers, client)
@@ -190,7 +197,9 @@ def test_move_assignment_success_and_audit(client: TestClient, db_session: Sessi
     updated_data = resp_move.json()
 
     # Verify row_version bumped
-    assert (updated_data.get("rowVersion") or updated_data.get("row_version")) == initial_row_version + 1
+    assert (
+        updated_data.get("rowVersion") or updated_data.get("row_version")
+    ) == initial_row_version + 1
 
     # Verify assignment has manualOverride = true
     updated_a = next(a for a in updated_data["assignments"] if a["id"] == a_target.id)
@@ -205,7 +214,9 @@ def test_locked_exam_move_rejected(client: TestClient, db_session: Session):
 
     a_target = ver.assignments[0]
     # 1. Lock the assignment
-    resp_lock = client.post(f"/api/v1/schedules/{ver.id}/assignments/{a_target.id}/lock", headers=admin_headers)
+    resp_lock = client.post(
+        f"/api/v1/schedules/{ver.id}/assignments/{a_target.id}/lock", headers=admin_headers
+    )
     assert resp_lock.status_code == 200
 
     # 2. Attempt to move locked assignment -> rejected with 409 EXAM_LOCKED
@@ -220,7 +231,9 @@ def test_locked_exam_move_rejected(client: TestClient, db_session: Session):
     assert "EXAM_LOCKED" in resp_move.text
 
     # 3. Unlock assignment -> move now succeeds
-    resp_unlock = client.post(f"/api/v1/schedules/{ver.id}/assignments/{a_target.id}/unlock", headers=admin_headers)
+    resp_unlock = client.post(
+        f"/api/v1/schedules/{ver.id}/assignments/{a_target.id}/unlock", headers=admin_headers
+    )
     assert resp_unlock.status_code == 200
 
     resp_move2 = client.patch(
@@ -340,12 +353,16 @@ def test_regeneration_with_locked_exams_and_impact_report(client: TestClient, db
     assert (ver2_data.get("versionNumber") or ver2_data.get("version_number")) == 2
 
     # Verify locked exam preserved in exact slot
-    ver2_a1 = next(a for a in ver2_data["assignments"] if (a.get("examId") or a.get("exam_id")) == a1.exam_id)
+    ver2_a1 = next(
+        a for a in ver2_data["assignments"] if (a.get("examId") or a.get("exam_id")) == a1.exam_id
+    )
     assert (ver2_a1.get("timeSlotId") or ver2_a1.get("time_slot_id")) == a1.time_slot_id
     assert ver2_a1["locked"] is True
 
     # 3. Query Change Impact Report (P9.19)
-    resp_diff = client.get(f"/api/v1/schedules/{ver2_data['id']}/diff/{ver1.id}", headers=admin_headers)
+    resp_diff = client.get(
+        f"/api/v1/schedules/{ver2_data['id']}/diff/{ver1.id}", headers=admin_headers
+    )
     assert resp_diff.status_code == 200
     diff_data = resp_diff.json()
 

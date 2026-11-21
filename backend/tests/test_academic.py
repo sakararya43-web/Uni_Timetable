@@ -6,12 +6,8 @@ from tests.conftest import make_auth_user
 
 
 def test_academic_departments_crud(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="dept_admin@univ.edu"
-    )
-    _, coord_headers = make_auth_user(
-        db_session, role="coordinator", email="dept_coord@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="dept_admin@univ.edu")
+    _, coord_headers = make_auth_user(db_session, role="coordinator", email="dept_coord@univ.edu")
 
     # 1. Non-admin forbidden to create department
     resp = client.post(
@@ -43,9 +39,7 @@ def test_academic_departments_crud(client: TestClient, db_session: Session):
     assert resp_dup.json()["error"]["code"] == "DUPLICATE_DEPARTMENT_CODE"
 
     # 4. Get departments paginated & search
-    resp_list = client.get(
-        "/api/v1/academic/departments?search=Physics", headers=coord_headers
-    )
+    resp_list = client.get("/api/v1/academic/departments?search=Physics", headers=coord_headers)
     assert resp_list.status_code == 200
     assert resp_list.json()["total"] >= 1
     assert any(d["id"] == dept_id for d in resp_list.json()["items"])
@@ -60,17 +54,13 @@ def test_academic_departments_crud(client: TestClient, db_session: Session):
     assert resp_update.json()["name"] == "Department of Applied Physics"
 
     # 6. Archive department
-    resp_arch = client.delete(
-        f"/api/v1/academic/departments/{dept_id}", headers=admin_headers
-    )
+    resp_arch = client.delete(f"/api/v1/academic/departments/{dept_id}", headers=admin_headers)
     assert resp_arch.status_code == 200
     assert resp_arch.json()["status"] == EntityStatus.ARCHIVED.value
 
 
 def test_academic_years_and_semesters_crud(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="ay_admin@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="ay_admin@univ.edu")
 
     # 1. Invalid date range (end_date < start_date) rejected by schema validation
     resp_invalid = client.post(
@@ -125,9 +115,7 @@ def test_academic_years_and_semesters_crud(client: TestClient, db_session: Sessi
 
 
 def test_programs_crud(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="prog_admin@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="prog_admin@univ.edu")
 
     # Create dept first
     resp_dept = client.post(

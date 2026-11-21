@@ -80,9 +80,7 @@ class ScheduleService:
             )
 
         slots_list = list(
-            db.scalars(
-                select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)
-            ).all()
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all()
         )
         if not slots_list:
             raise DomainException(
@@ -163,8 +161,12 @@ class ScheduleService:
             SlotInfo(
                 id=s.id,
                 date=s.date,
-                start_time=s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                end_time=s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                start_time=s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                end_time=s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 duration_minutes=s.duration_minutes,
                 session_label=s.session_label,
                 slot_index=s.slot_index,
@@ -231,12 +233,14 @@ class ScheduleService:
         assignments: list[dict[str, Any]] = []
         for eid, c in coloring_result.colors.items():
             sid = mapping_result.color_to_slot[c]
-            assignments.append({
-                "exam_id": eid,
-                "time_slot_id": sid,
-                "color_id": c,
-                "locked": (eid in locked_exam_map),
-            })
+            assignments.append(
+                {
+                    "exam_id": eid,
+                    "time_slot_id": sid,
+                    "color_id": c,
+                    "locked": (eid in locked_exam_map),
+                }
+            )
 
         # 11. Run independent schedule validator (P8.7)
         enrollments = list(
@@ -269,8 +273,12 @@ class ScheduleService:
             s.id: {
                 "id": s.id,
                 "date": s.date,
-                "start_time": s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                "end_time": s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                "start_time": s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                "end_time": s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 "duration_minutes": s.duration_minutes,
                 "is_enabled": s.enabled,
                 "slot_index": s.slot_index,
@@ -299,7 +307,11 @@ class ScheduleService:
         )
 
         # 13. Determine status and persist ScheduleRun (P8.11, P8.12)
-        run_status = ScheduleRunStatus.SUCCESS if validation_report.valid else ScheduleRunStatus.INVALID_DATA_OR_ALGORITHM_ERROR
+        run_status = (
+            ScheduleRunStatus.SUCCESS
+            if validation_report.valid
+            else ScheduleRunStatus.INVALID_DATA_OR_ALGORITHM_ERROR
+        )
         if validation_report.valid and soft_penalty > 0:
             run_status = ScheduleRunStatus.SUCCESS_WITH_WARNINGS
 
@@ -422,9 +434,13 @@ class ScheduleService:
                 f"Execution time is median over {repeats} runs to minimize OS CPU jitter.",
             ]
             if algo == "dsatur":
-                notes.append("DSATUR dynamically tracks saturation degree, typically achieving smallest color counts.")
+                notes.append(
+                    "DSATUR dynamically tracks saturation degree, typically achieving smallest color counts."
+                )
             elif algo == "welsh_powell":
-                notes.append("Welsh-Powell sorts by degree descending prior to sequential coloring.")
+                notes.append(
+                    "Welsh-Powell sorts by degree descending prior to sequential coloring."
+                )
             else:
                 notes.append("Greedy uses lexicographical stable ID ordering.")
 
@@ -486,7 +502,9 @@ class ScheduleService:
 
         cycle = db.get(SchedulingCycle, run.scheduling_cycle_id)
         if not cycle:
-            raise DomainException(code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404)
+            raise DomainException(
+                code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404
+            )
 
         # 1. Determine next version number
         latest_version_num = db.scalar(
@@ -556,13 +574,17 @@ class ScheduleService:
         """Re-validates a stored schedule run (Task P8.15)."""
         run = db.get(ScheduleRun, run_id)
         if not run:
-            raise DomainException(code="SCHEDULE_RUN_NOT_FOUND", message="Run not found.", status_code=404)
+            raise DomainException(
+                code="SCHEDULE_RUN_NOT_FOUND", message="Run not found.", status_code=404
+            )
 
         summary = run.result_summary_json or {}
         val_data = summary.get("validation", {})
         return ScheduleValidationReportSchema(
             valid=val_data.get("valid", False),
-            hard_violations=[HardViolationSchema(**hv) for hv in val_data.get("hardViolations", [])],
+            hard_violations=[
+                HardViolationSchema(**hv) for hv in val_data.get("hardViolations", [])
+            ],
             soft_penalty_total=val_data.get("softPenaltyTotal", 0.0),
             soft_breakdown=[SoftBreakdownSchema(**sb) for sb in val_data.get("softBreakdown", [])],
             warnings=val_data.get("warnings", []),

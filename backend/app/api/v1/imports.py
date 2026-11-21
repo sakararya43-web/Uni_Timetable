@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, File, Query, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -196,10 +195,7 @@ def get_import_batch(
             status_code=404,
         )
 
-    errors = [
-        RowValidationError.model_validate(e)
-        for e in batch.errors_json.get("errors", [])
-    ]
+    errors = [RowValidationError.model_validate(e) for e in batch.errors_json.get("errors", [])]
     staged = batch.errors_json.get("staged_rows", [])
 
     return ImportPreviewResponse(

@@ -89,15 +89,9 @@ def setup_enrollment_test_data(db: Session, admin_headers: dict):
     return cycle, sub, archived_sub, student, archived_student
 
 
-def test_enrollment_lifecycle_and_staleness_signaling(
-    client: TestClient, db_session: Session
-):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="enr_admin@univ.edu"
-    )
-    cycle, sub, arch_sub, student, arch_st = setup_enrollment_test_data(
-        db_session, admin_headers
-    )
+def test_enrollment_lifecycle_and_staleness_signaling(client: TestClient, db_session: Session):
+    _, admin_headers = make_auth_user(db_session, role="admin", email="enr_admin@univ.edu")
+    cycle, sub, arch_sub, student, arch_st = setup_enrollment_test_data(db_session, admin_headers)
 
     initial_version = cycle.data_version
 
@@ -140,7 +134,11 @@ def test_enrollment_lifecycle_and_staleness_signaling(
     resp_sub = client.get(f"/api/v1/subjects/{sub.id}", headers=admin_headers)
     assert resp_sub.status_code == 200
     sub_resp = resp_sub.json()
-    enr_count_val = sub_resp.get("enrollment_count") if "enrollment_count" in sub_resp else sub_resp.get("enrollmentCount")
+    enr_count_val = (
+        sub_resp.get("enrollment_count")
+        if "enrollment_count" in sub_resp
+        else sub_resp.get("enrollmentCount")
+    )
     assert enr_count_val == 1
 
     # 6. Reject duplicate active enrollment (P3.12)
@@ -179,26 +177,30 @@ def test_enrollment_lifecycle_and_staleness_signaling(
     assert audit_withdraw is not None
 
 
-def test_enrollments_validation_diagnostic_report(
-    client: TestClient, db_session: Session
-):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="diag_admin@univ.edu"
-    )
+def test_enrollments_validation_diagnostic_report(client: TestClient, db_session: Session):
+    _, admin_headers = make_auth_user(db_session, role="admin", email="diag_admin@univ.edu")
     cycle, sub, _, student, _ = setup_enrollment_test_data(db_session, admin_headers)
 
     # Call /enrollments/validate (Task P3.15)
-    resp_val = client.get(
-        f"/api/v1/enrollments/validate?cycleId={cycle.id}", headers=admin_headers
-    )
+    resp_val = client.get(f"/api/v1/enrollments/validate?cycleId={cycle.id}", headers=admin_headers)
     assert resp_val.status_code == 200
     report = resp_val.json()
 
     assert "isValid" in report or "is_valid" in report
     assert "duplicateRecordsCount" in report or "duplicate_records_count" in report
     assert "orphanReferencesCount" in report or "orphan_references_count" in report
-    assert "studentsWithZeroEnrollmentsCount" in report or "students_with_zero_enrollments_count" in report
-    assert "subjectsWithZeroEnrollmentsCount" in report or "subjects_with_zero_enrollments_count" in report
+    assert (
+        "studentsWithZeroEnrollmentsCount" in report
+        or "students_with_zero_enrollments_count" in report
+    )
+    assert (
+        "subjectsWithZeroEnrollmentsCount" in report
+        or "subjects_with_zero_enrollments_count" in report
+    )
     assert "cyclesWithZeroExamsCount" in report or "cycles_with_zero_exams_count" in report
-    dup_val = report.get("duplicate_records_count") if "duplicate_records_count" in report else report.get("duplicateRecordsCount")
+    dup_val = (
+        report.get("duplicate_records_count")
+        if "duplicate_records_count" in report
+        else report.get("duplicateRecordsCount")
+    )
     assert dup_val == 0

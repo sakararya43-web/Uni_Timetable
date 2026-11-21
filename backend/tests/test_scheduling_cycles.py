@@ -195,7 +195,11 @@ def test_cycle_exam_synchronization_and_overrides(client: TestClient, db_session
     resp_sync = client.post(f"/api/v1/cycles/{cycle_id}/exams/sync", headers=admin_headers)
     assert resp_sync.status_code == 200
     sync_data = resp_sync.json()
-    synced_count = sync_data.get("synced_exams_count") if "synced_exams_count" in sync_data else sync_data.get("syncedExamsCount")
+    synced_count = (
+        sync_data.get("synced_exams_count")
+        if "synced_exams_count" in sync_data
+        else sync_data.get("syncedExamsCount")
+    )
     assert synced_count >= 2
 
     # List exams
@@ -220,7 +224,11 @@ def test_cycle_exam_synchronization_and_overrides(client: TestClient, db_session
     )
     assert resp_override.status_code == 200
     ov_data = resp_override.json()
-    dur = ov_data.get("duration_minutes") if "duration_minutes" in ov_data else ov_data.get("durationMinutes")
+    dur = (
+        ov_data.get("duration_minutes")
+        if "duration_minutes" in ov_data
+        else ov_data.get("durationMinutes")
+    )
     assert dur == 120
 
 
@@ -248,7 +256,7 @@ def test_slot_generation_prd_example():
     }
 
     start_d = date(2026, 6, 10)  # Wednesday
-    end_d = date(2026, 6, 20)    # Saturday (11 calendar days total)
+    end_d = date(2026, 6, 20)  # Saturday (11 calendar days total)
 
     slots = slot_service.generate_slots(start_date=start_d, end_date=end_d, config=config)
 
@@ -313,14 +321,26 @@ def test_slot_persistence_id_stability_and_capacity_summary(
 
     # 3. Capacity summary & feasibility pre-check (Task P5.11)
     client.post(f"/api/v1/cycles/{cycle_id}/exams/sync", headers=admin_headers)
-    resp_cap = client.get(f"/api/v1/cycles/{cycle_id}/slots/capacity-summary", headers=admin_headers)
+    resp_cap = client.get(
+        f"/api/v1/cycles/{cycle_id}/slots/capacity-summary", headers=admin_headers
+    )
     assert resp_cap.status_code == 200
     cap_data = resp_cap.json()
 
     tot = cap_data.get("total_slots") if "total_slots" in cap_data else cap_data.get("totalSlots")
-    en = cap_data.get("enabled_slots") if "enabled_slots" in cap_data else cap_data.get("enabledSlots")
-    exams_cnt = cap_data.get("exam_count") if "exam_count" in cap_data else cap_data.get("examCount")
-    feasible = cap_data.get("is_feasible_pre_check") if "is_feasible_pre_check" in cap_data else cap_data.get("isFeasiblePreCheck")
+    en = (
+        cap_data.get("enabled_slots")
+        if "enabled_slots" in cap_data
+        else cap_data.get("enabledSlots")
+    )
+    exams_cnt = (
+        cap_data.get("exam_count") if "exam_count" in cap_data else cap_data.get("examCount")
+    )
+    feasible = (
+        cap_data.get("is_feasible_pre_check")
+        if "is_feasible_pre_check" in cap_data
+        else cap_data.get("isFeasiblePreCheck")
+    )
 
     assert tot > 0
     assert en > 0

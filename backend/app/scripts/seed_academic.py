@@ -62,9 +62,7 @@ def seed_academic_data() -> None:
         sem_map = {}
         for name, num in semesters_data:
             sem = db.scalar(
-                select(Semester).where(
-                    Semester.academic_year_id == ay.id, Semester.number == num
-                )
+                select(Semester).where(Semester.academic_year_id == ay.id, Semester.number == num)
             )
             if not sem:
                 sem = Semester(
@@ -89,9 +87,7 @@ def seed_academic_data() -> None:
         for dept_code, prog_code, prog_name in programs_data:
             dept = dept_map[dept_code]
             prog = db.scalar(
-                select(Program).where(
-                    Program.department_id == dept.id, Program.code == prog_code
-                )
+                select(Program).where(Program.department_id == dept.id, Program.code == prog_code)
             )
             if not prog:
                 prog = Program(
@@ -119,7 +115,9 @@ def seed_academic_data() -> None:
                 timezone="UTC",
                 status=CycleStatus.DRAFT,
                 configuration_json={
-                    "sessions": [{"code": "M", "name": "Morning", "start": "09:00", "end": "12:00"}],
+                    "sessions": [
+                        {"code": "M", "name": "Morning", "start": "09:00", "end": "12:00"}
+                    ],
                     "holidays": ["2026-11-08"],
                     "weekdays": [1, 2, 3, 4, 5],
                 },

@@ -28,12 +28,18 @@ router = APIRouter(prefix="/cycles/{cycle_id}/graph", tags=["Conflict Graph"])
 )
 def build_graph(
     cycle_id: str,
-    force: bool = Query(default=False, description="Force a new snapshot even if enrollment hash is unchanged"),
+    force: bool = Query(
+        default=False, description="Force a new snapshot even if enrollment hash is unchanged"
+    ),
     db: Session = Depends(get_db),
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> GraphBuildResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     snapshot, is_new, validation = graph_service.build_graph_snapshot(
         db=db,
         cycle_id=cycle_id,
@@ -66,7 +72,9 @@ def get_graph(
     semester: int | None = Query(default=None),
     min_weight: int | None = Query(default=None, alias="minWeight", ge=1),
     db: Session = Depends(get_db),
-    actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)),
+    actor: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)
+    ),
 ) -> ConflictGraphResponse:
     return graph_service.get_graph_response(
         db=db,
@@ -85,7 +93,9 @@ def get_graph(
 def get_graph_stats(
     cycle_id: str,
     db: Session = Depends(get_db),
-    actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)),
+    actor: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)
+    ),
 ) -> GraphStatsResponse:
     return graph_service.get_graph_stats(db, cycle_id)
 
@@ -101,7 +111,11 @@ def export_graph(
     actor: User = Depends(require_role(RoleEnum.ADMIN)),
     request: Request = None,  # type: ignore[assignment]
 ) -> Response:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     content, media_type, filename = graph_service.export_graph(
         db=db,
         cycle_id=cycle_id,
@@ -128,7 +142,11 @@ def get_edge_drilldown_by_id(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ConflictEdgeDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     return graph_service.get_edge_shared_students(
         db=db,
         cycle_id=cycle_id,
@@ -151,7 +169,11 @@ def get_edge_drilldown_by_pair(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ConflictEdgeDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     return graph_service.get_edge_shared_students(
         db=db,
         cycle_id=cycle_id,

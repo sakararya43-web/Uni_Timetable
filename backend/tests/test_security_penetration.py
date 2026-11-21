@@ -90,8 +90,22 @@ def test_idor_student_timetable_isolation(client: TestClient, db_session: Sessio
     db_session.add_all([dept, prog])
     db_session.flush()
 
-    s1 = Student(student_number="STU_IDOR_01", full_name="Student One", email="s1@univ.edu", department_id=dept.id, program_id=prog.id, semester=1)
-    s2 = Student(student_number="STU_IDOR_02", full_name="Student Two", email="s2@univ.edu", department_id=dept.id, program_id=prog.id, semester=1)
+    s1 = Student(
+        student_number="STU_IDOR_01",
+        full_name="Student One",
+        email="s1@univ.edu",
+        department_id=dept.id,
+        program_id=prog.id,
+        semester=1,
+    )
+    s2 = Student(
+        student_number="STU_IDOR_02",
+        full_name="Student Two",
+        email="s2@univ.edu",
+        department_id=dept.id,
+        program_id=prog.id,
+        semester=1,
+    )
     db_session.add_all([s1, s2])
     db_session.commit()
 

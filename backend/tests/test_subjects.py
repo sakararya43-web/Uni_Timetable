@@ -8,9 +8,7 @@ from tests.conftest import make_auth_user
 
 
 def test_subject_validation_and_crud(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="sub_admin@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="sub_admin@univ.edu")
 
     # Create department
     resp_dept = client.post(
@@ -74,7 +72,11 @@ def test_subject_validation_and_crud(client: TestClient, db_session: Session):
     sub_data = resp_sub.json()
     sub_id = sub_data["id"]
     code_val = sub_data.get("subject_code") or sub_data.get("subjectCode")
-    enr_count_val = sub_data.get("enrollment_count") if "enrollment_count" in sub_data else sub_data.get("enrollmentCount")
+    enr_count_val = (
+        sub_data.get("enrollment_count")
+        if "enrollment_count" in sub_data
+        else sub_data.get("enrollmentCount")
+    )
     assert code_val == "MATH101"
     assert enr_count_val == 0
     assert sub_data["status"] == EntityStatus.ACTIVE.value
@@ -108,12 +110,8 @@ def test_subject_validation_and_crud(client: TestClient, db_session: Session):
     assert audit_entry is not None
 
 
-def test_subject_coordinator_department_scoping(
-    client: TestClient, db_session: Session
-):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="admin_scoping@univ.edu"
-    )
+def test_subject_coordinator_department_scoping(client: TestClient, db_session: Session):
+    _, admin_headers = make_auth_user(db_session, role="admin", email="admin_scoping@univ.edu")
 
     # Create two departments
     d1 = client.post(

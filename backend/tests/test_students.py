@@ -9,9 +9,7 @@ from tests.conftest import make_auth_user
 
 
 def test_student_crud_and_immutability(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="st_admin@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="st_admin@univ.edu")
 
     # Create department
     resp_dept = client.post(
@@ -66,9 +64,7 @@ def test_student_crud_and_immutability(client: TestClient, db_session: Session):
     assert (up_data.get("student_number") or up_data.get("studentNumber")) == "STU-2026-001"
 
     # 4. Search and pagination
-    resp_search = client.get(
-        "/api/v1/students?search=Alice", headers=admin_headers
-    )
+    resp_search = client.get("/api/v1/students?search=Alice", headers=admin_headers)
     assert resp_search.status_code == 200
     assert resp_search.json()["total"] >= 1
     assert any(s["id"] == st_id for s in resp_search.json()["items"])
@@ -89,9 +85,7 @@ def test_student_crud_and_immutability(client: TestClient, db_session: Session):
 
 
 def test_student_self_access_scoping(client: TestClient, db_session: Session):
-    _, admin_headers = make_auth_user(
-        db_session, role="admin", email="st_scope_admin@univ.edu"
-    )
+    _, admin_headers = make_auth_user(db_session, role="admin", email="st_scope_admin@univ.edu")
 
     resp_dept = client.post(
         "/api/v1/academic/departments",

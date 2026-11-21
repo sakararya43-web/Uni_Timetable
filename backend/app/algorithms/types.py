@@ -35,7 +35,6 @@ class GraphValidationReport:
     edge_count_checked: int
 
 
-
 @dataclass
 class GraphMetrics:
     """Statistical summary of a conflict graph G=(V, E)."""
@@ -114,4 +113,3 @@ DSATUR_VERSION = "1.0.0"
 def stable_key(v: Vertex) -> str:
     """Deterministic tie-breaking sort key (PRD §12.4, Task P7.3)."""
     return str(v)
-

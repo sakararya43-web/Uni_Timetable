@@ -43,7 +43,9 @@ class AcademicService:
         total_pages = math.ceil(total / page_size) if total > 0 else 1
         items = list(
             db.scalars(
-                query.order_by(Department.code.asc()).offset((page - 1) * page_size).limit(page_size)
+                query.order_by(Department.code.asc())
+                .offset((page - 1) * page_size)
+                .limit(page_size)
             ).all()
         )
         return items, total, total_pages
@@ -423,9 +425,7 @@ class AcademicService:
         total_pages = math.ceil(total / page_size) if total > 0 else 1
         items = list(
             db.scalars(
-                query.order_by(Program.code.asc())
-                .offset((page - 1) * page_size)
-                .limit(page_size)
+                query.order_by(Program.code.asc()).offset((page - 1) * page_size).limit(page_size)
             ).all()
         )
         return items, total, total_pages

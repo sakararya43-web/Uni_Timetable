@@ -132,7 +132,9 @@ def validate_graph(
         missing = expected_vertices - graph.vertices
         extra = graph.vertices - expected_vertices
         if missing:
-            errors.append(f"Graph is missing {len(missing)} expected exam vertices: {sorted(missing)[:5]}")
+            errors.append(
+                f"Graph is missing {len(missing)} expected exam vertices: {sorted(missing)[:5]}"
+            )
         if extra:
             errors.append(f"Graph has {len(extra)} unexpected exam vertices: {sorted(extra)[:5]}")
 
@@ -150,7 +152,9 @@ def validate_graph(
         if u == v:
             errors.append(f"Self-loop edge key found in edge_weights: ({u}, {v}).")
         if u >= v:
-            errors.append(f"Edge key is not normalized in strict ascending order (u < v): ({u}, {v}).")
+            errors.append(
+                f"Edge key is not normalized in strict ascending order (u < v): ({u}, {v})."
+            )
         if w < 1:
             errors.append(f"Edge ({u}, {v}) has non-positive shared student count: {w}.")
 
@@ -158,12 +162,14 @@ def validate_graph(
     for u, neighbors in graph.adjacency.items():
         for v in neighbors:
             if u not in graph.adjacency.get(v, set()):
-                errors.append(f"Asymmetric adjacency detected: '{v}' in adj['{u}'] but not vice-versa.")
+                errors.append(
+                    f"Asymmetric adjacency detected: '{v}' in adj['{u}'] but not vice-versa."
+                )
             pair = (min(u, v), max(u, v))
             if pair not in graph.edge_weights:
                 errors.append(f"Adjacency neighbor pair {pair} missing from edge_weights.")
 
-    for (u, v) in graph.edge_weights:
+    for u, v in graph.edge_weights:
         if v not in graph.adjacency.get(u, set()) or u not in graph.adjacency.get(v, set()):
             errors.append(f"Edge ({u}, {v}) in edge_weights is missing from adjacency list.")
 
@@ -192,9 +198,13 @@ def validate_graph(
         missing_edges = set(expected_weights.keys()) - set(graph.edge_weights.keys())
         extra_edges = set(graph.edge_weights.keys()) - set(expected_weights.keys())
         if missing_edges:
-            errors.append(f"{len(missing_edges)} conflict edges from enrollments missing in graph: {list(missing_edges)[:5]}")
+            errors.append(
+                f"{len(missing_edges)} conflict edges from enrollments missing in graph: {list(missing_edges)[:5]}"
+            )
         if extra_edges:
-            errors.append(f"{len(extra_edges)} spurious conflict edges present in graph: {list(extra_edges)[:5]}")
+            errors.append(
+                f"{len(extra_edges)} spurious conflict edges present in graph: {list(extra_edges)[:5]}"
+            )
     else:
         # Check weight equality
         for pair, exp_w in expected_weights.items():

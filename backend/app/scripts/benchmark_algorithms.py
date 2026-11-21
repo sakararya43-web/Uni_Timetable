@@ -87,7 +87,9 @@ def benchmark_suite(sizes: list[int] | None = None) -> list[dict[str, object]]:
 
     for n in target_sizes:
         benchmarks.append((f"ErdosRenyi_n{n}_p0.1", generate_erdos_renyi_graph(n, p=0.1, seed=n)))
-        benchmarks.append((f"ErdosRenyi_n{n}_p0.3", generate_erdos_renyi_graph(n, p=0.3, seed=n * 2)))
+        benchmarks.append(
+            (f"ErdosRenyi_n{n}_p0.3", generate_erdos_renyi_graph(n, p=0.3, seed=n * 2))
+        )
         benchmarks.append((f"Bipartite_n{n}", generate_bipartite_graph(n, p=0.2, seed=n)))
         benchmarks.append((f"Cycle_n{n}", generate_cycle_graph(n)))
 
@@ -102,59 +104,67 @@ def benchmark_suite(sizes: list[int] | None = None) -> list[dict[str, object]]:
 
         # 1. Greedy
         r_greedy = greedy_color(adj, deterministic=True)
-        results.append({
-            "graph_name": name,
-            "vertices": v_count,
-            "edges": e_count,
-            "algorithm": "Greedy",
-            "colors": r_greedy.color_count,
-            "time_ms": r_greedy.execution_time_ms,
-            "vertex_visits": r_greedy.vertex_visits,
-            "color_checks": r_greedy.color_checks,
-            "valid": r_greedy.valid,
-        })
+        results.append(
+            {
+                "graph_name": name,
+                "vertices": v_count,
+                "edges": e_count,
+                "algorithm": "Greedy",
+                "colors": r_greedy.color_count,
+                "time_ms": r_greedy.execution_time_ms,
+                "vertex_visits": r_greedy.vertex_visits,
+                "color_checks": r_greedy.color_checks,
+                "valid": r_greedy.valid,
+            }
+        )
 
         # 2. Welsh-Powell
         r_wp = welsh_powell(adj, deterministic=True)
-        results.append({
-            "graph_name": name,
-            "vertices": v_count,
-            "edges": e_count,
-            "algorithm": "Welsh-Powell",
-            "colors": r_wp.color_count,
-            "time_ms": r_wp.execution_time_ms,
-            "vertex_visits": r_wp.vertex_visits,
-            "color_checks": r_wp.color_checks,
-            "valid": r_wp.valid,
-        })
+        results.append(
+            {
+                "graph_name": name,
+                "vertices": v_count,
+                "edges": e_count,
+                "algorithm": "Welsh-Powell",
+                "colors": r_wp.color_count,
+                "time_ms": r_wp.execution_time_ms,
+                "vertex_visits": r_wp.vertex_visits,
+                "color_checks": r_wp.color_checks,
+                "valid": r_wp.valid,
+            }
+        )
 
         # 3. DSATUR (Linear Scan)
         r_dsatur = dsatur(adj, deterministic=True, use_heap=False)
-        results.append({
-            "graph_name": name,
-            "vertices": v_count,
-            "edges": e_count,
-            "algorithm": "DSATUR_Linear",
-            "colors": r_dsatur.color_count,
-            "time_ms": r_dsatur.execution_time_ms,
-            "vertex_visits": r_dsatur.vertex_visits,
-            "color_checks": r_dsatur.color_checks,
-            "valid": r_dsatur.valid,
-        })
+        results.append(
+            {
+                "graph_name": name,
+                "vertices": v_count,
+                "edges": e_count,
+                "algorithm": "DSATUR_Linear",
+                "colors": r_dsatur.color_count,
+                "time_ms": r_dsatur.execution_time_ms,
+                "vertex_visits": r_dsatur.vertex_visits,
+                "color_checks": r_dsatur.color_checks,
+                "valid": r_dsatur.valid,
+            }
+        )
 
         # 4. DSATUR (Heap Variant)
         r_dsatur_heap = dsatur(adj, deterministic=True, use_heap=True)
-        results.append({
-            "graph_name": name,
-            "vertices": v_count,
-            "edges": e_count,
-            "algorithm": "DSATUR_Heap",
-            "colors": r_dsatur_heap.color_count,
-            "time_ms": r_dsatur_heap.execution_time_ms,
-            "vertex_visits": r_dsatur_heap.vertex_visits,
-            "color_checks": r_dsatur_heap.color_checks,
-            "valid": r_dsatur_heap.valid,
-        })
+        results.append(
+            {
+                "graph_name": name,
+                "vertices": v_count,
+                "edges": e_count,
+                "algorithm": "DSATUR_Heap",
+                "colors": r_dsatur_heap.color_count,
+                "time_ms": r_dsatur_heap.execution_time_ms,
+                "vertex_visits": r_dsatur_heap.vertex_visits,
+                "color_checks": r_dsatur_heap.color_checks,
+                "valid": r_dsatur_heap.valid,
+            }
+        )
 
     return results
 

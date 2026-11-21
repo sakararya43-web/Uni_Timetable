@@ -16,7 +16,9 @@ class SubjectCreate(BaseModel):
     programId: str | None = Field(default=None, alias="program_id")
     semester: int = Field(ge=1, le=16)
     credits: float = Field(default=3.0, ge=0.0)
-    defaultDurationMinutes: int = Field(default=180, ge=30, le=360, alias="default_duration_minutes")
+    defaultDurationMinutes: int = Field(
+        default=180, ge=30, le=360, alias="default_duration_minutes"
+    )
     priority: int = Field(default=1, ge=1, le=10)
 
     preferredDates: list[str] = Field(default_factory=list, alias="preferred_dates")
@@ -26,7 +28,9 @@ class SubjectCreate(BaseModel):
     @classmethod
     def validate_code_format(cls, v: str) -> str:
         if not SUBJECT_CODE_REGEX.match(v.strip()):
-            raise ValueError("subject_code must be 2-32 alphanumeric characters, dashes, or underscores.")
+            raise ValueError(
+                "subject_code must be 2-32 alphanumeric characters, dashes, or underscores."
+            )
         return v.strip().upper()
 
     @model_validator(mode="after")
@@ -35,19 +39,25 @@ class SubjectCreate(BaseModel):
         rest_set = set(self.restrictedDates)
         overlap = pref_set.intersection(rest_set)
         if overlap:
-            raise ValueError(f"Dates cannot appear in both preferred and restricted sets: {', '.join(sorted(overlap))}")
+            raise ValueError(
+                f"Dates cannot appear in both preferred and restricted sets: {', '.join(sorted(overlap))}"
+            )
         return self
 
 
 class SubjectUpdate(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    subjectName: str | None = Field(default=None, min_length=2, max_length=255, alias="subject_name")
+    subjectName: str | None = Field(
+        default=None, min_length=2, max_length=255, alias="subject_name"
+    )
     departmentId: str | None = Field(default=None, alias="department_id")
     programId: str | None = Field(default=None, alias="program_id")
     semester: int | None = Field(default=None, ge=1, le=16)
     credits: float | None = Field(default=None, ge=0.0)
-    defaultDurationMinutes: int | None = Field(default=None, ge=30, le=360, alias="default_duration_minutes")
+    defaultDurationMinutes: int | None = Field(
+        default=None, ge=30, le=360, alias="default_duration_minutes"
+    )
     priority: int | None = Field(default=None, ge=1, le=10)
     preferredDates: list[str] | None = Field(default=None, alias="preferred_dates")
     restrictedDates: list[str] | None = Field(default=None, alias="restricted_dates")
@@ -60,7 +70,9 @@ class SubjectUpdate(BaseModel):
             rest_set = set(self.restrictedDates)
             overlap = pref_set.intersection(rest_set)
             if overlap:
-                raise ValueError(f"Dates cannot appear in both preferred and restricted sets: {', '.join(sorted(overlap))}")
+                raise ValueError(
+                    f"Dates cannot appear in both preferred and restricted sets: {', '.join(sorted(overlap))}"
+                )
         return self
 
 

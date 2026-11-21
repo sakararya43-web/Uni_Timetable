@@ -72,7 +72,11 @@ class PublishingService:
         """Atomically publishes a schedule version with definitive validation and immutability (P10.1 - P10.4)."""
         ver = db.get(ScheduleVersion, version_id)
         if not ver:
-            raise DomainException(code="SCHEDULE_VERSION_NOT_FOUND", message="Schedule version not found.", status_code=404)
+            raise DomainException(
+                code="SCHEDULE_VERSION_NOT_FOUND",
+                message="Schedule version not found.",
+                status_code=404,
+            )
 
         current_status = enum_val(ver.status)
         if current_status == enum_val(ScheduleStatus.ARCHIVED):
@@ -84,7 +88,9 @@ class PublishingService:
 
         cycle = db.get(SchedulingCycle, ver.scheduling_cycle_id)
         if not cycle:
-            raise DomainException(code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404)
+            raise DomainException(
+                code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404
+            )
 
         # 1. Ensure not stale relative to enrollments/graph
         is_stale, _, _ = graph_service.is_cycle_graph_stale(db, cycle.id)
@@ -97,11 +103,19 @@ class PublishingService:
 
         # 2. Run final validation recomputed directly from DB enrollments (P10.2)
         exams_list = list(
-            db.scalars(select(Exam).where(Exam.scheduling_cycle_id == cycle.id).options(joinedload(Exam.subject))).all()
+            db.scalars(
+                select(Exam)
+                .where(Exam.scheduling_cycle_id == cycle.id)
+                .options(joinedload(Exam.subject))
+            ).all()
         )
-        slots_list = list(db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle.id)).all())
+        slots_list = list(
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle.id)).all()
+        )
         assignments_list = list(
-            db.scalars(select(ExamAssignment).where(ExamAssignment.schedule_version_id == ver.id)).all()
+            db.scalars(
+                select(ExamAssignment).where(ExamAssignment.schedule_version_id == ver.id)
+            ).all()
         )
 
         exams_dict = {
@@ -120,8 +134,12 @@ class PublishingService:
             s.id: {
                 "id": s.id,
                 "date": s.date,
-                "start_time": s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                "end_time": s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                "start_time": s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                "end_time": s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 "duration_minutes": s.duration_minutes,
                 "is_enabled": s.enabled,
                 "slot_index": s.slot_index,
@@ -163,7 +181,11 @@ class PublishingService:
         )
 
         if not validation_report.valid:
-            msg = validation_report.hard_violations[0].message if validation_report.hard_violations else "Hard constraint violation."
+            msg = (
+                validation_report.hard_violations[0].message
+                if validation_report.hard_violations
+                else "Hard constraint violation."
+            )
             raise DomainException(
                 code="PUBLISH_FAILED_INVALID_SCHEDULE",
                 message=f"Cannot publish schedule with hard constraint violations: {msg}",
@@ -225,12 +247,18 @@ class PublishingService:
         """Fetches a privacy-compliant individual timetable for a student (P10.5, P10.8)."""
         student = db.get(Student, student_id)
         if not student:
-            raise DomainException(code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404)
+            raise DomainException(
+                code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404
+            )
 
         # Student self-access check
         if actor and enum_val(actor.role) == enum_val(RoleEnum.STUDENT):
             if student.user_id != actor.id and student.email != actor.email:
-                raise DomainException(code="FORBIDDEN", message="Students may only access their own timetable.", status_code=403)
+                raise DomainException(
+                    code="FORBIDDEN",
+                    message="Students may only access their own timetable.",
+                    status_code=403,
+                )
 
         # Find target cycle
         if cycle_id:
@@ -244,7 +272,11 @@ class PublishingService:
             )
 
         if not cycle:
-            raise DomainException(code="PUBLISHED_SCHEDULE_NOT_FOUND", message="No published timetable cycle found.", status_code=404)
+            raise DomainException(
+                code="PUBLISHED_SCHEDULE_NOT_FOUND",
+                message="No published timetable cycle found.",
+                status_code=404,
+            )
 
         # Find active published schedule version
         published_version = db.scalar(
@@ -257,7 +289,11 @@ class PublishingService:
             .limit(1)
         )
         if not published_version:
-            raise DomainException(code="PUBLISHED_SCHEDULE_NOT_FOUND", message="No published schedule version found for this cycle.", status_code=404)
+            raise DomainException(
+                code="PUBLISHED_SCHEDULE_NOT_FOUND",
+                message="No published schedule version found for this cycle.",
+                status_code=404,
+            )
 
         # Load student's enrolled subjects
         enrolled_subject_ids = list(
@@ -280,7 +316,9 @@ class PublishingService:
                     Exam.subject_id.in_(enrolled_subject_ids),
                 )
                 .options(
-                    joinedload(ExamAssignment.exam).joinedload(Exam.subject).joinedload(Subject.department),
+                    joinedload(ExamAssignment.exam)
+                    .joinedload(Exam.subject)
+                    .joinedload(Subject.department),
                     joinedload(ExamAssignment.time_slot),
                 )
             ).all()
@@ -290,8 +328,16 @@ class PublishingService:
         for a in assignments:
             slot = a.time_slot
             sub = a.exam.subject
-            start_str = slot.start_time.strftime("%H:%M") if hasattr(slot.start_time, "strftime") else str(slot.start_time)
-            end_str = slot.end_time.strftime("%H:%M") if hasattr(slot.end_time, "strftime") else str(slot.end_time)
+            start_str = (
+                slot.start_time.strftime("%H:%M")
+                if hasattr(slot.start_time, "strftime")
+                else str(slot.start_time)
+            )
+            end_str = (
+                slot.end_time.strftime("%H:%M")
+                if hasattr(slot.end_time, "strftime")
+                else str(slot.end_time)
+            )
 
             entries.append(
                 StudentTimetableEntry(
@@ -322,16 +368,24 @@ class PublishingService:
         )
 
     @staticmethod
-    def get_my_timetable(db: Session, actor: User, cycle_id: str | None = None) -> StudentTimetableResponse:
+    def get_my_timetable(
+        db: Session, actor: User, cycle_id: str | None = None
+    ) -> StudentTimetableResponse:
         """Student convenience endpoint GET /me/timetable (P10.6)."""
         student = db.scalar(
-            select(Student).where(
-                (Student.user_id == actor.id) | (Student.email == actor.email)
-            ).limit(1)
+            select(Student)
+            .where((Student.user_id == actor.id) | (Student.email == actor.email))
+            .limit(1)
         )
         if not student:
-            raise DomainException(code="STUDENT_PROFILE_NOT_FOUND", message="No linked student profile found for your account.", status_code=404)
-        return PublishingService.get_student_timetable(db, student.id, cycle_id=cycle_id, actor=actor)
+            raise DomainException(
+                code="STUDENT_PROFILE_NOT_FOUND",
+                message="No linked student profile found for your account.",
+                status_code=404,
+            )
+        return PublishingService.get_student_timetable(
+            db, student.id, cycle_id=cycle_id, actor=actor
+        )
 
     @staticmethod
     def get_master_timetable(
@@ -345,7 +399,11 @@ class PublishingService:
         """Fetches master examination timetable with role-based filtering (P10.7, P10.12)."""
         ver = db.get(ScheduleVersion, version_id)
         if not ver:
-            raise DomainException(code="SCHEDULE_VERSION_NOT_FOUND", message="Schedule version not found.", status_code=404)
+            raise DomainException(
+                code="SCHEDULE_VERSION_NOT_FOUND",
+                message="Schedule version not found.",
+                status_code=404,
+            )
 
         cycle = ver.cycle
 
@@ -353,7 +411,9 @@ class PublishingService:
             select(ExamAssignment)
             .where(ExamAssignment.schedule_version_id == ver.id)
             .options(
-                joinedload(ExamAssignment.exam).joinedload(Exam.subject).joinedload(Subject.department),
+                joinedload(ExamAssignment.exam)
+                .joinedload(Exam.subject)
+                .joinedload(Subject.department),
                 joinedload(ExamAssignment.time_slot),
             )
         )
@@ -362,7 +422,11 @@ class PublishingService:
         exam_student_counts = dict(
             db.execute(
                 select(Exam.id, func.count(Enrollment.id))
-                .join(Enrollment, (Enrollment.subject_id == Exam.subject_id) & (Enrollment.cycle_id == Exam.scheduling_cycle_id))
+                .join(
+                    Enrollment,
+                    (Enrollment.subject_id == Exam.subject_id)
+                    & (Enrollment.cycle_id == Exam.scheduling_cycle_id),
+                )
                 .where(
                     Exam.scheduling_cycle_id == cycle.id,
                     Enrollment.status == EnrollmentStatus.ACTIVE,
@@ -380,7 +444,10 @@ class PublishingService:
             # Department filter & role scoping
             if department_id and sub.department_id != department_id:
                 continue
-            if actor and enum_val(actor.role) in (enum_val(RoleEnum.COORDINATOR), enum_val(RoleEnum.FACULTY)):
+            if actor and enum_val(actor.role) in (
+                enum_val(RoleEnum.COORDINATOR),
+                enum_val(RoleEnum.FACULTY),
+            ):
                 if actor.department_id and sub.department_id != actor.department_id:
                     continue
 
@@ -389,8 +456,16 @@ class PublishingService:
             if session_label and slot.session_label != session_label:
                 continue
 
-            start_str = slot.start_time.strftime("%H:%M") if hasattr(slot.start_time, "strftime") else str(slot.start_time)
-            end_str = slot.end_time.strftime("%H:%M") if hasattr(slot.end_time, "strftime") else str(slot.end_time)
+            start_str = (
+                slot.start_time.strftime("%H:%M")
+                if hasattr(slot.start_time, "strftime")
+                else str(slot.start_time)
+            )
+            end_str = (
+                slot.end_time.strftime("%H:%M")
+                if hasattr(slot.end_time, "strftime")
+                else str(slot.end_time)
+            )
 
             entries.append(
                 MasterTimetableEntry(
@@ -437,34 +512,38 @@ class PublishingService:
         writer = csv.writer(output, lineterminator="\n")
 
         # Headers
-        writer.writerow([
-            "Subject Code",
-            "Subject Name",
-            "Department",
-            "Exam Date",
-            "Start Time",
-            "End Time",
-            "Duration (Min)",
-            "Session",
-            "Students Enrolled",
-            "Locked",
-            "Manual Override",
-        ])
+        writer.writerow(
+            [
+                "Subject Code",
+                "Subject Name",
+                "Department",
+                "Exam Date",
+                "Start Time",
+                "End Time",
+                "Duration (Min)",
+                "Session",
+                "Students Enrolled",
+                "Locked",
+                "Manual Override",
+            ]
+        )
 
         for e in master.entries:
-            writer.writerow([
-                sanitize_csv_cell(e.subjectCode),
-                sanitize_csv_cell(e.subjectName),
-                sanitize_csv_cell(e.departmentCode or ""),
-                sanitize_csv_cell(str(e.slotDate)),
-                sanitize_csv_cell(e.startTime),
-                sanitize_csv_cell(e.endTime),
-                sanitize_csv_cell(e.durationMinutes),
-                sanitize_csv_cell(e.sessionLabel),
-                sanitize_csv_cell(e.studentCount),
-                sanitize_csv_cell("Yes" if e.locked else "No"),
-                sanitize_csv_cell("Yes" if e.manualOverride else "No"),
-            ])
+            writer.writerow(
+                [
+                    sanitize_csv_cell(e.subjectCode),
+                    sanitize_csv_cell(e.subjectName),
+                    sanitize_csv_cell(e.departmentCode or ""),
+                    sanitize_csv_cell(str(e.slotDate)),
+                    sanitize_csv_cell(e.startTime),
+                    sanitize_csv_cell(e.endTime),
+                    sanitize_csv_cell(e.durationMinutes),
+                    sanitize_csv_cell(e.sessionLabel),
+                    sanitize_csv_cell(e.studentCount),
+                    sanitize_csv_cell("Yes" if e.locked else "No"),
+                    sanitize_csv_cell("Yes" if e.manualOverride else "No"),
+                ]
+            )
 
         audit_service.record(
             db=db,
@@ -528,7 +607,9 @@ class PublishingService:
             fontName="Helvetica-Bold",
         )
 
-        elements.append(Paragraph(f"<b>University Examination Timetable</b> — {master.cycleName}", title_style))
+        elements.append(
+            Paragraph(f"<b>University Examination Timetable</b> — {master.cycleName}", title_style)
+        )
         status_txt = f"Version: {master.versionNumber} ({master.status.value}) | Total Examinations: {master.totalExams}"
         if master.publishedAt:
             status_txt += f" | Published: {master.publishedAt.strftime('%Y-%m-%d %H:%M UTC')}"
@@ -536,41 +617,52 @@ class PublishingService:
         elements.append(Spacer(1, 14))
 
         # Table data
-        data = [[
-            Paragraph("Subject", header_style),
-            Paragraph("Title", header_style),
-            Paragraph("Dept", header_style),
-            Paragraph("Date", header_style),
-            Paragraph("Time", header_style),
-            Paragraph("Dur", header_style),
-            Paragraph("Session", header_style),
-            Paragraph("Students", header_style),
-        ]]
+        data = [
+            [
+                Paragraph("Subject", header_style),
+                Paragraph("Title", header_style),
+                Paragraph("Dept", header_style),
+                Paragraph("Date", header_style),
+                Paragraph("Time", header_style),
+                Paragraph("Dur", header_style),
+                Paragraph("Session", header_style),
+                Paragraph("Students", header_style),
+            ]
+        ]
 
         for e in master.entries:
-            data.append([
-                Paragraph(f"<b>{e.subjectCode}</b>", cell_style),
-                Paragraph(e.subjectName[:30], cell_style),
-                Paragraph(e.departmentCode or "", cell_style),
-                Paragraph(str(e.slotDate), cell_style),
-                Paragraph(f"{e.startTime} - {e.endTime}", cell_style),
-                Paragraph(f"{e.durationMinutes}m", cell_style),
-                Paragraph(e.sessionLabel, cell_style),
-                Paragraph(str(e.studentCount), cell_style),
-            ])
+            data.append(
+                [
+                    Paragraph(f"<b>{e.subjectCode}</b>", cell_style),
+                    Paragraph(e.subjectName[:30], cell_style),
+                    Paragraph(e.departmentCode or "", cell_style),
+                    Paragraph(str(e.slotDate), cell_style),
+                    Paragraph(f"{e.startTime} - {e.endTime}", cell_style),
+                    Paragraph(f"{e.durationMinutes}m", cell_style),
+                    Paragraph(e.sessionLabel, cell_style),
+                    Paragraph(str(e.studentCount), cell_style),
+                ]
+            )
 
         col_widths = [70, 190, 50, 70, 90, 45, 65, 55]
         t = Table(data, colWidths=col_widths, repeatRows=1)
         t.setStyle(
-            TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1e40af")),
-                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")]),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
-            ])
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1e40af")),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    (
+                        "ROWBACKGROUNDS",
+                        (0, 1),
+                        (-1, -1),
+                        [colors.HexColor("#ffffff"), colors.HexColor("#f8fafc")],
+                    ),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
+                ]
+            )
         )
         elements.append(t)
 
@@ -613,9 +705,17 @@ class PublishingService:
         ws1.title = "Master Timetable"
 
         headers = [
-            "Subject Code", "Subject Name", "Department", "Exam Date",
-            "Start Time", "End Time", "Duration (Min)", "Session",
-            "Students Enrolled", "Locked", "Manual Override"
+            "Subject Code",
+            "Subject Name",
+            "Department",
+            "Exam Date",
+            "Start Time",
+            "End Time",
+            "Duration (Min)",
+            "Session",
+            "Students Enrolled",
+            "Locked",
+            "Manual Override",
         ]
         ws1.append(headers)
         for col_num in range(1, len(headers) + 1):
@@ -626,9 +726,17 @@ class PublishingService:
 
         for e in master.entries:
             row = [
-                e.subjectCode, e.subjectName, e.departmentCode or "", str(e.slotDate),
-                e.startTime, e.endTime, e.durationMinutes, e.sessionLabel,
-                e.studentCount, "Yes" if e.locked else "No", "Yes" if e.manualOverride else "No"
+                e.subjectCode,
+                e.subjectName,
+                e.departmentCode or "",
+                str(e.slotDate),
+                e.startTime,
+                e.endTime,
+                e.durationMinutes,
+                e.sessionLabel,
+                e.studentCount,
+                "Yes" if e.locked else "No",
+                "Yes" if e.manualOverride else "No",
             ]
             ws1.append(row)
             for col_num in range(1, len(row) + 1):
@@ -652,7 +760,11 @@ class PublishingService:
         for e in master.entries:
             key = e.departmentCode or "GEN"
             if key not in dept_summary:
-                dept_summary[key] = {"name": e.departmentName or "General", "exams": 0, "sessions": 0}
+                dept_summary[key] = {
+                    "name": e.departmentName or "General",
+                    "exams": 0,
+                    "sessions": 0,
+                }
             dept_summary[key]["exams"] += 1
             dept_summary[key]["sessions"] += e.studentCount
 
@@ -685,18 +797,30 @@ class PublishingService:
         """Computes summary statistics for a cycle (P10.15)."""
         cycle = db.get(SchedulingCycle, cycle_id)
         if not cycle:
-            raise DomainException(code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404)
+            raise DomainException(
+                code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404
+            )
 
         total_subjects = db.scalar(select(func.count(Subject.id))) or 0
-        total_exams = db.scalar(select(func.count(Exam.id)).where(Exam.scheduling_cycle_id == cycle.id)) or 0
+        total_exams = (
+            db.scalar(select(func.count(Exam.id)).where(Exam.scheduling_cycle_id == cycle.id)) or 0
+        )
         total_students = db.scalar(select(func.count(Student.id))) or 0
-        total_enrollments = db.scalar(
-            select(func.count(Enrollment.id)).where(
-                Enrollment.cycle_id == cycle.id,
-                Enrollment.status == EnrollmentStatus.ACTIVE,
+        total_enrollments = (
+            db.scalar(
+                select(func.count(Enrollment.id)).where(
+                    Enrollment.cycle_id == cycle.id,
+                    Enrollment.status == EnrollmentStatus.ACTIVE,
+                )
             )
-        ) or 0
-        total_slots = db.scalar(select(func.count(TimeSlot.id)).where(TimeSlot.scheduling_cycle_id == cycle.id)) or 0
+            or 0
+        )
+        total_slots = (
+            db.scalar(
+                select(func.count(TimeSlot.id)).where(TimeSlot.scheduling_cycle_id == cycle.id)
+            )
+            or 0
+        )
 
         latest_snapshot = graph_service.get_latest_snapshot(db, cycle.id)
         vertices = latest_snapshot.vertex_count if latest_snapshot else 0
@@ -716,10 +840,14 @@ class PublishingService:
         # Count slots used in latest version
         slots_used = 0
         if latest_pub:
-            slots_used = db.scalar(
-                select(func.count(func.distinct(ExamAssignment.time_slot_id)))
-                .where(ExamAssignment.schedule_version_id == latest_pub.id)
-            ) or 0
+            slots_used = (
+                db.scalar(
+                    select(func.count(func.distinct(ExamAssignment.time_slot_id))).where(
+                        ExamAssignment.schedule_version_id == latest_pub.id
+                    )
+                )
+                or 0
+            )
 
         return CycleReportSummaryResponse(
             cycle_id=cycle.id,
@@ -740,11 +868,17 @@ class PublishingService:
         )
 
     @staticmethod
-    def get_schedule_distribution_report(db: Session, version_id: str) -> ScheduleDistributionResponse:
+    def get_schedule_distribution_report(
+        db: Session, version_id: str
+    ) -> ScheduleDistributionResponse:
         """Computes workload distribution across dates, sessions, and multi-exam days (P10.16)."""
         ver = db.get(ScheduleVersion, version_id)
         if not ver:
-            raise DomainException(code="SCHEDULE_VERSION_NOT_FOUND", message="Schedule version not found.", status_code=404)
+            raise DomainException(
+                code="SCHEDULE_VERSION_NOT_FOUND",
+                message="Schedule version not found.",
+                status_code=404,
+            )
 
         assignments = list(
             db.scalars(
@@ -757,7 +891,11 @@ class PublishingService:
         exam_student_counts = dict(
             db.execute(
                 select(Exam.id, func.count(Enrollment.id))
-                .join(Enrollment, (Enrollment.subject_id == Exam.subject_id) & (Enrollment.cycle_id == Exam.scheduling_cycle_id))
+                .join(
+                    Enrollment,
+                    (Enrollment.subject_id == Exam.subject_id)
+                    & (Enrollment.cycle_id == Exam.scheduling_cycle_id),
+                )
                 .where(
                     Exam.scheduling_cycle_id == ver.scheduling_cycle_id,
                     Enrollment.status == EnrollmentStatus.ACTIVE,
@@ -784,11 +922,15 @@ class PublishingService:
             by_session[sess]["studentSessions"] += count
 
         date_items = [
-            DateDistributionItem(date=d, exam_count=v["examCount"], student_sessions=v["studentSessions"])
+            DateDistributionItem(
+                date=d, exam_count=v["examCount"], student_sessions=v["studentSessions"]
+            )
             for d, v in sorted(by_date.items())
         ]
         session_items = [
-            SessionDistributionItem(session_label=s, exam_count=v["examCount"], student_sessions=v["studentSessions"])
+            SessionDistributionItem(
+                session_label=s, exam_count=v["examCount"], student_sessions=v["studentSessions"]
+            )
             for s, v in sorted(by_session.items())
         ]
 
@@ -855,7 +997,9 @@ class PublishingService:
             stmt = stmt.where(AuditLog.timestamp <= end_date)
 
         total = db.scalar(select(func.count()).select_from(stmt.subquery())) or 0
-        rows = list(db.scalars(stmt.order_by(AuditLog.timestamp.desc()).offset(offset).limit(limit)).all())
+        rows = list(
+            db.scalars(stmt.order_by(AuditLog.timestamp.desc()).offset(offset).limit(limit)).all()
+        )
 
         items = [
             AuditLogListItem(

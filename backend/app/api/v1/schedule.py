@@ -38,7 +38,11 @@ def generate_schedule(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleRun:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     return schedule_service.generate_schedule(
         db=db,
         cycle_id=cycle_id,
@@ -56,12 +60,18 @@ def generate_schedule(
 )
 def compare_algorithms(
     cycle_id: str,
-    repeats: int = Query(default=3, ge=1, le=10, description="Repetitions for median timing calculation"),
+    repeats: int = Query(
+        default=3, ge=1, le=10, description="Repetitions for median timing calculation"
+    ),
     db: Session = Depends(get_db),
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleComparisonResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     return schedule_service.compare_algorithms(
         db=db,
         cycle_id=cycle_id,
@@ -79,7 +89,9 @@ def compare_algorithms(
 def list_schedule_runs(
     cycle_id: str,
     db: Session = Depends(get_db),
-    actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)),
+    actor: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)
+    ),
 ) -> list[ScheduleRun]:
     return list(
         db.scalars(
@@ -98,12 +110,17 @@ def list_schedule_runs(
 def get_schedule_run(
     run_id: str,
     db: Session = Depends(get_db),
-    actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)),
+    actor: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY, RoleEnum.STUDENT)
+    ),
 ) -> ScheduleRun:
     run = db.get(ScheduleRun, run_id)
     if not run:
         from app.middleware.error_handler import DomainException
-        raise DomainException(code="SCHEDULE_RUN_NOT_FOUND", message="Run not found.", status_code=404)
+
+        raise DomainException(
+            code="SCHEDULE_RUN_NOT_FOUND", message="Run not found.", status_code=404
+        )
     return run
 
 
@@ -131,7 +148,11 @@ def save_run_as_candidate(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_service.save_run_as_candidate(
         db=db,
         run_id=run_id,

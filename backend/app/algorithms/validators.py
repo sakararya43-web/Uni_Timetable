@@ -35,7 +35,9 @@ def validate_coloring(adj: AdjacencyList, colors: dict[Vertex, int]) -> Validati
         if not isinstance(c, int) or c < 0:
             invalid_colors.append((v, c))
     if invalid_colors:
-        errors.append(f"{len(invalid_colors)} vertices assigned invalid colors (must be int >= 0): {invalid_colors[:5]}")
+        errors.append(
+            f"{len(invalid_colors)} vertices assigned invalid colors (must be int >= 0): {invalid_colors[:5]}"
+        )
 
     # 3. Check conflicts on edges (u, v) where u < v
     conflicts: list[tuple[Vertex, Vertex, int]] = []
@@ -54,10 +56,7 @@ def validate_coloring(adj: AdjacencyList, colors: dict[Vertex, int]) -> Validati
         errors.append(f"{len(conflicts)} monochromatic edge conflicts detected: {conflicts[:5]}")
 
     is_valid = (
-        len(uncolored) == 0
-        and len(extra) == 0
-        and len(invalid_colors) == 0
-        and len(conflicts) == 0
+        len(uncolored) == 0 and len(extra) == 0 and len(invalid_colors) == 0 and len(conflicts) == 0
     )
 
     err_msg = "; ".join(errors) if errors else None

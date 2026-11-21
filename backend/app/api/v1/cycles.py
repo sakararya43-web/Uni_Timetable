@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -207,9 +206,7 @@ def get_cycle_slots(
 
     offset = (page - 1) * pageSize
     slots = list(
-        db.scalars(
-            query.order_by(TimeSlot.slot_index.asc()).offset(offset).limit(pageSize)
-        ).all()
+        db.scalars(query.order_by(TimeSlot.slot_index.asc()).offset(offset).limit(pageSize)).all()
     )
 
     items = [

@@ -123,12 +123,8 @@ class ImportService:
             st_name_raw = r.get(header_map["student_name"], "").strip()
             dept_raw = r.get(header_map["department"], "").strip()
             sem_raw = r.get(header_map["semester"], "").strip()
-            email_raw = (
-                r.get(header_map["email"], "").strip() if "email" in header_map else ""
-            )
-            prog_raw = (
-                r.get(header_map["program"], "").strip() if "program" in header_map else ""
-            )
+            email_raw = r.get(header_map["email"], "").strip() if "email" in header_map else ""
+            prog_raw = r.get(header_map["program"], "").strip() if "program" in header_map else ""
 
             row_has_error = False
 
@@ -895,7 +891,10 @@ class ImportService:
 
         except Exception as e:
             import logging
-            logging.getLogger("exam_scheduler").error(f"Commit error: {type(e)}: {e}", exc_info=True)
+
+            logging.getLogger("exam_scheduler").error(
+                f"Commit error: {type(e)}: {e}", exc_info=True
+            )
             db.rollback()
             raise DomainException(
                 code="IMPORT_COMMIT_FAILED",

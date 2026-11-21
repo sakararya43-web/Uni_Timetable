@@ -48,7 +48,9 @@ class GraphStatsResponse(BaseModel):
     largestComponentSize: int = Field(alias="largest_component_size")
     degreeHistogram: dict[str, int] = Field(default_factory=dict, alias="degree_histogram")
     chromaticLowerBound: int = Field(alias="chromatic_lower_bound")
-    topExamsByDegree: list[dict[str, Any]] = Field(default_factory=list, alias="top_exams_by_degree")
+    topExamsByDegree: list[dict[str, Any]] = Field(
+        default_factory=list, alias="top_exams_by_degree"
+    )
 
 
 class ConflictGraphResponse(BaseModel):
@@ -79,6 +81,7 @@ class GraphBuildResponse(BaseModel):
 
 class SharedStudentInfo(BaseModel):
     """Student identity info for privileged staff conflict drilldown only (FR-07, PRD §23)."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     studentId: str = Field(alias="student_id")
@@ -90,6 +93,7 @@ class SharedStudentInfo(BaseModel):
 
 class ConflictEdgeDetailResponse(BaseModel):
     """Detailed drilldown of a single conflict edge with shared students (Task P6.11)."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     edgeId: str = Field(alias="edge_id")

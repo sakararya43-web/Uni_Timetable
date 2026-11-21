@@ -40,8 +40,20 @@ def _map_assignment_detail(a: ExamAssignment) -> AssignmentDetailResponse:
     dept = sub.department if sub and sub.department else None
     slot = a.time_slot
 
-    start_str = slot.start_time.strftime("%H:%M") if slot and hasattr(slot.start_time, "strftime") else str(slot.start_time) if slot else None
-    end_str = slot.end_time.strftime("%H:%M") if slot and hasattr(slot.end_time, "strftime") else str(slot.end_time) if slot else None
+    start_str = (
+        slot.start_time.strftime("%H:%M")
+        if slot and hasattr(slot.start_time, "strftime")
+        else str(slot.start_time)
+        if slot
+        else None
+    )
+    end_str = (
+        slot.end_time.strftime("%H:%M")
+        if slot and hasattr(slot.end_time, "strftime")
+        else str(slot.end_time)
+        if slot
+        else None
+    )
 
     return AssignmentDetailResponse(
         id=a.id,
@@ -89,7 +101,9 @@ def _map_version_detail(db: Session, ver: ScheduleVersion) -> ScheduleVersionDet
             "id": r.id,
             "action": r.action,
             "actorId": r.actor_id,
-            "createdAt": r.timestamp.isoformat() if hasattr(r.timestamp, "isoformat") else str(r.timestamp),
+            "createdAt": r.timestamp.isoformat()
+            if hasattr(r.timestamp, "isoformat")
+            else str(r.timestamp),
             "details": r.after_state,
         }
         for r in audit_rows
@@ -174,7 +188,11 @@ def clone_schedule_version(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     new_ver = schedule_version_service.clone_version(db, version_id, actor, request_id)
     return _map_version_detail(db, new_ver)
 
@@ -190,7 +208,11 @@ def archive_schedule_version(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.archive_version(db, version_id, actor, request_id)
     return _map_version_detail(db, ver)
 
@@ -228,7 +250,11 @@ def move_assignment(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.move_assignment(
         db=db,
         version_id=version_id,
@@ -252,7 +278,11 @@ def swap_assignments(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.swap_assignments(
         db=db,
         version_id=version_id,
@@ -275,7 +305,11 @@ def lock_assignment(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.set_assignment_lock(
         db=db,
         version_id=version_id,
@@ -299,7 +333,11 @@ def unlock_assignment(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.set_assignment_lock(
         db=db,
         version_id=version_id,
@@ -323,7 +361,11 @@ def bulk_lock_assignments(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = schedule_version_service.bulk_lock_assignments(
         db=db,
         version_id=version_id,
@@ -359,7 +401,11 @@ def regenerate_schedule(
     actor: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     new_ver = schedule_version_service.regenerate_schedule(
         db=db,
         version_id=version_id,

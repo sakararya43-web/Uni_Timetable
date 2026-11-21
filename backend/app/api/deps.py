@@ -119,9 +119,7 @@ def require_role(*allowed_roles: RoleEnum) -> Callable[..., User]:
 
 def check_department_scope(user: User, target_department_id: str | None) -> None:
     """Enforce department scoping for coordinators and faculty (Task P2.16)."""
-    user_role_str = (
-        user.role.value if hasattr(user.role, "value") else str(user.role)
-    )
+    user_role_str = user.role.value if hasattr(user.role, "value") else str(user.role)
     if user_role_str == "admin":
         return
 
@@ -136,9 +134,7 @@ def check_department_scope(user: User, target_department_id: str | None) -> None
 
 def check_student_self_access(user: User, student_user_id: str | None) -> None:
     """Ensure student users can only read their own personal data (Task P2.17)."""
-    user_role_str = (
-        user.role.value if hasattr(user.role, "value") else str(user.role)
-    )
+    user_role_str = user.role.value if hasattr(user.role, "value") else str(user.role)
     if user_role_str == "student":
         if user.id != student_user_id:
             raise DomainException(

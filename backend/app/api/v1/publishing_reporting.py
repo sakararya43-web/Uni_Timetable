@@ -39,7 +39,11 @@ def publish_schedule(
     actor: User = Depends(require_role(RoleEnum.ADMIN)),
     request: Request = None,  # type: ignore[assignment]
 ) -> ScheduleVersionDetailResponse:
-    request_id = getattr(request.state, "request_id", None) if request and hasattr(request, "state") else None
+    request_id = (
+        getattr(request.state, "request_id", None)
+        if request and hasattr(request, "state")
+        else None
+    )
     ver = publishing_service.publish_schedule(
         db=db,
         version_id=version_id,
@@ -48,6 +52,7 @@ def publish_schedule(
         request_id=request_id,
     )
     from app.api.v1.schedule_versions import _map_version_detail
+
     return _map_version_detail(db, ver)
 
 
@@ -57,7 +62,9 @@ def publish_schedule(
     summary="Authenticated student convenience endpoint for individual timetable (P10.6)",
 )
 def get_my_timetable(
-    cycle_id: str | None = Query(default=None, description="Optional cycle ID (defaults to active published cycle)"),
+    cycle_id: str | None = Query(
+        default=None, description="Optional cycle ID (defaults to active published cycle)"
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> StudentTimetableResponse:
@@ -94,7 +101,9 @@ def get_master_timetable(
     date: str | None = Query(default=None),
     session_label: str | None = Query(default=None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)),
+    current_user: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)
+    ),
 ) -> MasterTimetableResponse:
     return publishing_service.get_master_timetable(
         db=db,
@@ -113,9 +122,13 @@ def get_master_timetable(
 def export_csv(
     version_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)),
+    current_user: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)
+    ),
 ) -> Response:
-    csv_content = publishing_service.generate_csv_export(db=db, version_id=version_id, actor=current_user)
+    csv_content = publishing_service.generate_csv_export(
+        db=db, version_id=version_id, actor=current_user
+    )
     filename = f"timetable_{version_id}.csv"
     return Response(
         content=csv_content,
@@ -131,9 +144,13 @@ def export_csv(
 def export_pdf(
     version_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)),
+    current_user: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)
+    ),
 ) -> StreamingResponse:
-    pdf_bytes = publishing_service.generate_pdf_export(db=db, version_id=version_id, actor=current_user)
+    pdf_bytes = publishing_service.generate_pdf_export(
+        db=db, version_id=version_id, actor=current_user
+    )
     filename = f"timetable_{version_id}.pdf"
     return StreamingResponse(
         BytesIO(pdf_bytes),
@@ -149,9 +166,13 @@ def export_pdf(
 def export_excel(
     version_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)),
+    current_user: User = Depends(
+        require_role(RoleEnum.ADMIN, RoleEnum.COORDINATOR, RoleEnum.FACULTY)
+    ),
 ) -> StreamingResponse:
-    excel_bytes = publishing_service.generate_excel_export(db=db, version_id=version_id, actor=current_user)
+    excel_bytes = publishing_service.generate_excel_export(
+        db=db, version_id=version_id, actor=current_user
+    )
     filename = f"timetable_{version_id}.xlsx"
     return StreamingResponse(
         BytesIO(excel_bytes),

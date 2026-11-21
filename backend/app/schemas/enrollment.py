@@ -39,6 +39,7 @@ class PaginatedEnrollmentsResponse(BaseModel):
 
 class EnrollmentValidationReport(BaseModel):
     """Integrity diagnostic report returned by GET /enrollments/validate (Task P3.15)."""
+
     isValid: bool = Field(alias="is_valid")
     duplicateRecordsCount: int = Field(alias="duplicate_records_count")
     orphanReferencesCount: int = Field(alias="orphan_references_count")

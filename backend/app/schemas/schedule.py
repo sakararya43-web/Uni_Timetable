@@ -122,6 +122,8 @@ class ScheduleVersionResponse(BaseModel):
     publishedAt: datetime | None = Field(default=None, alias="published_at")
     softScore: float = Field(alias="soft_score")
     assignmentCount: int = Field(default=0, alias="assignment_count")
-    validationReport: ScheduleValidationReportSchema | None = Field(default=None, alias="validation_report")
+    validationReport: ScheduleValidationReportSchema | None = Field(
+        default=None, alias="validation_report"
+    )
     createdAt: datetime = Field(alias="created_at")
     updatedAt: datetime = Field(alias="updated_at")

@@ -28,9 +28,13 @@ class ScheduleValidationReport:
 
 
 def validate_schedule(
-    exams: dict[str, Any],  # exam_id -> {id, subject_id, subject_code, duration_minutes, restricted_dates, cycle_id, locked_slot_id}
+    exams: dict[
+        str, Any
+    ],  # exam_id -> {id, subject_id, subject_code, duration_minutes, restricted_dates, cycle_id, locked_slot_id}
     assignments: list[dict[str, Any]],  # list of {exam_id, time_slot_id, color_id, locked}
-    slots: dict[str, Any],  # slot_id -> {id, date, start_time, end_time, duration_minutes, is_enabled, cycle_id}
+    slots: dict[
+        str, Any
+    ],  # slot_id -> {id, date, start_time, end_time, duration_minutes, is_enabled, cycle_id}
     enrollments: list[tuple[str, str]],  # list of (student_id, exam_id)
     cycle_id: str,
     max_exams_per_session: int | None = None,
@@ -187,7 +191,9 @@ def validate_schedule(
         if e_id in exam_to_slot:
             student_slots.setdefault(s_id, []).append((e_id, exam_to_slot[e_id]))
 
-    clash_pairs: dict[tuple[str, str, str], int] = {}  # (exam_a, exam_b, slot_id) -> count of shared students
+    clash_pairs: dict[
+        tuple[str, str, str], int
+    ] = {}  # (exam_a, exam_b, slot_id) -> count of shared students
     for _s_id, exam_slot_pairs in student_slots.items():
         if len(exam_slot_pairs) < 2:
             continue
@@ -199,7 +205,11 @@ def validate_schedule(
             if len(eids) >= 2:
                 for i in range(len(eids)):
                     for j in range(i + 1, len(eids)):
-                        pair: tuple[str, str, str] = (min(eids[i], eids[j]), max(eids[i], eids[j]), sid)
+                        pair: tuple[str, str, str] = (
+                            min(eids[i], eids[j]),
+                            max(eids[i], eids[j]),
+                            sid,
+                        )
                         clash_pairs[pair] = clash_pairs.get(pair, 0) + 1
 
     for (e_a, e_b, sid), count in clash_pairs.items():

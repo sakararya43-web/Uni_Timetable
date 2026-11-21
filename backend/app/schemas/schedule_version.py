@@ -68,7 +68,9 @@ class ScheduleVersionDetailResponse(BaseModel):
     softScore: float = Field(alias="soft_score")
     rowVersion: int = Field(alias="row_version")
     assignments: list[AssignmentDetailResponse] = Field(default_factory=list)
-    validationReport: ScheduleValidationReportSchema | None = Field(default=None, alias="validation_report")
+    validationReport: ScheduleValidationReportSchema | None = Field(
+        default=None, alias="validation_report"
+    )
     editHistory: list[dict[str, Any]] = Field(default_factory=list, alias="edit_history")
     createdAt: datetime = Field(alias="created_at")
     updatedAt: datetime = Field(alias="updated_at")
@@ -94,7 +96,9 @@ class PreviewMoveResponse(BaseModel):
 
     valid: bool
     violations: list[HardViolationSchema] = Field(default_factory=list)
-    conflictingExams: list[ConflictingExamItem] = Field(default_factory=list, alias="conflicting_exams")
+    conflictingExams: list[ConflictingExamItem] = Field(
+        default_factory=list, alias="conflicting_exams"
+    )
     softPenaltyDelta: float = Field(default=0.0, alias="soft_penalty_delta")
     newSoftScore: float = Field(default=0.0, alias="new_soft_score")
     examLocked: bool = Field(default=False, alias="exam_locked")

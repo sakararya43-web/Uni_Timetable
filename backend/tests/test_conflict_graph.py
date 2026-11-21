@@ -296,11 +296,21 @@ def setup_conflict_cycle_base(db: Session, admin_headers: dict[str, str], client
     # (CS101, CS103) = 1 (Bob)
     # (CS102, CS103) = 1 (Bob)
     enrs = [
-        Enrollment(student_id=stu1.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu1.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu2.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu2.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu2.id, subject_id=s3.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
+        Enrollment(
+            student_id=stu1.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu1.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu2.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu2.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu2.id, subject_id=s3.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
     ]
     db.add_all(enrs)
     db.commit()
@@ -328,7 +338,9 @@ def test_conflict_graph_build_idempotency_and_staleness(client: TestClient, db_s
     assert data1["version"] == 1
     assert (data1["stats"].get("vertex_count") or data1["stats"].get("vertexCount")) == 3
     assert (data1["stats"].get("edge_count") or data1["stats"].get("edgeCount")) == 3
-    assert (data1["stats"].get("chromatic_lower_bound") or data1["stats"].get("chromaticLowerBound")) == 3
+    assert (
+        data1["stats"].get("chromatic_lower_bound") or data1["stats"].get("chromaticLowerBound")
+    ) == 3
 
     # 2. Second build without force: idempotent no-op returns same snapshot (P6.9)
     resp2 = client.post(f"/api/v1/cycles/{cycle.id}/graph/build", headers=admin_headers)
@@ -336,7 +348,9 @@ def test_conflict_graph_build_idempotency_and_staleness(client: TestClient, db_s
     data2 = resp2.json()
     assert (data2.get("isNew") if "isNew" in data2 else data2.get("is_new")) is False
     assert data2["version"] == 1
-    assert (data2.get("snapshot_id") or data2.get("snapshotId")) == (data1.get("snapshot_id") or data1.get("snapshotId"))
+    assert (data2.get("snapshot_id") or data2.get("snapshotId")) == (
+        data1.get("snapshot_id") or data1.get("snapshotId")
+    )
 
     # 3. Build with force=True: creates snapshot v2
     resp3 = client.post(f"/api/v1/cycles/{cycle.id}/graph/build?force=true", headers=admin_headers)
@@ -365,7 +379,11 @@ def test_conflict_graph_build_idempotency_and_staleness(client: TestClient, db_s
 
     resp_stale = client.get(f"/api/v1/cycles/{cycle.id}/graph", headers=admin_headers)
     assert resp_stale.status_code == 200
-    assert (resp_stale.json().get("isStale") if "isStale" in resp_stale.json() else resp_stale.json().get("is_stale")) is True
+    assert (
+        resp_stale.json().get("isStale")
+        if "isStale" in resp_stale.json()
+        else resp_stale.json().get("is_stale")
+    ) is True
 
 
 def test_conflict_graph_privacy_and_query_filters(client: TestClient, db_session: Session):
@@ -401,11 +419,15 @@ def test_conflict_graph_privacy_and_query_filters(client: TestClient, db_session
     assert len(edges) == 3
 
     # Filter by minWeight=2: only the (CS101, CS102) edge has weight 2
-    resp_filtered = client.get(f"/api/v1/cycles/{cycle.id}/graph?minWeight=2", headers=student_headers)
+    resp_filtered = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph?minWeight=2", headers=student_headers
+    )
     assert resp_filtered.status_code == 200
     filtered_edges = resp_filtered.json()["edges"]
     assert len(filtered_edges) == 1
-    assert (filtered_edges[0].get("shared_student_count") or filtered_edges[0].get("sharedStudentCount")) == 2
+    assert (
+        filtered_edges[0].get("shared_student_count") or filtered_edges[0].get("sharedStudentCount")
+    ) == 2
 
 
 def test_conflict_graph_export_json_and_csv(client: TestClient, db_session: Session):
@@ -416,11 +438,15 @@ def test_conflict_graph_export_json_and_csv(client: TestClient, db_session: Sess
     client.post(f"/api/v1/cycles/{cycle.id}/graph/build", headers=admin_headers)
 
     # 1. Non-admin gets 403 Forbidden
-    resp_forbidden = client.get(f"/api/v1/cycles/{cycle.id}/graph/export?format=json", headers=coord_headers)
+    resp_forbidden = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph/export?format=json", headers=coord_headers
+    )
     assert resp_forbidden.status_code == 403
 
     # 2. Admin exports JSON
-    resp_json = client.get(f"/api/v1/cycles/{cycle.id}/graph/export?format=json", headers=admin_headers)
+    resp_json = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph/export?format=json", headers=admin_headers
+    )
     assert resp_json.status_code == 200
     assert resp_json.headers["content-type"] == "application/json"
     assert "conflict_graph_" in resp_json.headers["content-disposition"]
@@ -428,7 +454,9 @@ def test_conflict_graph_export_json_and_csv(client: TestClient, db_session: Sess
     assert "nodes" in data and "edges" in data
 
     # 3. Admin exports CSV
-    resp_csv = client.get(f"/api/v1/cycles/{cycle.id}/graph/export?format=csv", headers=admin_headers)
+    resp_csv = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph/export?format=csv", headers=admin_headers
+    )
     assert resp_csv.status_code == 200
     assert "text/csv" in resp_csv.headers["content-type"]
     csv_text = resp_csv.text
@@ -450,19 +478,27 @@ def test_privileged_drilldown_shared_students(client: TestClient, db_session: Se
     resp_g = client.get(f"/api/v1/cycles/{cycle.id}/graph", headers=admin_headers)
     edges = resp_g.json()["edges"]
     # Find the edge with weight 2 (shared by Alice and Bob)
-    edge_w2 = next(e for e in edges if (e.get("shared_student_count") or e.get("sharedStudentCount")) == 2)
+    edge_w2 = next(
+        e for e in edges if (e.get("shared_student_count") or e.get("sharedStudentCount")) == 2
+    )
     edge_id = edge_w2["id"]
 
     # 1. Student role cannot access drilldown -> 403
-    resp_forbidden = client.get(f"/api/v1/cycles/{cycle.id}/graph/edges/{edge_id}", headers=student_headers)
+    resp_forbidden = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph/edges/{edge_id}", headers=student_headers
+    )
     assert resp_forbidden.status_code == 403
 
     # 2. Admin drills down by edge_id
-    resp_drill = client.get(f"/api/v1/cycles/{cycle.id}/graph/edges/{edge_id}", headers=admin_headers)
+    resp_drill = client.get(
+        f"/api/v1/cycles/{cycle.id}/graph/edges/{edge_id}", headers=admin_headers
+    )
     assert resp_drill.status_code == 200
     drill_data = resp_drill.json()
     assert (drill_data.get("shared_student_count") or drill_data.get("sharedStudentCount")) == 2
-    student_numbers = [(s.get("student_number") or s.get("studentNumber")) for s in drill_data["students"]]
+    student_numbers = [
+        (s.get("student_number") or s.get("studentNumber")) for s in drill_data["students"]
+    ]
     assert "STU001" in student_numbers
     assert "STU002" in student_numbers
 
@@ -474,10 +510,14 @@ def test_privileged_drilldown_shared_students(client: TestClient, db_session: Se
         headers=admin_headers,
     )
     assert resp_pair.status_code == 200
-    assert (resp_pair.json().get("shared_student_count") or resp_pair.json().get("sharedStudentCount")) == 2
+    assert (
+        resp_pair.json().get("shared_student_count") or resp_pair.json().get("sharedStudentCount")
+    ) == 2
 
 
-def test_subject_conflict_degree_populated_from_latest_snapshot(client: TestClient, db_session: Session):
+def test_subject_conflict_degree_populated_from_latest_snapshot(
+    client: TestClient, db_session: Session
+):
     """
     Verifies that SubjectResponse dynamically includes conflictDegree from
     the latest graph snapshot (Task P6.13, PRD §11).
@@ -488,7 +528,9 @@ def test_subject_conflict_degree_populated_from_latest_snapshot(client: TestClie
     # Before build, conflict degree is None
     resp_sub_pre = client.get(f"/api/v1/subjects/{subjects[0].id}", headers=admin_headers)
     assert resp_sub_pre.status_code == 200
-    assert (resp_sub_pre.json().get("conflict_degree") or resp_sub_pre.json().get("conflictDegree")) is None
+    assert (
+        resp_sub_pre.json().get("conflict_degree") or resp_sub_pre.json().get("conflictDegree")
+    ) is None
 
     # Build graph
     client.post(f"/api/v1/cycles/{cycle.id}/graph/build", headers=admin_headers)
@@ -496,4 +538,6 @@ def test_subject_conflict_degree_populated_from_latest_snapshot(client: TestClie
     # After build, CS101 has 2 conflicts (CS102 and CS103)
     resp_sub_post = client.get(f"/api/v1/subjects/{subjects[0].id}", headers=admin_headers)
     assert resp_sub_post.status_code == 200
-    assert (resp_sub_post.json().get("conflict_degree") or resp_sub_post.json().get("conflictDegree")) == 2
+    assert (
+        resp_sub_post.json().get("conflict_degree") or resp_sub_post.json().get("conflictDegree")
+    ) == 2

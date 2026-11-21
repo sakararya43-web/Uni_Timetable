@@ -141,7 +141,9 @@ def map_colors_to_slots(
                 bottlenecks=[
                     f"Color class {color_id} contains exams locked to different slots: {locked_slots}."
                 ],
-                recommendations=["Unlock one of the conflicting exams or place them in separate cycles."],
+                recommendations=[
+                    "Unlock one of the conflicting exams or place them in separate cycles."
+                ],
                 message=f"Contradictory slot locks in color class {color_id}.",
             )
 
@@ -155,7 +157,9 @@ def map_colors_to_slots(
                     unmapped_colors=[color_id],
                     unmapped_exam_ids=exam_ids,
                     bottlenecks=[f"Locked slot '{locked_sid}' is disabled or does not exist."],
-                    recommendations=["Enable the locked slot or change the exam lock to an active slot."],
+                    recommendations=[
+                        "Enable the locked slot or change the exam lock to an active slot."
+                    ],
                     message=f"Locked slot '{locked_sid}' is unavailable.",
                 )
             color_to_slot[color_id] = locked_sid
@@ -225,21 +229,29 @@ def map_colors_to_slots(
 
         total_req = len(color_classes)
         total_avail = len(enabled_slots)
-        bottlenecks.append(f"Insufficient slots: required {total_req} slots, but only {total_avail} enabled slots exist.")
+        bottlenecks.append(
+            f"Insufficient slots: required {total_req} slots, but only {total_avail} enabled slots exist."
+        )
 
         # Analyze why unmapped classes failed
         for c in unmapped:
             exam_ids = color_classes[c]
-            max_dur = max((exams[eid].duration_minutes for eid in exam_ids if eid in exams), default=180)
+            max_dur = max(
+                (exams[eid].duration_minutes for eid in exam_ids if eid in exams), default=180
+            )
             slots_with_dur = [s for s in enabled_slots if s.duration_minutes >= max_dur]
             if len(slots_with_dur) < total_req:
                 bottlenecks.append(
                     f"Duration bottleneck: color class {c} has {max_dur}-minute exam; only {len(slots_with_dur)} slots support this duration."
                 )
-                recommendations.append("Extend slot durations or configure longer exam sessions in cycle settings.")
+                recommendations.append(
+                    "Extend slot durations or configure longer exam sessions in cycle settings."
+                )
 
         if total_req > total_avail:
-            recommendations.append("Add more exam dates or add an additional session (e.g. Evening) to the cycle configuration.")
+            recommendations.append(
+                "Add more exam dates or add an additional session (e.g. Evening) to the cycle configuration."
+            )
 
         return MappingResult(
             is_feasible=False,

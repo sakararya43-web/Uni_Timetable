@@ -63,7 +63,9 @@ class StudentService:
     def get_student_by_id(db: Session, student_id: str, actor: User) -> StudentResponse:
         st = db.get(Student, student_id)
         if not st:
-            raise DomainException(code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404)
+            raise DomainException(
+                code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404
+            )
 
         if actor.role == "student":
             check_student_self_access(actor, st.user_id)
@@ -138,7 +140,9 @@ class StudentService:
     ) -> StudentResponse:
         st = db.get(Student, student_id)
         if not st:
-            raise DomainException(code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404)
+            raise DomainException(
+                code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404
+            )
 
         check_department_scope(actor, st.department_id)
 
@@ -188,7 +192,9 @@ class StudentService:
     ) -> StudentResponse:
         st = db.get(Student, student_id)
         if not st:
-            raise DomainException(code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404)
+            raise DomainException(
+                code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404
+            )
 
         check_department_scope(actor, st.department_id)
 
@@ -210,13 +216,13 @@ class StudentService:
         return StudentResponse.model_validate(st)
 
     @staticmethod
-    def get_student_subjects(
-        db: Session, student_id: str, actor: User
-    ) -> list[SubjectResponse]:
+    def get_student_subjects(db: Session, student_id: str, actor: User) -> list[SubjectResponse]:
         """List of active subjects in which this student is enrolled (Task P3.10)."""
         st = db.get(Student, student_id)
         if not st:
-            raise DomainException(code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404)
+            raise DomainException(
+                code="STUDENT_NOT_FOUND", message="Student not found.", status_code=404
+            )
 
         if actor.role == "student":
             check_student_self_access(actor, st.user_id)

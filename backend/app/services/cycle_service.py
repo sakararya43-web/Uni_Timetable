@@ -41,7 +41,9 @@ class CycleService:
     @staticmethod
     def validate_transition(current_status: CycleStatus, new_status: CycleStatus) -> None:
         """Enforces the strict status machine: Draft -> Generated -> Reviewed -> Published -> Archived (Task P5.1)."""
-        curr_enum = CycleStatus(current_status) if isinstance(current_status, str) else current_status
+        curr_enum = (
+            CycleStatus(current_status) if isinstance(current_status, str) else current_status
+        )
         new_enum = CycleStatus(new_status) if isinstance(new_status, str) else new_status
 
         if curr_enum == new_enum:
@@ -137,8 +139,12 @@ class CycleService:
                 end_date=data.endDate,
                 timezone=data.timezone,
                 sessions=[
-                    SessionConfig(label="Morning", start_time="09:00", end_time="12:00", enabled=True),
-                    SessionConfig(label="Afternoon", start_time="14:00", end_time="17:00", enabled=True),
+                    SessionConfig(
+                        label="Morning", start_time="09:00", end_time="12:00", enabled=True
+                    ),
+                    SessionConfig(
+                        label="Afternoon", start_time="14:00", end_time="17:00", enabled=True
+                    ),
                 ],
             )
             config_dict = default_config.model_dump(mode="json", by_alias=True)
@@ -165,7 +171,11 @@ class CycleService:
             actor_email=actor.email,
             actor_id=actor.id,
             entity_id=cycle.id,
-            after={"name": cycle.name, "start_date": str(cycle.start_date), "end_date": str(cycle.end_date)},
+            after={
+                "name": cycle.name,
+                "start_date": str(cycle.start_date),
+                "end_date": str(cycle.end_date),
+            },
             request_id=request_id,
         )
         db.commit()
@@ -354,10 +364,7 @@ class CycleService:
         db.commit()
 
         total_synced = (
-            db.scalar(
-                select(func.count(Exam.id)).where(Exam.scheduling_cycle_id == cycle_id)
-            )
-            or 0
+            db.scalar(select(func.count(Exam.id)).where(Exam.scheduling_cycle_id == cycle_id)) or 0
         )
 
         return ExamSyncResponse(
@@ -385,9 +392,7 @@ class CycleService:
 
         offset = (page - 1) * page_size
         exams = list(
-            db.scalars(
-                query.order_by(Exam.created_at.asc()).offset(offset).limit(page_size)
-            ).all()
+            db.scalars(query.order_by(Exam.created_at.asc()).offset(offset).limit(page_size)).all()
         )
 
         responses: list[ExamResponse] = []

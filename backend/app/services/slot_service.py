@@ -34,7 +34,9 @@ class SlotService:
         if end_date < start_date:
             raise ValueError("end_date cannot be earlier than start_date.")
 
-        exam_days: set[int] = set(config.get("examDaysOfWeek", config.get("exam_days_of_week", [1, 2, 3, 4, 5, 6])))
+        exam_days: set[int] = set(
+            config.get("examDaysOfWeek", config.get("exam_days_of_week", [1, 2, 3, 4, 5, 6]))
+        )
 
         # Normalize holidays
         raw_holidays = config.get("holidays", [])
@@ -87,7 +89,9 @@ class SlotService:
                     # Check per-date special restrictions (Task P5.7)
                     # Produce disabled slot rather than missing so UI can show it
                     slot_enabled = sess_enabled
-                    restriction = restrictions_map.get((d_str, s_label)) or restrictions_map.get((d_str, None))
+                    restriction = restrictions_map.get((d_str, s_label)) or restrictions_map.get(
+                        (d_str, None)
+                    )
                     if restriction and not restriction.get("enabled", False):
                         slot_enabled = False
 
@@ -99,7 +103,8 @@ class SlotService:
                             "duration_minutes": dur,
                             "session_label": s_label,
                             "enabled": slot_enabled,
-                            "capacity": config.get("maxExamsPerSession") or config.get("max_exams_per_session"),
+                            "capacity": config.get("maxExamsPerSession")
+                            or config.get("max_exams_per_session"),
                         }
                     )
 
@@ -164,9 +169,7 @@ class SlotService:
 
         # Reconcile with existing slots to preserve IDs (Task P5.9)
         existing_slots = list(
-            db.scalars(
-                select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)
-            ).all()
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all()
         )
         existing_map = {(s.date, s.start_time.strftime("%H:%M")): s for s in existing_slots}
 
@@ -273,8 +276,7 @@ class SlotService:
         )
         exams = list(
             db.scalars(
-                select(Exam)
-                .where(
+                select(Exam).where(
                     Exam.scheduling_cycle_id == cycle_id,
                     Exam.status == EntityStatus.ACTIVE,
                 )
@@ -323,7 +325,9 @@ class SlotService:
                 f"longer than every enabled slot (max available: {max_slot_dur} min)."
             )
 
-        is_feasible = (enabled_count >= len(exams)) and (incompatible_count == 0) and (total_slots > 0)
+        is_feasible = (
+            (enabled_count >= len(exams)) and (incompatible_count == 0) and (total_slots > 0)
+        )
 
         return CapacitySummaryResponse(
             cycle_id=cycle_id,

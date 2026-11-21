@@ -74,7 +74,10 @@ class SubjectService:
             deg_val: int | None = None
             exam = db.scalar(
                 select(Exam)
-                .join(ConflictGraphSnapshot, ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id)
+                .join(
+                    ConflictGraphSnapshot,
+                    ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id,
+                )
                 .where(Exam.subject_id == s.id)
                 .order_by(ConflictGraphSnapshot.version.desc())
                 .limit(1)
@@ -115,7 +118,9 @@ class SubjectService:
     def get_subject_by_id(db: Session, subject_id: str, actor: User) -> SubjectResponse:
         s = db.get(Subject, subject_id)
         if not s:
-            raise DomainException(code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404)
+            raise DomainException(
+                code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404
+            )
 
         check_department_scope(actor, s.department_id)
 
@@ -132,7 +137,10 @@ class SubjectService:
         deg_val: int | None = None
         exam = db.scalar(
             select(Exam)
-            .join(ConflictGraphSnapshot, ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id)
+            .join(
+                ConflictGraphSnapshot,
+                ConflictGraphSnapshot.scheduling_cycle_id == Exam.scheduling_cycle_id,
+            )
             .where(Exam.subject_id == s.id)
             .order_by(ConflictGraphSnapshot.version.desc())
             .limit(1)
@@ -237,7 +245,9 @@ class SubjectService:
     ) -> SubjectResponse:
         s = db.get(Subject, subject_id)
         if not s:
-            raise DomainException(code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404)
+            raise DomainException(
+                code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404
+            )
 
         check_department_scope(actor, s.department_id)
 
@@ -295,7 +305,9 @@ class SubjectService:
     ) -> SubjectResponse:
         s = db.get(Subject, subject_id)
         if not s:
-            raise DomainException(code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404)
+            raise DomainException(
+                code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404
+            )
 
         check_department_scope(actor, s.department_id)
 
@@ -328,7 +340,9 @@ class SubjectService:
         """Paginated list of students enrolled in this subject (staff only, Task P3.6)."""
         s = db.get(Subject, subject_id)
         if not s:
-            raise DomainException(code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404)
+            raise DomainException(
+                code="SUBJECT_NOT_FOUND", message="Subject not found.", status_code=404
+            )
 
         check_department_scope(actor, s.department_id)
 

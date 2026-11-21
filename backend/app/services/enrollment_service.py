@@ -148,7 +148,11 @@ class EnrollmentService:
                 )
             else:
                 # Re-activate previously withdrawn enrollment
-                before_state = {"status": existing.status.value if hasattr(existing.status, "value") else str(existing.status)}
+                before_state = {
+                    "status": existing.status.value
+                    if hasattr(existing.status, "value")
+                    else str(existing.status)
+                }
                 existing.status = EnrollmentStatus.ACTIVE
 
                 # Staleness signaling (Task P3.16)
@@ -309,21 +313,30 @@ class EnrollmentService:
         dup_count = len(dup_records)
 
         # 2. Orphan references: enrollments pointing to nonexistent student, subject, or cycle
-        orphan_student_count = db.scalar(
-            select(func.count(Enrollment.id)).where(
-                ~Enrollment.student_id.in_(select(Student.id))
+        orphan_student_count = (
+            db.scalar(
+                select(func.count(Enrollment.id)).where(
+                    ~Enrollment.student_id.in_(select(Student.id))
+                )
             )
-        ) or 0
-        orphan_subject_count = db.scalar(
-            select(func.count(Enrollment.id)).where(
-                ~Enrollment.subject_id.in_(select(Subject.id))
+            or 0
+        )
+        orphan_subject_count = (
+            db.scalar(
+                select(func.count(Enrollment.id)).where(
+                    ~Enrollment.subject_id.in_(select(Subject.id))
+                )
             )
-        ) or 0
-        orphan_cycle_count = db.scalar(
-            select(func.count(Enrollment.id)).where(
-                ~Enrollment.cycle_id.in_(select(SchedulingCycle.id))
+            or 0
+        )
+        orphan_cycle_count = (
+            db.scalar(
+                select(func.count(Enrollment.id)).where(
+                    ~Enrollment.cycle_id.in_(select(SchedulingCycle.id))
+                )
             )
-        ) or 0
+            or 0
+        )
         orphan_count = orphan_student_count + orphan_subject_count + orphan_cycle_count
 
         # 3. Active students with zero active enrollments
@@ -333,12 +346,15 @@ class EnrollmentService:
         if cycle_id:
             st_enr_subquery = st_enr_subquery.where(Enrollment.cycle_id == cycle_id)
 
-        zero_enr_students = db.scalar(
-            select(func.count(Student.id)).where(
-                Student.status == EntityStatus.ACTIVE,
-                ~Student.id.in_(st_enr_subquery),
+        zero_enr_students = (
+            db.scalar(
+                select(func.count(Student.id)).where(
+                    Student.status == EntityStatus.ACTIVE,
+                    ~Student.id.in_(st_enr_subquery),
+                )
             )
-        ) or 0
+            or 0
+        )
 
         # 4. Active subjects with zero active enrollments
         sub_enr_subquery = select(Enrollment.subject_id).where(
@@ -347,12 +363,15 @@ class EnrollmentService:
         if cycle_id:
             sub_enr_subquery = sub_enr_subquery.where(Enrollment.cycle_id == cycle_id)
 
-        zero_enr_subjects = db.scalar(
-            select(func.count(Subject.id)).where(
-                Subject.status == EntityStatus.ACTIVE,
-                ~Subject.id.in_(sub_enr_subquery),
+        zero_enr_subjects = (
+            db.scalar(
+                select(func.count(Subject.id)).where(
+                    Subject.status == EntityStatus.ACTIVE,
+                    ~Subject.id.in_(sub_enr_subquery),
+                )
             )
-        ) or 0
+            or 0
+        )
 
         # 5. Cycles with zero configured exams
         exam_cycle_subquery = select(Exam.scheduling_cycle_id)

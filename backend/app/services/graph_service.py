@@ -58,9 +58,7 @@ class GraphService:
 
         # Query active in-scope exams and enrollments
         exam_ids = list(
-            db.scalars(
-                select(Exam.id).where(Exam.scheduling_cycle_id == cycle_id)
-            ).all()
+            db.scalars(select(Exam.id).where(Exam.scheduling_cycle_id == cycle_id)).all()
         )
         if not exam_ids:
             return (True, "", latest_snapshot.enrollment_snapshot_hash if latest_snapshot else "")
@@ -79,16 +77,14 @@ class GraphService:
         ).all()
 
         enr_pairs = [
-            (s_id, sub_to_exam[sub_id])
-            for s_id, sub_id in enrollments
-            if sub_id in sub_to_exam
+            (s_id, sub_to_exam[sub_id]) for s_id, sub_id in enrollments if sub_id in sub_to_exam
         ]
 
         current_hash = compute_enrollment_hash(exam_ids, enr_pairs)
         if not latest_snapshot:
             return (True, current_hash, "")
 
-        is_stale = (latest_snapshot.enrollment_snapshot_hash != current_hash)
+        is_stale = latest_snapshot.enrollment_snapshot_hash != current_hash
         return (is_stale, current_hash, latest_snapshot.enrollment_snapshot_hash)
 
     @staticmethod
@@ -150,11 +146,19 @@ class GraphService:
 
         # 4. Idempotency check (P6.9)
         latest_snapshot = GraphService.get_latest_snapshot(db, cycle_id)
-        if latest_snapshot and latest_snapshot.enrollment_snapshot_hash == current_hash and not force:
+        if (
+            latest_snapshot
+            and latest_snapshot.enrollment_snapshot_hash == current_hash
+            and not force
+        ):
             return (
                 latest_snapshot,
                 False,
-                {"isValid": True, "errors": [], "warnings": ["Idempotent build: snapshot hash unchanged."]},
+                {
+                    "isValid": True,
+                    "errors": [],
+                    "warnings": ["Idempotent build: snapshot hash unchanged."],
+                },
             )
 
         # 5. Build pure graph G = (V, E)
@@ -458,26 +462,38 @@ class GraphService:
         if export_format.lower() == "csv":
             buffer = io.StringIO()
             writer = csv.writer(buffer)
-            writer.writerow([
-                "exam_id_a",
-                "exam_id_b",
-                "subject_code_a",
-                "subject_code_b",
-                "shared_student_count",
-            ])
+            writer.writerow(
+                [
+                    "exam_id_a",
+                    "exam_id_b",
+                    "subject_code_a",
+                    "subject_code_b",
+                    "shared_student_count",
+                ]
+            )
             for edge in response_data.edges:
-                writer.writerow([
-                    edge.examIdA,
-                    edge.examIdB,
-                    edge.subjectCodeA,
-                    edge.subjectCodeB,
-                    edge.sharedStudentCount,
-                ])
-            return buffer.getvalue(), "text/csv", f"conflict_graph_{cycle_id}_v{response_data.version}.csv"
+                writer.writerow(
+                    [
+                        edge.examIdA,
+                        edge.examIdB,
+                        edge.subjectCodeA,
+                        edge.subjectCodeB,
+                        edge.sharedStudentCount,
+                    ]
+                )
+            return (
+                buffer.getvalue(),
+                "text/csv",
+                f"conflict_graph_{cycle_id}_v{response_data.version}.csv",
+            )
 
         # Default JSON format
         json_content = json.dumps(response_data.model_dump(mode="json", by_alias=True), indent=2)
-        return json_content, "application/json", f"conflict_graph_{cycle_id}_v{response_data.version}.json"
+        return (
+            json_content,
+            "application/json",
+            f"conflict_graph_{cycle_id}_v{response_data.version}.json",
+        )
 
     @staticmethod
     def get_edge_shared_students(

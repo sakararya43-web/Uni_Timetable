@@ -34,7 +34,9 @@ class SessionConfig(BaseModel):
         except Exception as exc:
             if isinstance(exc, ValueError) and "strictly after" in str(exc):
                 raise
-            raise ValueError(f"Invalid time format in session '{self.label}'. Expected HH:MM.") from exc
+            raise ValueError(
+                f"Invalid time format in session '{self.label}'. Expected HH:MM."
+            ) from exc
         return self
 
 
@@ -97,7 +99,9 @@ class CycleConfiguration(BaseModel):
     maxExamsPerDay: int | None = Field(default=None, alias="max_exams_per_day")
     allowedDurations: list[int] = Field(default=[180], alias="allowed_durations")
     defaultDurationMinutes: int = Field(default=180, alias="default_duration_minutes")
-    preferredTimeSlots: list[dict[str, Any]] = Field(default_factory=list, alias="preferred_time_slots")
+    preferredTimeSlots: list[dict[str, Any]] = Field(
+        default_factory=list, alias="preferred_time_slots"
+    )
     specialRestrictions: list[SpecialRestrictionConfig] = Field(
         default_factory=list, alias="special_restrictions"
     )
@@ -173,7 +177,11 @@ class CycleUpdate(BaseModel):
 
     @model_validator(mode="after")
     def validate_dates(self) -> "CycleUpdate":
-        if self.startDate is not None and self.endDate is not None and self.endDate < self.startDate:
+        if (
+            self.startDate is not None
+            and self.endDate is not None
+            and self.endDate < self.startDate
+        ):
             raise ValueError("end_date cannot be earlier than start_date.")
         return self
 
@@ -279,7 +287,9 @@ class ExamUpdate(BaseModel):
         if self.preferredDates is not None and self.restrictedDates is not None:
             overlap = set(self.preferredDates).intersection(set(self.restrictedDates))
             if overlap:
-                raise ValueError(f"Dates cannot appear in both preferred and restricted: {', '.join(sorted(overlap))}")
+                raise ValueError(
+                    f"Dates cannot appear in both preferred and restricted: {', '.join(sorted(overlap))}"
+                )
         return self
 
 

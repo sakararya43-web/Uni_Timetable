@@ -32,14 +32,18 @@ def test_unauthenticated_requests_rejected(client: TestClient) -> None:
             res = client.get(path)
         else:
             res = client.post(path, json={})
-        assert res.status_code == 401, f"Expected 401 for unauthenticated {method} {path}, got {res.status_code}"
+        assert res.status_code == 401, (
+            f"Expected 401 for unauthenticated {method} {path}, got {res.status_code}"
+        )
         body = res.json()
         assert "error" in body or "detail" in body
         if "error" in body:
             assert "code" in body["error"]
 
 
-def test_student_role_forbidden_from_admin_endpoints(client: TestClient, db_session: Session) -> None:
+def test_student_role_forbidden_from_admin_endpoints(
+    client: TestClient, db_session: Session
+) -> None:
     """Verifies that authenticated Student accounts receive 403 Forbidden on administrative endpoints."""
     _, student_headers = make_auth_user(
         db=db_session,
@@ -65,10 +69,14 @@ def test_student_role_forbidden_from_admin_endpoints(client: TestClient, db_sess
             res = client.get(path, headers=student_headers)
         else:
             res = client.post(path, json={}, headers=student_headers)
-        assert res.status_code == 403, f"Expected 403 Forbidden for Student on {method} {path}, got {res.status_code}"
+        assert res.status_code == 403, (
+            f"Expected 403 Forbidden for Student on {method} {path}, got {res.status_code}"
+        )
 
 
-def test_faculty_role_forbidden_from_admin_mutations(client: TestClient, db_session: Session) -> None:
+def test_faculty_role_forbidden_from_admin_mutations(
+    client: TestClient, db_session: Session
+) -> None:
     """Verifies that Faculty members cannot perform administrative mutations."""
     _, faculty_headers = make_auth_user(
         db=db_session,
@@ -88,4 +96,6 @@ def test_faculty_role_forbidden_from_admin_mutations(client: TestClient, db_sess
             res = client.get(path, headers=faculty_headers)
         else:
             res = client.post(path, json={}, headers=faculty_headers)
-        assert res.status_code == 403, f"Expected 403 Forbidden for Faculty on {method} {path}, got {res.status_code}"
+        assert res.status_code == 403, (
+            f"Expected 403 Forbidden for Faculty on {method} {path}, got {res.status_code}"
+        )

@@ -380,21 +380,21 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 17. Phase 15 — Testing and Quality Assurance
 
-- [ ] **P15.1** Verify backend unit test coverage (>= 95% for algorithms, >= 80% overall). `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.2** Execute Hypothesis property-based tests for graph builder and coloring algorithms. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.3** Execute end-to-end integration test suite across full backend pipeline. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.4** Verify curated algorithmic regression fixtures with known chromatic numbers. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.5** Execute pipeline determinism test verifying byte-identical output across repeated runs. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.6** Execute complete authorization matrix test covering PRD §7 permissions. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.7** Execute frontend component test suite (forms, wizard, timetable, graph interactions). `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.8** Execute automated accessibility tests (axe-core) and keyboard navigation audits. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.9** Execute cross-browser verification across modern Chromium, Firefox, WebKit. `[phase-15]` `[P1]` `[qa]`
-- [ ] **P15.10** Implement and execute Playwright end-to-end golden path workflow. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.11** Implement Playwright negative test scenarios (invalid CSV, conflicting move, stale publish). `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.12** Execute visual print and PDF export layout regression checks. `[phase-15]` `[P1]` `[qa]`
-- [ ] **P15.13** Perform end-to-end demonstration script dry run. `[phase-15]` `[P0]` `[qa]`
-- [ ] **P15.14** Perform User Acceptance Testing (UAT) usability assessment. `[phase-15]` `[P1]` `[qa]`
-- [ ] **P15.15** Confirm zero open Severity 1/2 defects and verify Release Gate Checklist. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.1** Verify backend unit test coverage (>= 95% for algorithms, >= 80% overall). `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.2** Execute Hypothesis property-based tests for graph builder and coloring algorithms. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.3** Execute end-to-end integration test suite across full backend pipeline. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.4** Verify curated algorithmic regression fixtures with known chromatic numbers. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.5** Execute pipeline determinism test verifying byte-identical output across repeated runs. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.6** Execute complete authorization matrix test covering PRD §7 permissions. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.7** Execute frontend component test suite (forms, wizard, timetable, graph interactions). `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.8** Execute automated accessibility tests (axe-core) and keyboard navigation audits. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.9** Execute cross-browser verification across modern Chromium, Firefox, WebKit. `[phase-15]` `[P1]` `[qa]`
+- [x] **P15.10** Implement and execute Playwright end-to-end golden path workflow. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.11** Implement Playwright negative test scenarios (invalid CSV, conflicting move, stale publish). `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.12** Execute visual print and PDF export layout regression checks. `[phase-15]` `[P1]` `[qa]`
+- [x] **P15.13** Perform end-to-end demonstration script dry run. `[phase-15]` `[P0]` `[qa]`
+- [x] **P15.14** Perform User Acceptance Testing (UAT) usability assessment. `[phase-15]` `[P1]` `[qa]`
+- [x] **P15.15** Confirm zero open Severity 1/2 defects and verify Release Gate Checklist. `[phase-15]` `[P0]` `[qa]`
 
 ---
 

@@ -27,14 +27,56 @@ def test_pure_slot_mapping_feasible():
     """Bipartite matching successfully maps 3 color classes to 3 eligible slots."""
     color_classes = {0: ["e1"], 1: ["e2"], 2: ["e3"]}
     slots = [
-        SlotInfo(id="s1", date=date(2026, 6, 1), start_time="09:00", end_time="12:00", duration_minutes=180, session_label="Morning", slot_index=0),
-        SlotInfo(id="s2", date=date(2026, 6, 1), start_time="14:00", end_time="17:00", duration_minutes=180, session_label="Afternoon", slot_index=1),
-        SlotInfo(id="s3", date=date(2026, 6, 2), start_time="09:00", end_time="12:00", duration_minutes=180, session_label="Morning", slot_index=2),
+        SlotInfo(
+            id="s1",
+            date=date(2026, 6, 1),
+            start_time="09:00",
+            end_time="12:00",
+            duration_minutes=180,
+            session_label="Morning",
+            slot_index=0,
+        ),
+        SlotInfo(
+            id="s2",
+            date=date(2026, 6, 1),
+            start_time="14:00",
+            end_time="17:00",
+            duration_minutes=180,
+            session_label="Afternoon",
+            slot_index=1,
+        ),
+        SlotInfo(
+            id="s3",
+            date=date(2026, 6, 2),
+            start_time="09:00",
+            end_time="12:00",
+            duration_minutes=180,
+            session_label="Morning",
+            slot_index=2,
+        ),
     ]
     exams = {
-        "e1": ExamInfo(id="e1", subject_code="CS101", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
-        "e2": ExamInfo(id="e2", subject_code="CS102", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
-        "e3": ExamInfo(id="e3", subject_code="CS103", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
+        "e1": ExamInfo(
+            id="e1",
+            subject_code="CS101",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
+        "e2": ExamInfo(
+            id="e2",
+            subject_code="CS102",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
+        "e3": ExamInfo(
+            id="e3",
+            subject_code="CS103",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
     }
 
     res = map_colors_to_slots(color_classes, slots, exams)
@@ -47,13 +89,47 @@ def test_pure_slot_mapping_infeasible_slot_deficit():
     """Infeasible when color classes exceed available enabled slots (P8.6)."""
     color_classes = {0: ["e1"], 1: ["e2"], 2: ["e3"]}
     slots = [
-        SlotInfo(id="s1", date=date(2026, 6, 1), start_time="09:00", end_time="12:00", duration_minutes=180, session_label="Morning", slot_index=0),
-        SlotInfo(id="s2", date=date(2026, 6, 1), start_time="14:00", end_time="17:00", duration_minutes=180, session_label="Afternoon", slot_index=1),
+        SlotInfo(
+            id="s1",
+            date=date(2026, 6, 1),
+            start_time="09:00",
+            end_time="12:00",
+            duration_minutes=180,
+            session_label="Morning",
+            slot_index=0,
+        ),
+        SlotInfo(
+            id="s2",
+            date=date(2026, 6, 1),
+            start_time="14:00",
+            end_time="17:00",
+            duration_minutes=180,
+            session_label="Afternoon",
+            slot_index=1,
+        ),
     ]  # Only 2 slots for 3 classes
     exams = {
-        "e1": ExamInfo(id="e1", subject_code="CS101", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
-        "e2": ExamInfo(id="e2", subject_code="CS102", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
-        "e3": ExamInfo(id="e3", subject_code="CS103", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
+        "e1": ExamInfo(
+            id="e1",
+            subject_code="CS101",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
+        "e2": ExamInfo(
+            id="e2",
+            subject_code="CS102",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
+        "e3": ExamInfo(
+            id="e3",
+            subject_code="CS103",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
     }
 
     res = map_colors_to_slots(color_classes, slots, exams)
@@ -66,10 +142,24 @@ def test_pure_slot_mapping_infeasible_duration_overflow():
     """Infeasible when exam duration exceeds all available slots."""
     color_classes = {0: ["e1"]}
     slots = [
-        SlotInfo(id="s1", date=date(2026, 6, 1), start_time="09:00", end_time="11:00", duration_minutes=120, session_label="Morning", slot_index=0),
+        SlotInfo(
+            id="s1",
+            date=date(2026, 6, 1),
+            start_time="09:00",
+            end_time="11:00",
+            duration_minutes=120,
+            session_label="Morning",
+            slot_index=0,
+        ),
     ]
     exams = {
-        "e1": ExamInfo(id="e1", subject_code="CS101", duration_minutes=180, preferred_dates=[], restricted_dates=[]),  # 180m exam in 120m slot
+        "e1": ExamInfo(
+            id="e1",
+            subject_code="CS101",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),  # 180m exam in 120m slot
     }
 
     res = map_colors_to_slots(color_classes, slots, exams)
@@ -81,12 +171,41 @@ def test_pure_slot_mapping_preserves_locked_exams():
     """Locked exams are bound directly to their locked slot first (P8.4)."""
     color_classes = {0: ["e1"], 1: ["e2"]}
     slots = [
-        SlotInfo(id="s1", date=date(2026, 6, 1), start_time="09:00", end_time="12:00", duration_minutes=180, session_label="Morning", slot_index=0),
-        SlotInfo(id="s2", date=date(2026, 6, 1), start_time="14:00", end_time="17:00", duration_minutes=180, session_label="Afternoon", slot_index=1),
+        SlotInfo(
+            id="s1",
+            date=date(2026, 6, 1),
+            start_time="09:00",
+            end_time="12:00",
+            duration_minutes=180,
+            session_label="Morning",
+            slot_index=0,
+        ),
+        SlotInfo(
+            id="s2",
+            date=date(2026, 6, 1),
+            start_time="14:00",
+            end_time="17:00",
+            duration_minutes=180,
+            session_label="Afternoon",
+            slot_index=1,
+        ),
     ]
     exams = {
-        "e1": ExamInfo(id="e1", subject_code="CS101", duration_minutes=180, preferred_dates=[], restricted_dates=[], locked_slot_id="s2"),
-        "e2": ExamInfo(id="e2", subject_code="CS102", duration_minutes=180, preferred_dates=[], restricted_dates=[]),
+        "e1": ExamInfo(
+            id="e1",
+            subject_code="CS101",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+            locked_slot_id="s2",
+        ),
+        "e2": ExamInfo(
+            id="e2",
+            subject_code="CS102",
+            duration_minutes=180,
+            preferred_dates=[],
+            restricted_dates=[],
+        ),
     }
 
     res = map_colors_to_slots(color_classes, slots, exams)
@@ -101,16 +220,42 @@ def test_pure_slot_mapping_preserves_locked_exams():
 def test_independent_validator_passes_valid_schedule():
     """Validator returns valid=True on a conflict-free, complete schedule."""
     exams = {
-        "e1": {"id": "e1", "subject_code": "CS101", "duration_minutes": 180, "restricted_dates": [], "cycle_id": "c1"},
-        "e2": {"id": "e2", "subject_code": "CS102", "duration_minutes": 180, "restricted_dates": [], "cycle_id": "c1"},
+        "e1": {
+            "id": "e1",
+            "subject_code": "CS101",
+            "duration_minutes": 180,
+            "restricted_dates": [],
+            "cycle_id": "c1",
+        },
+        "e2": {
+            "id": "e2",
+            "subject_code": "CS102",
+            "duration_minutes": 180,
+            "restricted_dates": [],
+            "cycle_id": "c1",
+        },
     }
     assignments = [
         {"exam_id": "e1", "time_slot_id": "s1", "color_id": 0, "locked": False},
         {"exam_id": "e2", "time_slot_id": "s2", "color_id": 1, "locked": False},
     ]
     slots = {
-        "s1": {"id": "s1", "date": date(2026, 6, 1), "start_time": "09:00", "duration_minutes": 180, "is_enabled": True, "cycle_id": "c1"},
-        "s2": {"id": "s2", "date": date(2026, 6, 1), "start_time": "14:00", "duration_minutes": 180, "is_enabled": True, "cycle_id": "c1"},
+        "s1": {
+            "id": "s1",
+            "date": date(2026, 6, 1),
+            "start_time": "09:00",
+            "duration_minutes": 180,
+            "is_enabled": True,
+            "cycle_id": "c1",
+        },
+        "s2": {
+            "id": "s2",
+            "date": date(2026, 6, 1),
+            "start_time": "14:00",
+            "duration_minutes": 180,
+            "is_enabled": True,
+            "cycle_id": "c1",
+        },
     }
     enrollments = [("stu1", "e1"), ("stu1", "e2")]  # Same student, different slots -> no clash!
 
@@ -122,8 +267,20 @@ def test_independent_validator_passes_valid_schedule():
 def test_independent_validator_catches_student_clash():
     """Validator catches student enrolled in 2 exams assigned to the same slot (Hard Constraint 1)."""
     exams = {
-        "e1": {"id": "e1", "subject_code": "CS101", "duration_minutes": 180, "restricted_dates": [], "cycle_id": "c1"},
-        "e2": {"id": "e2", "subject_code": "CS102", "duration_minutes": 180, "restricted_dates": [], "cycle_id": "c1"},
+        "e1": {
+            "id": "e1",
+            "subject_code": "CS101",
+            "duration_minutes": 180,
+            "restricted_dates": [],
+            "cycle_id": "c1",
+        },
+        "e2": {
+            "id": "e2",
+            "subject_code": "CS102",
+            "duration_minutes": 180,
+            "restricted_dates": [],
+            "cycle_id": "c1",
+        },
     }
     # Both assigned to slot s1!
     assignments = [
@@ -131,7 +288,14 @@ def test_independent_validator_catches_student_clash():
         {"exam_id": "e2", "time_slot_id": "s1", "color_id": 0, "locked": False},
     ]
     slots = {
-        "s1": {"id": "s1", "date": date(2026, 6, 1), "start_time": "09:00", "duration_minutes": 180, "is_enabled": True, "cycle_id": "c1"},
+        "s1": {
+            "id": "s1",
+            "date": date(2026, 6, 1),
+            "start_time": "09:00",
+            "duration_minutes": 180,
+            "is_enabled": True,
+            "cycle_id": "c1",
+        },
     }
     enrollments = [("stu1", "e1"), ("stu1", "e2")]  # Alice takes both
 
@@ -143,11 +307,24 @@ def test_independent_validator_catches_student_clash():
 def test_independent_validator_catches_duration_and_disabled_slot():
     """Validator catches exam duration exceeding slot and assignments to disabled slots."""
     exams = {
-        "e1": {"id": "e1", "subject_code": "CS101", "duration_minutes": 240, "restricted_dates": [], "cycle_id": "c1"},  # 240m
+        "e1": {
+            "id": "e1",
+            "subject_code": "CS101",
+            "duration_minutes": 240,
+            "restricted_dates": [],
+            "cycle_id": "c1",
+        },  # 240m
     }
     assignments = [{"exam_id": "e1", "time_slot_id": "s1", "color_id": 0, "locked": False}]
     slots = {
-        "s1": {"id": "s1", "date": date(2026, 6, 1), "start_time": "09:00", "duration_minutes": 180, "is_enabled": False, "cycle_id": "c1"},  # 180m, disabled
+        "s1": {
+            "id": "s1",
+            "date": date(2026, 6, 1),
+            "start_time": "09:00",
+            "duration_minutes": 180,
+            "is_enabled": False,
+            "cycle_id": "c1",
+        },  # 180m, disabled
     }
     enrollments = [("stu1", "e1")]
 
@@ -169,7 +346,12 @@ def test_soft_constraint_evaluation():
     ]
     slots = {
         "s1": {"id": "s1", "date": date(2026, 6, 1), "slot_index": 0, "start_time": "09:00"},
-        "s2": {"id": "s2", "date": date(2026, 6, 1), "slot_index": 1, "start_time": "14:00"},  # Consecutive on same day
+        "s2": {
+            "id": "s2",
+            "date": date(2026, 6, 1),
+            "slot_index": 1,
+            "start_time": "14:00",
+        },  # Consecutive on same day
     }
     exams = {
         "e1": {"id": "e1", "preferred_dates": ["2026-06-05"]},  # Preferred date missed!
@@ -182,7 +364,11 @@ def test_soft_constraint_evaluation():
         slots=slots,
         exams=exams,
         enrollments=enrollments,
-        weights={"multipleExamsPerDay": 10.0, "consecutiveSessions": 5.0, "preferredDateMissed": 2.0},
+        weights={
+            "multipleExamsPerDay": 10.0,
+            "consecutiveSessions": 5.0,
+            "preferredDateMissed": 2.0,
+        },
     )
 
     # 10 (multi-day) + 5 (consecutive) + 2 (pref missed) = 17.0
@@ -207,15 +393,53 @@ def setup_schedule_cycle_base(db: Session, admin_headers: dict[str, str], client
     db.flush()
 
     # 3 Subjects
-    s1 = Subject(subject_code="EE101", subject_name="Circuits", department_id=dept.id, semester=1, credits=3.0, default_duration_minutes=180, status=EntityStatus.ACTIVE)
-    s2 = Subject(subject_code="EE102", subject_name="Signals", department_id=dept.id, semester=1, credits=3.0, default_duration_minutes=180, status=EntityStatus.ACTIVE)
-    s3 = Subject(subject_code="EE103", subject_name="Electromagnetics", department_id=dept.id, semester=1, credits=3.0, default_duration_minutes=180, status=EntityStatus.ACTIVE)
+    s1 = Subject(
+        subject_code="EE101",
+        subject_name="Circuits",
+        department_id=dept.id,
+        semester=1,
+        credits=3.0,
+        default_duration_minutes=180,
+        status=EntityStatus.ACTIVE,
+    )
+    s2 = Subject(
+        subject_code="EE102",
+        subject_name="Signals",
+        department_id=dept.id,
+        semester=1,
+        credits=3.0,
+        default_duration_minutes=180,
+        status=EntityStatus.ACTIVE,
+    )
+    s3 = Subject(
+        subject_code="EE103",
+        subject_name="Electromagnetics",
+        department_id=dept.id,
+        semester=1,
+        credits=3.0,
+        default_duration_minutes=180,
+        status=EntityStatus.ACTIVE,
+    )
     db.add_all([s1, s2, s3])
     db.flush()
 
     # 2 Students
-    stu1 = Student(student_number="STU_EE_1", full_name="John Doe", email="john@univ.edu", department_id=dept.id, semester=1, status=EntityStatus.ACTIVE)
-    stu2 = Student(student_number="STU_EE_2", full_name="Jane Roe", email="jane@univ.edu", department_id=dept.id, semester=1, status=EntityStatus.ACTIVE)
+    stu1 = Student(
+        student_number="STU_EE_1",
+        full_name="John Doe",
+        email="john@univ.edu",
+        department_id=dept.id,
+        semester=1,
+        status=EntityStatus.ACTIVE,
+    )
+    stu2 = Student(
+        student_number="STU_EE_2",
+        full_name="Jane Roe",
+        email="jane@univ.edu",
+        department_id=dept.id,
+        semester=1,
+        status=EntityStatus.ACTIVE,
+    )
     db.add_all([stu1, stu2])
     db.flush()
 
@@ -241,10 +465,18 @@ def setup_schedule_cycle_base(db: Session, admin_headers: dict[str, str], client
     # John takes EE101 & EE102 -> conflict edge
     # Jane takes EE102 & EE103 -> conflict edge
     enrs = [
-        Enrollment(student_id=stu1.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu1.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu2.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
-        Enrollment(student_id=stu2.id, subject_id=s3.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE),
+        Enrollment(
+            student_id=stu1.id, subject_id=s1.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu1.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu2.id, subject_id=s2.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
+        Enrollment(
+            student_id=stu2.id, subject_id=s3.id, cycle_id=cycle.id, status=EnrollmentStatus.ACTIVE
+        ),
     ]
     db.add_all(enrs)
     db.commit()
@@ -298,7 +530,9 @@ def test_schedule_comparison_three_algorithms(client: TestClient, db_session: Se
     _, admin_headers = make_auth_user(db_session, role="admin", email="comp_admin@univ.edu")
     cycle, _, _ = setup_schedule_cycle_base(db_session, admin_headers, client)
 
-    resp = client.post(f"/api/v1/cycles/{cycle.id}/schedule/compare?repeats=3", headers=admin_headers)
+    resp = client.post(
+        f"/api/v1/cycles/{cycle.id}/schedule/compare?repeats=3", headers=admin_headers
+    )
     assert resp.status_code == 200
     comp_data = resp.json()
 

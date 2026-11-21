@@ -21,7 +21,9 @@ class StudentCreate(BaseModel):
     @classmethod
     def validate_student_number(cls, v: str) -> str:
         if not STUDENT_NUMBER_REGEX.match(v.strip()):
-            raise ValueError("student_number must be 2-32 alphanumeric characters, dashes, or underscores.")
+            raise ValueError(
+                "student_number must be 2-32 alphanumeric characters, dashes, or underscores."
+            )
         return v.strip().upper()
 
 

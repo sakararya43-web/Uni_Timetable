@@ -78,7 +78,9 @@ class ScheduleVersionService:
         """Lists all schedule versions for a scheduling cycle (Task P9.1)."""
         cycle = db.get(SchedulingCycle, cycle_id)
         if not cycle:
-            raise DomainException(code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404)
+            raise DomainException(
+                code="CYCLE_NOT_FOUND", message="Cycle not found.", status_code=404
+            )
 
         stmt = (
             select(ScheduleVersion)
@@ -95,13 +97,19 @@ class ScheduleVersionService:
             select(ScheduleVersion)
             .where(ScheduleVersion.id == version_id)
             .options(
-                joinedload(ScheduleVersion.assignments).joinedload(ExamAssignment.exam).joinedload(Exam.subject),
+                joinedload(ScheduleVersion.assignments)
+                .joinedload(ExamAssignment.exam)
+                .joinedload(Exam.subject),
                 joinedload(ScheduleVersion.assignments).joinedload(ExamAssignment.time_slot),
             )
         )
         ver = db.scalar(stmt)
         if not ver:
-            raise DomainException(code="SCHEDULE_VERSION_NOT_FOUND", message="Schedule version not found.", status_code=404)
+            raise DomainException(
+                code="SCHEDULE_VERSION_NOT_FOUND",
+                message="Schedule version not found.",
+                status_code=404,
+            )
         return ver
 
     @staticmethod
@@ -115,10 +123,14 @@ class ScheduleVersionService:
         source = ScheduleVersionService.get_version(db, version_id)
 
         # Determine next version number in the cycle
-        max_ver = db.scalar(
-            select(func.max(ScheduleVersion.version_number))
-            .where(ScheduleVersion.scheduling_cycle_id == source.scheduling_cycle_id)
-        ) or 0
+        max_ver = (
+            db.scalar(
+                select(func.max(ScheduleVersion.version_number)).where(
+                    ScheduleVersion.scheduling_cycle_id == source.scheduling_cycle_id
+                )
+            )
+            or 0
+        )
         new_version_num = max_ver + 1
 
         new_version = ScheduleVersion(
@@ -209,11 +221,17 @@ class ScheduleVersionService:
         ver = ScheduleVersionService.get_version(db, version_id)
         assignment = next((a for a in ver.assignments if a.id == assignment_id), None)
         if not assignment:
-            raise DomainException(code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404)
+            raise DomainException(
+                code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404
+            )
 
         target_slot = db.get(TimeSlot, target_slot_id)
         if not target_slot or target_slot.scheduling_cycle_id != ver.scheduling_cycle_id:
-            raise DomainException(code="SLOT_NOT_FOUND", message="Target slot not found in this cycle.", status_code=404)
+            raise DomainException(
+                code="SLOT_NOT_FOUND",
+                message="Target slot not found in this cycle.",
+                status_code=404,
+            )
 
         cycle_id = ver.scheduling_cycle_id
 
@@ -226,10 +244,7 @@ class ScheduleVersionService:
             ).all()
         )
         slots_list = list(
-            db.scalars(
-                select(TimeSlot)
-                .where(TimeSlot.scheduling_cycle_id == cycle_id)
-            ).all()
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all()
         )
 
         exams_dict = {
@@ -249,8 +264,12 @@ class ScheduleVersionService:
             s.id: {
                 "id": s.id,
                 "date": s.date,
-                "start_time": s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                "end_time": s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                "start_time": s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                "end_time": s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 "duration_minutes": s.duration_minutes,
                 "is_enabled": s.enabled,
                 "slot_index": s.slot_index,
@@ -264,12 +283,14 @@ class ScheduleVersionService:
         simulated_assignments: list[dict[str, Any]] = []
         for a in ver.assignments:
             slot_id = target_slot_id if a.id == assignment_id else a.time_slot_id
-            simulated_assignments.append({
-                "exam_id": a.exam_id,
-                "time_slot_id": slot_id,
-                "color_id": a.color_id,
-                "locked": a.locked,
-            })
+            simulated_assignments.append(
+                {
+                    "exam_id": a.exam_id,
+                    "time_slot_id": slot_id,
+                    "color_id": a.color_id,
+                    "locked": a.locked,
+                }
+            )
 
         enrollments = list(
             db.execute(
@@ -311,21 +332,21 @@ class ScheduleVersionService:
         ]
 
         if target_exam_ids:
-            moving_students = {
-                r[0] for r in enrollments_tuples if r[1] == assignment.exam_id
-            }
+            moving_students = {r[0] for r in enrollments_tuples if r[1] == assignment.exam_id}
             for target_eid in target_exam_ids:
-                other_students = {
-                    r[0] for r in enrollments_tuples if r[1] == target_eid
-                }
+                other_students = {r[0] for r in enrollments_tuples if r[1] == target_eid}
                 shared = moving_students.intersection(other_students)
                 if shared:
                     other_exam = next((e for e in exams_list if e.id == target_eid), None)
                     conflicting_exams.append(
                         ConflictingExamItem(
                             exam_id=target_eid,
-                            subject_code=other_exam.subject.subject_code if other_exam else target_eid,
-                            subject_name=other_exam.subject.subject_name if other_exam else target_eid,
+                            subject_code=other_exam.subject.subject_code
+                            if other_exam
+                            else target_eid,
+                            subject_name=other_exam.subject.subject_name
+                            if other_exam
+                            else target_eid,
                             shared_student_count=len(shared),
                         )
                     )
@@ -366,7 +387,9 @@ class ScheduleVersionService:
 
         assignment = next((a for a in ver.assignments if a.id == assignment_id), None)
         if not assignment:
-            raise DomainException(code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404)
+            raise DomainException(
+                code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404
+            )
 
         if assignment.locked:
             raise DomainException(
@@ -386,7 +409,11 @@ class ScheduleVersionService:
         )
 
         if not preview.valid:
-            violation_msg = preview.violations[0].message if preview.violations else "Hard constraint violation."
+            violation_msg = (
+                preview.violations[0].message
+                if preview.violations
+                else "Hard constraint violation."
+            )
             raise DomainException(
                 code="INVALID_MOVE",
                 message=f"Cannot move exam: {violation_msg}",
@@ -448,10 +475,18 @@ class ScheduleVersionService:
         assign_b = next((a for a in ver.assignments if a.id == req.assignmentIdB), None)
 
         if not assign_a or not assign_b:
-            raise DomainException(code="ASSIGNMENT_NOT_FOUND", message="One or both assignments not found.", status_code=404)
+            raise DomainException(
+                code="ASSIGNMENT_NOT_FOUND",
+                message="One or both assignments not found.",
+                status_code=404,
+            )
 
         if assign_a.locked or assign_b.locked:
-            locked_name = assign_a.exam.subject.subject_code if assign_a.locked else assign_b.exam.subject.subject_code
+            locked_name = (
+                assign_a.exam.subject.subject_code
+                if assign_a.locked
+                else assign_b.exam.subject.subject_code
+            )
             raise DomainException(
                 code="EXAM_LOCKED",
                 message=f"Cannot swap locked exam {locked_name}. Unlock first.",
@@ -470,17 +505,25 @@ class ScheduleVersionService:
                 sid = target_slot_a
             elif a.id == assign_b.id:
                 sid = target_slot_b
-            simulated_assignments.append({
-                "exam_id": a.exam_id,
-                "time_slot_id": sid,
-                "color_id": a.color_id,
-                "locked": a.locked,
-            })
+            simulated_assignments.append(
+                {
+                    "exam_id": a.exam_id,
+                    "time_slot_id": sid,
+                    "color_id": a.color_id,
+                    "locked": a.locked,
+                }
+            )
 
         exams_list = list(
-            db.scalars(select(Exam).where(Exam.scheduling_cycle_id == cycle_id).options(joinedload(Exam.subject))).all()
+            db.scalars(
+                select(Exam)
+                .where(Exam.scheduling_cycle_id == cycle_id)
+                .options(joinedload(Exam.subject))
+            ).all()
         )
-        slots_list = list(db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all())
+        slots_list = list(
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all()
+        )
 
         exams_dict = {
             e.id: {
@@ -498,8 +541,12 @@ class ScheduleVersionService:
             s.id: {
                 "id": s.id,
                 "date": s.date,
-                "start_time": s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                "end_time": s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                "start_time": s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                "end_time": s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 "duration_minutes": s.duration_minutes,
                 "is_enabled": s.enabled,
                 "slot_index": s.slot_index,
@@ -531,8 +578,14 @@ class ScheduleVersionService:
         )
 
         if not report.valid:
-            msg = report.hard_violations[0].message if report.hard_violations else "Hard constraint violation on swap."
-            raise DomainException(code="INVALID_SWAP", message=f"Cannot swap exams: {msg}", status_code=422)
+            msg = (
+                report.hard_violations[0].message
+                if report.hard_violations
+                else "Hard constraint violation on swap."
+            )
+            raise DomainException(
+                code="INVALID_SWAP", message=f"Cannot swap exams: {msg}", status_code=422
+            )
 
         cycle = db.get(SchedulingCycle, cycle_id)
         weights = (cycle.configuration_json or {}).get("softConstraintWeights", {}) if cycle else {}
@@ -559,10 +612,16 @@ class ScheduleVersionService:
             "softBreakdown": [
                 {
                     "rule": getattr(sb, "rule", sb.get("rule") if isinstance(sb, dict) else ""),
-                    "weight": getattr(sb, "weight", sb.get("weight") if isinstance(sb, dict) else 0.0),
+                    "weight": getattr(
+                        sb, "weight", sb.get("weight") if isinstance(sb, dict) else 0.0
+                    ),
                     "count": getattr(sb, "count", sb.get("count") if isinstance(sb, dict) else 0),
-                    "penalty": getattr(sb, "penalty", sb.get("penalty") if isinstance(sb, dict) else 0.0),
-                    "message": getattr(sb, "message", sb.get("message") if isinstance(sb, dict) else ""),
+                    "penalty": getattr(
+                        sb, "penalty", sb.get("penalty") if isinstance(sb, dict) else 0.0
+                    ),
+                    "message": getattr(
+                        sb, "message", sb.get("message") if isinstance(sb, dict) else ""
+                    ),
                 }
                 for sb in soft_breakdown
             ],
@@ -607,7 +666,9 @@ class ScheduleVersionService:
 
         assignment = next((a for a in ver.assignments if a.id == assignment_id), None)
         if not assignment:
-            raise DomainException(code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404)
+            raise DomainException(
+                code="ASSIGNMENT_NOT_FOUND", message="Assignment not found.", status_code=404
+            )
 
         if assignment.locked == locked:
             return ver
@@ -648,7 +709,7 @@ class ScheduleVersionService:
         ver = ScheduleVersionService.get_version(db, version_id)
         ScheduleVersionService._ensure_version_editable(ver)
 
-        lock_target = (req.action.lower() == "lock")
+        lock_target = req.action.lower() == "lock"
         affected_count = 0
 
         for a in ver.assignments:
@@ -785,17 +846,14 @@ class ScheduleVersionService:
         locked_exam_map: dict[str, str] = {}
         if req.preserveLockedExams:
             locked_exam_map = {
-                a.exam_id: a.time_slot_id
-                for a in source_ver.assignments
-                if a.locked
+                a.exam_id: a.time_slot_id for a in source_ver.assignments if a.locked
             }
 
         # 4. Group locked exams by slot to assign reserved color classes (P8.4)
         distinct_locked_slots = sorted(set(locked_exam_map.values()))
         slot_to_reserved_color = {sid: idx for idx, sid in enumerate(distinct_locked_slots)}
         precolored: dict[str, int] = {
-            eid: slot_to_reserved_color[sid]
-            for eid, sid in locked_exam_map.items()
+            eid: slot_to_reserved_color[sid] for eid, sid in locked_exam_map.items()
         }
 
         # 5. Execute coloring algorithm
@@ -809,13 +867,21 @@ class ScheduleVersionService:
         elif algo == "dsatur":
             coloring_result = dsatur(adj, precolored=precolored)
         else:
-            raise DomainException(code="INVALID_ALGORITHM", message=f"Unknown algorithm '{algo}'.", status_code=400)
+            raise DomainException(
+                code="INVALID_ALGORITHM", message=f"Unknown algorithm '{algo}'.", status_code=400
+            )
 
         # 6. Map color classes to slots with disruption minimization (P9.17)
         exams_list = list(
-            db.scalars(select(Exam).where(Exam.scheduling_cycle_id == cycle_id).options(joinedload(Exam.subject))).all()
+            db.scalars(
+                select(Exam)
+                .where(Exam.scheduling_cycle_id == cycle_id)
+                .options(joinedload(Exam.subject))
+            ).all()
         )
-        slots_list = list(db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all())
+        slots_list = list(
+            db.scalars(select(TimeSlot).where(TimeSlot.scheduling_cycle_id == cycle_id)).all()
+        )
 
         # Previous slot map for disruption minimization
         prior_slot_map = {a.exam_id: a.time_slot_id for a in source_ver.assignments}
@@ -836,8 +902,12 @@ class ScheduleVersionService:
             SlotInfo(
                 id=s.id,
                 date=s.date,
-                start_time=s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                end_time=s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                start_time=s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                end_time=s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 duration_minutes=s.duration_minutes,
                 slot_index=s.slot_index,
                 session_label=s.session_label,
@@ -867,12 +937,14 @@ class ScheduleVersionService:
         new_assignments_payload: list[dict[str, Any]] = []
         for eid, c in coloring_result.colors.items():
             sid = mapping_result.color_to_slot[c]
-            new_assignments_payload.append({
-                "exam_id": eid,
-                "time_slot_id": sid,
-                "color_id": c,
-                "locked": (eid in locked_exam_map),
-            })
+            new_assignments_payload.append(
+                {
+                    "exam_id": eid,
+                    "time_slot_id": sid,
+                    "color_id": c,
+                    "locked": (eid in locked_exam_map),
+                }
+            )
 
         enrollments = list(
             db.execute(
@@ -903,8 +975,12 @@ class ScheduleVersionService:
             s.id: {
                 "id": s.id,
                 "date": s.date,
-                "start_time": s.start_time.strftime("%H:%M") if hasattr(s.start_time, "strftime") else str(s.start_time),
-                "end_time": s.end_time.strftime("%H:%M") if hasattr(s.end_time, "strftime") else str(s.end_time),
+                "start_time": s.start_time.strftime("%H:%M")
+                if hasattr(s.start_time, "strftime")
+                else str(s.start_time),
+                "end_time": s.end_time.strftime("%H:%M")
+                if hasattr(s.end_time, "strftime")
+                else str(s.end_time),
                 "duration_minutes": s.duration_minutes,
                 "is_enabled": s.enabled,
                 "slot_index": s.slot_index,
@@ -933,10 +1009,14 @@ class ScheduleVersionService:
         )
 
         # 8. Create NEW Candidate ScheduleVersion (P9.18)
-        max_ver = db.scalar(
-            select(func.max(ScheduleVersion.version_number))
-            .where(ScheduleVersion.scheduling_cycle_id == cycle_id)
-        ) or 0
+        max_ver = (
+            db.scalar(
+                select(func.max(ScheduleVersion.version_number)).where(
+                    ScheduleVersion.scheduling_cycle_id == cycle_id
+                )
+            )
+            or 0
+        )
         new_version_num = max_ver + 1
 
         new_version = ScheduleVersion(
@@ -961,10 +1041,18 @@ class ScheduleVersionService:
                 "softBreakdown": [
                     {
                         "rule": getattr(sb, "rule", sb.get("rule") if isinstance(sb, dict) else ""),
-                        "weight": getattr(sb, "weight", sb.get("weight") if isinstance(sb, dict) else 0.0),
-                        "count": getattr(sb, "count", sb.get("count") if isinstance(sb, dict) else 0),
-                        "penalty": getattr(sb, "penalty", sb.get("penalty") if isinstance(sb, dict) else 0.0),
-                        "message": getattr(sb, "message", sb.get("message") if isinstance(sb, dict) else ""),
+                        "weight": getattr(
+                            sb, "weight", sb.get("weight") if isinstance(sb, dict) else 0.0
+                        ),
+                        "count": getattr(
+                            sb, "count", sb.get("count") if isinstance(sb, dict) else 0
+                        ),
+                        "penalty": getattr(
+                            sb, "penalty", sb.get("penalty") if isinstance(sb, dict) else 0.0
+                        ),
+                        "message": getattr(
+                            sb, "message", sb.get("message") if isinstance(sb, dict) else ""
+                        ),
                     }
                     for sb in soft_breakdown
                 ],
