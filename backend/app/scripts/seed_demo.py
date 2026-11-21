@@ -12,6 +12,7 @@ Refuses to execute in production environments.
 """
 
 import logging
+import os
 import sys
 from datetime import date
 from typing import Any
@@ -38,12 +39,13 @@ def run_demo_seed(db: Session | None = None) -> dict[str, Any]:
     """Executes the demonstration dataset seed, returning a summary dictionary."""
     settings = get_settings()
 
-    # Safety guard: refuse to run in production
+    # Safety guard: refuse to run in production unless explicitly allowed
     app_env = getattr(settings, "APP_ENV", "development").lower()
-    if app_env in ["prod", "production"]:
-        msg = "FATAL: Demo data seeding is strictly forbidden in production environments."
-        logger.error(msg)
-        raise RuntimeError(msg)
+    allow_seed = os.getenv("ALLOW_DEMO_SEED", "false").lower() in ["1", "true", "yes"]
+    if app_env in ["prod", "production"] and not allow_seed:
+        msg = "Demo data seeding skipped in production environment (set ALLOW_DEMO_SEED=true to seed)."
+        logger.info(msg)
+        return {"status": "skipped", "reason": msg}
 
     owns_session = False
     if db is None:
