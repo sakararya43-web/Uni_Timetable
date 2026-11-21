@@ -256,27 +256,27 @@ Total Tasks: **324 tracked tasks** across 17 phases.
 
 ## 12. Phase 10 — Publishing, Student Views, Exports, Reports
 
-- [ ] **P10.1** Implement atomic `POST /schedules/{id}/publish` with final validation gate. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.2** Validate publishable definition check (100% hard constraints, 0 clashes). `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.3** Enforce single published version per cycle via partial unique DB index. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.4** Document supersede-only unpublish policy in architecture documentation. `[phase-10]` `[P0]` `[docs]`
-- [ ] **P10.5** Implement `GET /students/{id}/timetable` for published schedules. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.6** Implement authenticated student convenience endpoint `GET /me/timetable`. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.7** Implement role-scoped master timetable queries with department filters. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.8** Enforce student privacy: eliminate other students' data and enrollment counts. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.9** Implement CSV export suite with formula-injection escaping. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.10** Implement formatted PDF export via ReportLab with headers, page numbers, watermarks. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.11** Implement multi-tab Excel (XLSX) export via OpenPyXL. `[phase-10]` `[P1]` `[backend]`
-- [ ] **P10.12** Enforce role scoping on export endpoints. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.13** Verify export content correctness (100% of exams present and matching DB). `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.14** Stream large file downloads with sanitized `Content-Disposition` headers and audit logs. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.15** Implement `GET /cycles/{id}/reports/summary`. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.16** Implement `GET /schedules/{id}/reports/distribution`. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.17** Implement `GET /schedules/{id}/reports/changes`. `[phase-10]` `[P1]` `[backend]`
-- [ ] **P10.18** Implement algorithm comparison summary report. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.19** Enforce privacy rules on report aggregates. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.20** Implement `GET /audit-logs` endpoint with filters and pagination for admins. `[phase-10]` `[P0]` `[backend]`
-- [ ] **P10.21** Verify comprehensive audit event emission across the entire platform. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.1** Implement atomic `POST /schedules/{id}/publish` with final validation gate. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.2** Validate publishable definition check (100% hard constraints, 0 clashes). `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.3** Enforce single published version per cycle via partial unique DB index. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.4** Document supersede-only unpublish policy in architecture documentation. `[phase-10]` `[P0]` `[docs]`
+- [x] **P10.5** Implement `GET /students/{id}/timetable` for published schedules. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.6** Implement authenticated student convenience endpoint `GET /me/timetable`. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.7** Implement role-scoped master timetable queries with department filters. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.8** Enforce student privacy: eliminate other students' data and enrollment counts. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.9** Implement CSV export suite with formula-injection escaping. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.10** Implement formatted PDF export via ReportLab with headers, page numbers, watermarks. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.11** Implement multi-tab Excel (XLSX) export via OpenPyXL. `[phase-10]` `[P1]` `[backend]`
+- [x] **P10.12** Enforce role scoping on export endpoints. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.13** Verify export content correctness (100% of exams present and matching DB). `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.14** Stream large file downloads with sanitized `Content-Disposition` headers and audit logs. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.15** Implement `GET /cycles/{id}/reports/summary`. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.16** Implement `GET /schedules/{id}/reports/distribution`. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.17** Implement `GET /schedules/{id}/reports/changes`. `[phase-10]` `[P1]` `[backend]`
+- [x] **P10.18** Implement algorithm comparison summary report. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.19** Enforce privacy rules on report aggregates. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.20** Implement `GET /audit-logs` endpoint with filters and pagination for admins. `[phase-10]` `[P0]` `[backend]`
+- [x] **P10.21** Verify comprehensive audit event emission across the entire platform. `[phase-10]` `[P0]` `[backend]`
 
 ---
 

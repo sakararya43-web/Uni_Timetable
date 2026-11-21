@@ -8,6 +8,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     UniqueConstraint,
@@ -122,6 +123,13 @@ class ScheduleVersion(Base):
 
     __table_args__ = (
         UniqueConstraint("scheduling_cycle_id", "version_number", name="uq_version_cycle_number"),
+        Index(
+            "uq_cycle_single_published",
+            "scheduling_cycle_id",
+            unique=True,
+            sqlite_where=(status == ScheduleStatus.PUBLISHED),
+            postgresql_where=(status == ScheduleStatus.PUBLISHED),
+        ),
     )
 
     # Relationships
