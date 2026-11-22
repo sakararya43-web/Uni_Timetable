@@ -23,6 +23,7 @@ import {
   ScheduleVersionDetail,
   ExamAssignmentItem,
   TimeSlot,
+  Department,
 } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { Badge, BadgeVariant } from "../components/ui/Badge";
@@ -71,6 +72,7 @@ export const TimetablePage: React.FC = () => {
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDept, setSelectedDept] = useState("");
+  const [departments, setDepartments] = useState<Department[]>([]);
 
   const reloadVersions = useCallback(async (cycleId: string, selectNewest = false) => {
     try {
@@ -104,11 +106,12 @@ export const TimetablePage: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    api.get<SchedulingCycle[]>("/api/v1/cycles")
+    api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        setCycles(data);
-        if (data.length > 0) {
-          setSelectedCycleId(data[0].id);
+        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        setCycles(list);
+        if (list.length > 0) {
+          setSelectedCycleId(list[0].id);
         } else {
           setIsLoading(false);
         }
@@ -117,6 +120,12 @@ export const TimetablePage: React.FC = () => {
         console.error("Error loading cycles:", err);
         setIsLoading(false);
       });
+
+    api.get<Department[]>("/api/v1/academic/departments")
+      .then((depts) => {
+        setDepartments(depts || []);
+      })
+      .catch((err) => console.error("Error loading departments:", err));
   }, []);
 
   useEffect(() => {
@@ -427,8 +436,11 @@ export const TimetablePage: React.FC = () => {
           className="px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Departments</option>
-          <option value="CS">Computer Science (CS)</option>
-          <option value="EE">Electrical Engineering (EE)</option>
+          {departments.map((d) => (
+            <option key={d.id} value={d.code}>
+              {d.name} ({d.code})
+            </option>
+          ))}
         </select>
       </div>
 

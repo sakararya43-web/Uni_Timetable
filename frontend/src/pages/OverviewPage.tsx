@@ -39,10 +39,11 @@ export const OverviewPage: React.FC = () => {
 
   const fetchCycles = async () => {
     try {
-      const data = await api.get<SchedulingCycle[]>("/api/v1/cycles");
-      setCycles(data);
-      if (data.length > 0 && !selectedCycleId) {
-        setSelectedCycleId(data[0].id);
+      const data = await api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles");
+      const list = Array.isArray(data) ? data : (data as any)?.items || [];
+      setCycles(list);
+      if (list.length > 0 && !selectedCycleId) {
+        setSelectedCycleId(list[0].id);
       }
     } catch (err) {
       console.error("Failed to load cycles:", err);

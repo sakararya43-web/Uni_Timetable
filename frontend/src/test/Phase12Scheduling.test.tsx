@@ -1,9 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { GeneratePage } from "../pages/GeneratePage";
 import { AlgorithmLabPage } from "../pages/AlgorithmLabPage";
 import { TimetablePage } from "../pages/TimetablePage";
+import { CyclesPage } from "../pages/CyclesPage";
+import { GraphPage } from "../pages/GraphPage";
+import { mockDepartments } from "../services/mockData";
 
 describe("Phase 12: Scheduling Experience UI", () => {
   it("renders GeneratePage with algorithm choices and run options", () => {
@@ -41,5 +44,42 @@ describe("Phase 12: Scheduling Experience UI", () => {
     expect(screen.getByRole("button", { name: /pdf/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /csv/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /print/i })).toBeInTheDocument();
+  });
+
+  it("renders CyclesPage and displays existing and newly created cycles", async () => {
+    render(
+      <BrowserRouter>
+        <CyclesPage />
+      </BrowserRouter>
+    );
+    expect(screen.getByText("Scheduling Cycles & Time Slots")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /new scheduling cycle/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("June 2026 Academic Final Examinations")).toBeInTheDocument();
+    });
+  });
+
+  it("renders GraphPage with prominent Create Conflict Graph button", async () => {
+    render(
+      <BrowserRouter>
+        <GraphPage />
+      </BrowserRouter>
+    );
+    expect(screen.getByText("Conflict Graph Visualizer G=(V,E)")).toBeInTheDocument();
+    await waitFor(() => {
+      const createButtons = screen.getAllByRole("button", { name: /create conflict graph/i });
+      expect(createButtons.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("contains expanded list of academic departments", () => {
+    expect(mockDepartments.length).toBeGreaterThanOrEqual(10);
+    const codes = mockDepartments.map((d) => d.code);
+    expect(codes).toContain("CS");
+    expect(codes).toContain("EE");
+    expect(codes).toContain("ME");
+    expect(codes).toContain("CE");
+    expect(codes).toContain("IT");
+    expect(codes).toContain("AI");
   });
 });

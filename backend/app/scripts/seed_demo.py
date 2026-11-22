@@ -94,6 +94,30 @@ def run_demo_seed(db: Session | None = None) -> dict[str, Any]:
             db.add(prog_ee)
             db.flush()
 
+        additional_depts = [
+            ("ME", "Department of Mechanical Engineering", "BS-ME", "Bachelor of Science in Mechanical Engineering"),
+            ("CE", "Department of Civil & Environmental Engineering", "BS-CE", "Bachelor of Science in Civil Engineering"),
+            ("IT", "Department of Information Technology", "BS-IT", "Bachelor of Science in Information Technology"),
+            ("AI", "Department of Artificial Intelligence & Data Science", "BS-AI", "Bachelor of Science in Artificial Intelligence"),
+            ("BME", "Department of Biomedical Engineering", "BS-BME", "Bachelor of Science in Biomedical Engineering"),
+            ("CHE", "Department of Chemical Engineering", "BS-CHE", "Bachelor of Science in Chemical Engineering"),
+            ("MATH", "Department of Mathematics & Statistics", "BS-MATH", "Bachelor of Science in Mathematics"),
+            ("PHYS", "Department of Physics & Applied Sciences", "BS-PHYS", "Bachelor of Science in Physics"),
+            ("CHEM", "Department of Chemistry & Materials Science", "BS-CHEM", "Bachelor of Science in Chemistry"),
+            ("MGMT", "Department of Management & Business Studies", "BBA", "Bachelor of Business Administration"),
+        ]
+        for d_code, d_name, p_code, p_name in additional_depts:
+            dept = db.scalar(select(Department).where(Department.code == d_code))
+            if not dept:
+                dept = Department(code=d_code, name=d_name, status=EntityStatus.ACTIVE)
+                db.add(dept)
+                db.flush()
+            prog = db.scalar(select(Program).where(Program.code == p_code))
+            if not prog:
+                prog = Program(code=p_code, name=p_name, department_id=dept.id)
+                db.add(prog)
+                db.flush()
+
         # -------------------------------------------------------------
         # 2. Demo Authenticated Users (Admin, Coordinator, Faculty, Student)
         # -------------------------------------------------------------

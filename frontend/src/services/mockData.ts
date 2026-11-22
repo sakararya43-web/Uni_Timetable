@@ -14,7 +14,40 @@ import {
   ExamAssignmentItem,
 } from "../types/api";
 
+const STORAGE_KEY_CYCLES = "timetabling_mock_cycles";
+
+function isBrowser(): boolean {
+  try {
+    return typeof window !== "undefined" && typeof document !== "undefined" && typeof (window as any).process?.versions?.node === "undefined";
+  } catch {
+    return false;
+  }
+}
+
+function getStoredCustomCycles(): SchedulingCycle[] {
+  if (!isBrowser()) return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY_CYCLES);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomCycles(cycles: SchedulingCycle[]) {
+  if (!isBrowser()) return;
+  try {
+    const customOnly = cycles.filter((c) => c.id !== "cycle-demo-2026");
+    window.localStorage.setItem(STORAGE_KEY_CYCLES, JSON.stringify(customOnly));
+  } catch {
+    // ignore
+  }
+}
+
 export const mockCycles: SchedulingCycle[] = [
+  ...getStoredCustomCycles(),
   {
     id: "cycle-demo-2026",
     name: "June 2026 Academic Final Examinations",
@@ -44,9 +77,18 @@ export const mockAcademicYears: Array<{ id: string; name: string }> = [
 ];
 
 export const mockDepartments: Department[] = [
-  { id: "dept-cs", code: "CS", name: "Department of Computer Science", status: "active" },
-  { id: "dept-ee", code: "EE", name: "Department of Electrical Engineering", status: "active" },
-  { id: "dept-math", code: "MATH", name: "Department of Mathematics", status: "active" },
+  { id: "dept-cs", code: "CS", name: "Department of Computer Science & Engineering", status: "active" },
+  { id: "dept-ee", code: "EE", name: "Department of Electrical & Electronics Engineering", status: "active" },
+  { id: "dept-me", code: "ME", name: "Department of Mechanical Engineering", status: "active" },
+  { id: "dept-ce", code: "CE", name: "Department of Civil & Environmental Engineering", status: "active" },
+  { id: "dept-it", code: "IT", name: "Department of Information Technology", status: "active" },
+  { id: "dept-ai", code: "AI", name: "Department of Artificial Intelligence & Data Science", status: "active" },
+  { id: "dept-bme", code: "BME", name: "Department of Biomedical Engineering", status: "active" },
+  { id: "dept-che", code: "CHE", name: "Department of Chemical Engineering", status: "active" },
+  { id: "dept-math", code: "MATH", name: "Department of Mathematics & Statistics", status: "active" },
+  { id: "dept-phys", code: "PHYS", name: "Department of Physics & Applied Sciences", status: "active" },
+  { id: "dept-chem", code: "CHEM", name: "Department of Chemistry & Materials Science", status: "active" },
+  { id: "dept-mgmt", code: "MGMT", name: "Department of Management & Business Studies", status: "active" },
 ];
 
 export const mockSubjects: Subject[] = [
@@ -206,20 +248,177 @@ export const mockSubjects: Subject[] = [
     enrollmentCount: 12,
     conflictDegree: 2,
   },
+  {
+    id: "sub-me101",
+    subjectCode: "ME101",
+    subjectName: "Engineering Mechanics & Statics",
+    departmentId: "dept-me",
+    departmentCode: "ME",
+    semester: 1,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 16,
+    conflictDegree: 2,
+  },
+  {
+    id: "sub-me201",
+    subjectCode: "ME201",
+    subjectName: "Thermodynamics & Fluid Dynamics",
+    departmentId: "dept-me",
+    departmentCode: "ME",
+    semester: 2,
+    credits: 4.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 15,
+    conflictDegree: 3,
+  },
+  {
+    id: "sub-ce101",
+    subjectCode: "CE101",
+    subjectName: "Structural Analysis & Materials",
+    departmentId: "dept-ce",
+    departmentCode: "CE",
+    semester: 1,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 14,
+    conflictDegree: 2,
+  },
+  {
+    id: "sub-it101",
+    subjectCode: "IT101",
+    subjectName: "Cloud Infrastructure & Distributed Systems",
+    departmentId: "dept-it",
+    departmentCode: "IT",
+    semester: 2,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 22,
+    conflictDegree: 4,
+  },
+  {
+    id: "sub-ai101",
+    subjectCode: "AI101",
+    subjectName: "Machine Learning & Neural Networks",
+    departmentId: "dept-ai",
+    departmentCode: "AI",
+    semester: 3,
+    credits: 4.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 25,
+    conflictDegree: 5,
+  },
+  {
+    id: "sub-bme101",
+    subjectCode: "BME101",
+    subjectName: "Biomedical Instrumentation & Sensors",
+    departmentId: "dept-bme",
+    departmentCode: "BME",
+    semester: 2,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 12,
+    conflictDegree: 2,
+  },
+  {
+    id: "sub-che101",
+    subjectCode: "CHE101",
+    subjectName: "Chemical Reaction Engineering",
+    departmentId: "dept-che",
+    departmentCode: "CHE",
+    semester: 2,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 15,
+    conflictDegree: 2,
+  },
+  {
+    id: "sub-math101",
+    subjectCode: "MATH101",
+    subjectName: "Linear Algebra & Advanced Calculus",
+    departmentId: "dept-math",
+    departmentCode: "MATH",
+    semester: 1,
+    credits: 4.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 30,
+    conflictDegree: 6,
+  },
+  {
+    id: "sub-phys101",
+    subjectCode: "PHYS101",
+    subjectName: "Classical & Quantum Physics",
+    departmentId: "dept-phys",
+    departmentCode: "PHYS",
+    semester: 1,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 18,
+    conflictDegree: 3,
+  },
+  {
+    id: "sub-chem101",
+    subjectCode: "CHEM101",
+    subjectName: "General & Physical Chemistry",
+    departmentId: "dept-chem",
+    departmentCode: "CHEM",
+    semester: 1,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 16,
+    conflictDegree: 2,
+  },
+  {
+    id: "sub-mgmt101",
+    subjectCode: "MGMT101",
+    subjectName: "Principles of Management & Economics",
+    departmentId: "dept-mgmt",
+    departmentCode: "MGMT",
+    semester: 1,
+    credits: 3.0,
+    defaultDurationMinutes: 180,
+    status: "active",
+    enrollmentCount: 20,
+    conflictDegree: 3,
+  },
 ];
 
-export const mockStudents: Student[] = Array.from({ length: 50 }, (_, i) => {
-  const isCS = i < 30;
-  const idx = i + 1;
-  const num = isCS ? `CS-${idx.toString().padStart(3, "0")}` : `EE-${(idx - 30).toString().padStart(3, "0")}`;
-  const sem = isCS ? (idx <= 10 ? 1 : idx <= 20 ? 2 : 3) : (idx <= 40 ? 1 : 2);
+export const mockStudents: Student[] = Array.from({ length: 60 }, (_, i) => {
+  const depts = [
+    { id: "dept-cs", code: "CS" },
+    { id: "dept-ee", code: "EE" },
+    { id: "dept-me", code: "ME" },
+    { id: "dept-ce", code: "CE" },
+    { id: "dept-it", code: "IT" },
+    { id: "dept-ai", code: "AI" },
+    { id: "dept-bme", code: "BME" },
+    { id: "dept-che", code: "CHE" },
+    { id: "dept-math", code: "MATH" },
+    { id: "dept-phys", code: "PHYS" },
+    { id: "dept-chem", code: "CHEM" },
+    { id: "dept-mgmt", code: "MGMT" },
+  ];
+  const dept = depts[i % depts.length];
+  const idx = Math.floor(i / depts.length) + 1;
+  const num = `${dept.code}-${idx.toString().padStart(3, "0")}`;
+  const sem = (i % 4) + 1;
   return {
     id: `stu-${num.toLowerCase()}`,
     studentNumber: num,
-    fullName: `Synthetic Candidate ${num}`,
+    fullName: `Candidate ${num} (${dept.code})`,
     email: `student.${num.toLowerCase()}@university.edu`,
-    departmentId: isCS ? "dept-cs" : "dept-ee",
-    departmentCode: isCS ? "CS" : "EE",
+    departmentId: dept.id,
+    departmentCode: dept.code,
     semester: sem,
     status: "active",
     enrollmentCount: 3 + (i % 2),
@@ -972,4 +1171,214 @@ export function addMockStudent(data: {
 
   mockStudents.unshift(newStu);
   return newStu;
+}
+
+export function addMockCycle(payload: {
+  name?: string;
+  academic_year_id?: string;
+  academicYearId?: string;
+  start_date?: string;
+  startDate?: string;
+  end_date?: string;
+  endDate?: string;
+  configuration?: any;
+}): SchedulingCycle {
+  const id = `cycle-${Date.now().toString().slice(-6)}`;
+  const ayId = payload.academic_year_id || payload.academicYearId || "ay-2026";
+  const start = payload.start_date || payload.startDate || "2026-12-01";
+  const end = payload.end_date || payload.endDate || "2026-12-15";
+  const newCycle: SchedulingCycle = {
+    id,
+    name: payload.name || "New Scheduling Cycle",
+    academicYearId: ayId,
+    startDate: start,
+    endDate: end,
+    status: "draft",
+    timezone: "UTC",
+    graphStale: true,
+    dataVersion: 1,
+    configurationJson: payload.configuration || {
+      examDaysOfWeek: [1, 2, 3, 4, 5],
+      sessions: [
+        { label: "Morning", startTime: "09:00", endTime: "12:00", enabled: true },
+        { label: "Afternoon", startTime: "14:00", endTime: "17:00", enabled: true },
+      ],
+      maxExamsPerSession: 50,
+      maxExamsPerDay: 100,
+    },
+    createdAt: new Date().toISOString(),
+  };
+
+  mockCycles.unshift(newCycle);
+  saveCustomCycles(mockCycles);
+  return newCycle;
+}
+
+export function generateMockSlotsForCycle(cycleId: string): TimeSlot[] {
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  const startStr = cycle?.startDate || "2026-12-01";
+  const endStr = cycle?.endDate || "2026-12-15";
+  const startDate = new Date(startStr);
+  const endDate = new Date(endStr);
+  const sessions = cycle?.configurationJson?.sessions || [
+    { label: "Morning", startTime: "09:00", endTime: "12:00", enabled: true },
+    { label: "Afternoon", startTime: "14:00", endTime: "17:00", enabled: true },
+  ];
+  const daysOfWeek = cycle?.configurationJson?.examDaysOfWeek || [1, 2, 3, 4, 5];
+
+  const generated: TimeSlot[] = [];
+  let slotIdx = 0;
+  const cur = new Date(startDate);
+  let safety = 0;
+  while (cur <= endDate && safety < 60) {
+    safety++;
+    const day = cur.getDay(); // 0=Sun..6=Sat
+    const isoDay = day === 0 ? 7 : day;
+    if (daysOfWeek.includes(isoDay)) {
+      const dateStr = cur.toISOString().split("T")[0];
+      for (const sess of sessions) {
+        if (sess.enabled !== false) {
+          generated.push({
+            id: `slot-${cycleId.slice(-4)}-${slotIdx + 1}`,
+            schedulingCycleId: cycleId,
+            date: dateStr,
+            startTime: sess.startTime || "09:00",
+            endTime: sess.endTime || "12:00",
+            durationMinutes: 180,
+            sessionLabel: sess.label,
+            slotIndex: slotIdx,
+            enabled: true,
+            capacity: 200,
+          });
+          slotIdx++;
+        }
+      }
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  for (let i = mockTimeSlots.length - 1; i >= 0; i--) {
+    if (mockTimeSlots[i].schedulingCycleId === cycleId) {
+      mockTimeSlots.splice(i, 1);
+    }
+  }
+  mockTimeSlots.push(...generated);
+  if (cycle) {
+    cycle.status = "draft";
+    cycle.graphStale = false;
+  }
+  return generated;
+}
+
+export function getMockSlotsForCycle(cycleId: string): TimeSlot[] {
+  const existing = mockTimeSlots.filter((s) => s.schedulingCycleId === cycleId);
+  if (existing.length > 0) return existing;
+  return generateMockSlotsForCycle(cycleId);
+}
+
+export interface GraphSummaryData {
+  vertexCount: number;
+  edgeCount: number;
+  density: number;
+  avgDegree: number;
+  maxDegree: number;
+  chromaticLowerBound: number;
+  isolatedVertices: number;
+}
+
+export interface RawGraphDataResponse {
+  nodes: Array<{
+    id: string;
+    subjectCode: string;
+    subjectName: string;
+    departmentCode?: string;
+    degree: number;
+    color?: number;
+  }>;
+  edges: Array<{
+    source: string;
+    target: string;
+    weight: number;
+  }>;
+}
+
+const mockCycleGraphs: Record<string, { summary: GraphSummaryData; data: RawGraphDataResponse }> = {};
+
+export function buildMockGraphForCycle(cycleId: string): { summary: GraphSummaryData; data: RawGraphDataResponse } {
+  const subjectsToUse = mockSubjects.slice(0, 16);
+  const nodes = subjectsToUse.map((s, idx) => ({
+    id: s.id,
+    subjectCode: s.subjectCode,
+    subjectName: s.subjectName,
+    departmentCode: s.departmentCode || "CS",
+    degree: 0,
+    color: (idx % 6) + 1,
+  }));
+
+  const edges: Array<{ source: string; target: string; weight: number }> = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const sameDept = nodes[i].departmentCode === nodes[j].departmentCode;
+      const bothIntro = i < 4 && j < 4;
+      const connected = sameDept || bothIntro || (i + j) % 3 === 0;
+      if (connected) {
+        const weight = ((i * 3 + j * 5) % 18) + 4;
+        edges.push({
+          source: nodes[i].id,
+          target: nodes[j].id,
+          weight,
+        });
+        nodes[i].degree++;
+        nodes[j].degree++;
+      }
+    }
+  }
+
+  const vertexCount = nodes.length;
+  const edgeCount = edges.length;
+  const maxDegree = Math.max(...nodes.map((n) => n.degree), 0);
+  const totalDegree = nodes.reduce((acc, n) => acc + n.degree, 0);
+  const avgDegree = vertexCount > 0 ? Number((totalDegree / vertexCount).toFixed(2)) : 0;
+  const possibleEdges = (vertexCount * (vertexCount - 1)) / 2;
+  const density = possibleEdges > 0 ? Number((edgeCount / possibleEdges).toFixed(3)) : 0;
+  const isolatedVertices = nodes.filter((n) => n.degree === 0).length;
+
+  const result = {
+    summary: {
+      vertexCount,
+      edgeCount,
+      density,
+      avgDegree,
+      maxDegree,
+      chromaticLowerBound: Math.min(vertexCount, Math.max(3, Math.ceil(maxDegree / 2))),
+      isolatedVertices,
+    },
+    data: {
+      nodes,
+      edges,
+    },
+  };
+
+  mockCycleGraphs[cycleId] = result;
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  if (cycle) {
+    cycle.graphStale = false;
+  }
+  return result;
+}
+
+export function getMockGraphForCycle(cycleId: string): { summary: GraphSummaryData; data: RawGraphDataResponse } | null {
+  if (mockCycleGraphs[cycleId]) {
+    return mockCycleGraphs[cycleId];
+  }
+  return null;
+}
+
+export function resetMockGraphForCycle(cycleId: string): void {
+  delete mockCycleGraphs[cycleId];
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  if (cycle) {
+    cycle.graphStale = true;
+  }
 }

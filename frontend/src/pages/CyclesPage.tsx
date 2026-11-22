@@ -34,15 +34,17 @@ export const CyclesPage: React.FC = () => {
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]); // Mon-Fri
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const fetchCyclesAndYears = async () => {
     setIsLoading(true);
     try {
       const [cyclesData, yearsData] = await Promise.all([
-        api.get<SchedulingCycle[]>("/api/v1/cycles"),
+        api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles"),
         api.get<Array<{ id: string; name: string }>>("/api/v1/academic/years"),
       ]);
-      setCycles(cyclesData);
+      const list = Array.isArray(cyclesData) ? cyclesData : (cyclesData as any)?.items || [];
+      setCycles(list);
       setAcademicYears(yearsData);
       if (yearsData.length > 0 && !academicYearId) {
         setAcademicYearId(yearsData[0].id);
@@ -67,9 +69,16 @@ export const CyclesPage: React.FC = () => {
       const payload = {
         name,
         academic_year_id: academicYearId,
+        academicYearId: academicYearId,
         start_date: startDate,
+        startDate: startDate,
         end_date: endDate,
+        endDate: endDate,
         configuration: {
+          startDate: startDate,
+          endDate: endDate,
+          start_date: startDate,
+          end_date: endDate,
           examDaysOfWeek: selectedDays,
           sessions: [
             { label: "Morning", startTime: "09:00", endTime: "12:00", enabled: true },
@@ -80,10 +89,12 @@ export const CyclesPage: React.FC = () => {
         },
       };
 
-      await api.post("/api/v1/cycles", payload);
+      const res = await api.post<SchedulingCycle>("/api/v1/cycles", payload);
       setIsCreateOpen(false);
       setName("");
-      fetchCyclesAndYears();
+      setSuccessMsg(`Scheduling cycle "${res?.name || name}" created successfully!`);
+      setTimeout(() => setSuccessMsg(null), 5000);
+      await fetchCyclesAndYears();
     } catch (err: unknown) {
       const error = err as { message?: string };
       setErrorMsg(error.message || "Failed to create cycle.");
@@ -95,7 +106,9 @@ export const CyclesPage: React.FC = () => {
   const handleGenerateSlots = async (cycleId: string) => {
     try {
       await api.post(`/api/v1/cycles/${cycleId}/slots/generate`);
-      fetchCyclesAndYears();
+      setSuccessMsg("Examination time slots generated successfully!");
+      setTimeout(() => setSuccessMsg(null), 4000);
+      await fetchCyclesAndYears();
     } catch (err) {
       console.error("Failed to generate slots:", err);
     }
@@ -139,6 +152,21 @@ export const CyclesPage: React.FC = () => {
           New Scheduling Cycle
         </Button>
       </div>
+
+      {successMsg && (
+        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center justify-between shadow-sm animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-medium">{successMsg}</span>
+          </div>
+          <button
+            onClick={() => setSuccessMsg(null)}
+            className="text-emerald-700 hover:text-emerald-900 font-bold ml-4"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
       {isLoading ? (
         <LoadingSkeleton rows={4} />

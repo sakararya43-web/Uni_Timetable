@@ -4,7 +4,6 @@ import {
   mockDepartments,
   mockSubjects,
   mockStudents,
-  mockTimeSlots,
   mockScheduleVersions,
   mockScheduleVersionDetails,
   activeScheduleVersionDetail,
@@ -24,6 +23,12 @@ import {
   addMockStudent,
   generateDynamicScheduleRun,
   saveRunAsCandidateVersion,
+  addMockCycle,
+  generateMockSlotsForCycle,
+  getMockSlotsForCycle,
+  buildMockGraphForCycle,
+  getMockGraphForCycle,
+  resetMockGraphForCycle,
 } from "./mockData";
 
 export interface ApiErrorDetail {
@@ -122,10 +127,21 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
 
   // Scheduling Cycles & Slots
   if (clean === "/api/v1/cycles") {
-    return method === "POST" ? mockCycles[0] : mockCycles;
+    if (method === "POST") {
+      const payload = typeof body === "string" ? JSON.parse(body || "{}") : (body || {});
+      return addMockCycle(payload);
+    }
+    return mockCycles;
   }
-  if (clean.includes("/slots/generate") || clean.endsWith("/slots")) {
-    return mockTimeSlots;
+  if (clean.includes("/slots/generate")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/slots\/generate/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    return generateMockSlotsForCycle(cycleId);
+  }
+  if (clean.endsWith("/slots")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/slots/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    return getMockSlotsForCycle(cycleId);
   }
 
   // Dynamic Schedule Generation with algorithm variety (DSATUR, Welsh-Powell, Greedy)
@@ -178,14 +194,34 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
   }
 
   // Conflict Graph
-  if (clean.includes("/graph/build") || clean.endsWith("/graph")) {
-    return { summary: mockGraphSummary, data: mockRawGraph };
+  if (clean.includes("/graph/build")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/graph\/build/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    return buildMockGraphForCycle(cycleId);
+  }
+  if (clean.includes("/graph/reset")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/graph\/reset/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    resetMockGraphForCycle(cycleId);
+    return { success: true };
   }
   if (clean.includes("/graph/summary")) {
-    return mockGraphSummary;
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/graph\/summary/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    const graph = getMockGraphForCycle(cycleId);
+    return graph ? graph.summary : mockGraphSummary;
   }
   if (clean.includes("/graph/data")) {
-    return mockRawGraph;
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/graph\/data/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    const graph = getMockGraphForCycle(cycleId);
+    return graph ? graph.data : mockRawGraph;
+  }
+  if (clean.endsWith("/graph")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/graph/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    const graph = getMockGraphForCycle(cycleId) || buildMockGraphForCycle(cycleId);
+    return { summary: graph.summary, data: graph.data };
   }
 
   // Algorithm Lab comparison
@@ -332,6 +368,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     }
 
     const json = await response.json();
+
+    // If backend returns paginated object { items: [...] } for /cycles and an array is expected, unwrap it
+    if (cleanEndpoint === "/api/v1/cycles" && method === "GET" && json && Array.isArray((json as any).items)) {
+      return (json as any).items as T;
+    }
 
     // If backend returns empty array for core entities on unseeded live databases, fallback to demo data
     if (Array.isArray(json) && json.length === 0) {

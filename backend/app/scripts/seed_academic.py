@@ -25,6 +25,15 @@ def seed_academic_data() -> None:
             ("CSE", "Computer Science & Engineering"),
             ("EEE", "Electrical & Electronics Engineering"),
             ("ME", "Mechanical Engineering"),
+            ("CE", "Civil & Environmental Engineering"),
+            ("IT", "Information Technology"),
+            ("AI", "Artificial Intelligence & Data Science"),
+            ("BME", "Biomedical Engineering"),
+            ("CHE", "Chemical Engineering"),
+            ("MATH", "Mathematics & Statistics"),
+            ("PHYS", "Physics & Applied Sciences"),
+            ("CHEM", "Chemistry & Materials Science"),
+            ("MGMT", "Management & Business Studies"),
         ]
         dept_map = {}
         for code, name in departments_data:

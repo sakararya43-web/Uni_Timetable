@@ -11,7 +11,7 @@ import {
   useEdgesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Network, RefreshCw, Download, Filter, Search, Info } from "lucide-react";
+import { Network, RefreshCw, Download, Filter, Search, Info, Sparkles, RotateCcw, CheckCircle2 } from "lucide-react";
 import { api } from "../services/api";
 import { SchedulingCycle } from "../types/api";
 import { Button } from "../components/ui/Button";
@@ -53,6 +53,9 @@ export const GraphPage: React.FC = () => {
   const [rawGraph, setRawGraph] = useState<RawGraphData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRebuilding, setIsRebuilding] = useState<boolean>(false);
+  const [isGraphCreated, setIsGraphCreated] = useState<boolean>(false);
+  const [builtCycles, setBuiltCycles] = useState<Record<string, boolean>>({});
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [minDegreeFilter, setMinDegreeFilter] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -63,11 +66,12 @@ export const GraphPage: React.FC = () => {
   // Load cycles
   useEffect(() => {
     setIsLoading(true);
-    api.get<SchedulingCycle[]>("/api/v1/cycles")
+    api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        setCycles(data);
-        if (data.length > 0) {
-          setSelectedCycleId(data[0].id);
+        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        setCycles(list);
+        if (list.length > 0) {
+          setSelectedCycleId(list[0].id);
         } else {
           setIsLoading(false);
         }
@@ -89,8 +93,10 @@ export const GraphPage: React.FC = () => {
       ]);
       setSummary(sumData);
       setRawGraph(graphData);
+      setIsGraphCreated(true);
     } catch (err) {
       console.error("Failed to load graph data:", err);
+      setIsGraphCreated(false);
     } finally {
       setIsLoading(false);
     }
@@ -98,9 +104,18 @@ export const GraphPage: React.FC = () => {
 
   useEffect(() => {
     if (selectedCycleId) {
-      fetchGraphData(selectedCycleId);
+      if (builtCycles[selectedCycleId]) {
+        fetchGraphData(selectedCycleId);
+      } else {
+        setRawGraph(null);
+        setSummary(null);
+        setNodes([]);
+        setEdges([]);
+        setIsGraphCreated(false);
+        setIsLoading(false);
+      }
     }
-  }, [selectedCycleId]);
+  }, [selectedCycleId, builtCycles]);
 
   // Compute Layout (Circular / Force Positioning)
   useEffect(() => {
@@ -168,17 +183,39 @@ export const GraphPage: React.FC = () => {
     setEdges(flowEdges);
   }, [rawGraph, minDegreeFilter, searchTerm, selectedNodeId]);
 
-  const handleRebuild = async () => {
+  const handleCreateOrRebuild = async () => {
     if (!selectedCycleId) return;
     setIsRebuilding(true);
     try {
       await api.post(`/api/v1/cycles/${selectedCycleId}/graph/build`);
-      await fetchGraphData(selectedCycleId);
+      const [sumData, graphData] = await Promise.all([
+        api.get<GraphSummary>(`/api/v1/cycles/${selectedCycleId}/graph/summary`),
+        api.get<RawGraphData>(`/api/v1/cycles/${selectedCycleId}/graph/data`),
+      ]);
+      setSummary(sumData);
+      setRawGraph(graphData);
+      setIsGraphCreated(true);
+      setBuiltCycles((prev) => ({ ...prev, [selectedCycleId]: true }));
+      const cycleName = cycles.find((c) => c.id === selectedCycleId)?.name || selectedCycleId;
+      setSuccessMsg(`Conflict graph successfully created for "${cycleName}"! Computed ${sumData.vertexCount} examination nodes and ${sumData.edgeCount} clash edges.`);
+      setTimeout(() => setSuccessMsg(null), 6000);
     } catch (err) {
-      console.error("Error rebuilding graph:", err);
+      console.error("Error creating/rebuilding graph:", err);
     } finally {
       setIsRebuilding(false);
     }
+  };
+
+  const handleResetGraph = () => {
+    if (!selectedCycleId) return;
+    setBuiltCycles((prev) => ({ ...prev, [selectedCycleId]: false }));
+    setIsGraphCreated(false);
+    setRawGraph(null);
+    setSummary(null);
+    setNodes([]);
+    setEdges([]);
+    setSuccessMsg("Graph canvas reset. Click 'Create Conflict Graph' to generate the topology.");
+    setTimeout(() => setSuccessMsg(null), 4000);
   };
 
   const handleExport = (format: "json" | "csv") => {
@@ -219,6 +256,8 @@ export const GraphPage: React.FC = () => {
     return rawGraph.nodes.find((n) => n.id === selectedNodeId) || null;
   }, [selectedNodeId, rawGraph]);
 
+  const activeCycle = cycles.find((c) => c.id === selectedCycleId);
+
   return (
     <div className="space-y-4">
       {/* Top Header & Actions */}
@@ -228,7 +267,7 @@ export const GraphPage: React.FC = () => {
           <div>
             <h1 className="text-base font-bold text-slate-900">Conflict Graph Visualizer G=(V,E)</h1>
             <p className="text-xs text-slate-500">
-              Interactive examination conflict topology with shared student edge weights.
+              Interactive conflict graph visualization and examination clash topology G=(V,E).
             </p>
           </div>
         </div>
@@ -251,21 +290,45 @@ export const GraphPage: React.FC = () => {
             )}
           </select>
 
-          <Button
-            variant="outline"
-            size="sm"
-            isLoading={isRebuilding}
-            disabled={!selectedCycleId}
-            leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
-            onClick={handleRebuild}
-          >
-            Rebuild
-          </Button>
+          {isGraphCreated ? (
+            <>
+              <Button
+                variant="primary"
+                size="sm"
+                isLoading={isRebuilding}
+                disabled={!selectedCycleId}
+                leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
+                onClick={handleCreateOrRebuild}
+              >
+                Rebuild Graph
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!selectedCycleId || isRebuilding}
+                leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
+                onClick={handleResetGraph}
+              >
+                Reset
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="primary"
+              size="sm"
+              isLoading={isRebuilding}
+              disabled={!selectedCycleId}
+              leftIcon={<Sparkles className="w-3.5 h-3.5" />}
+              onClick={handleCreateOrRebuild}
+            >
+              Create Conflict Graph
+            </Button>
+          )}
 
           <Button
             variant="outline"
             size="sm"
-            disabled={!selectedCycleId}
+            disabled={!selectedCycleId || !rawGraph || !isGraphCreated}
             leftIcon={<Download className="w-3.5 h-3.5" />}
             onClick={() => handleExport("csv")}
           >
@@ -273,6 +336,22 @@ export const GraphPage: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* Success Notification Banner */}
+      {successMsg && (
+        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center justify-between shadow-sm animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <span className="font-medium">{successMsg}</span>
+          </div>
+          <button
+            onClick={() => setSuccessMsg(null)}
+            className="text-emerald-700 hover:text-emerald-900 font-bold ml-4"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
       {/* Filter and Metrics Toolbar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -341,15 +420,46 @@ export const GraphPage: React.FC = () => {
               onAction={() => navigate("/settings")}
             />
           </div>
-        ) : nodes.length === 0 ? (
-          <div className="p-8 max-w-md w-full">
-            <EmptyState
-              icon={<Network className="w-8 h-8 text-blue-600" />}
-              title="No Conflict Graph Data Yet"
-              description="The conflict graph for this cycle has not been built yet, or there are no student course enrollments. Click Rebuild to construct the graph."
-              actionLabel={isRebuilding ? "Building Graph..." : "Rebuild Conflict Graph"}
-              onAction={handleRebuild}
-            />
+        ) : (!isGraphCreated || !rawGraph || nodes.length === 0) ? (
+          <div className="p-8 max-w-lg w-full text-center bg-white/95 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-lg space-y-4 animate-fadeIn">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-inner">
+              <Network className="w-8 h-8" />
+            </div>
+            <div>
+              <span className="inline-block px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200 mb-2">
+                GRAPH NOT GENERATED YET
+              </span>
+              <h2 className="text-base font-bold text-slate-900">
+                Create Conflict Graph G = (V, E)
+              </h2>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                The conflict graph has not been generated for <strong className="text-slate-800">{activeCycle?.name || "this cycle"}</strong>. Create the conflict graph to compute student enrollment clash edges and enable automated clash-free exam scheduling.
+              </p>
+            </div>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-left text-xs space-y-1.5 text-slate-600">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Selected Cycle:</span>
+                <span className="font-semibold text-slate-800 truncate max-w-[200px]">{activeCycle?.name || selectedCycleId}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Exam Period:</span>
+                <span className="font-mono text-slate-700">{activeCycle?.startDate} &rarr; {activeCycle?.endDate}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Clash Computation:</span>
+                <span className="font-semibold text-blue-600">Pairwise student enrollment overlap</span>
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              size="md"
+              isLoading={isRebuilding}
+              leftIcon={<Sparkles className="w-4 h-4" />}
+              onClick={handleCreateOrRebuild}
+              className="w-full justify-center shadow-sm"
+            >
+              {isRebuilding ? "Computing Conflict Topology..." : "Create Conflict Graph"}
+            </Button>
           </div>
         ) : (
           <ReactFlow

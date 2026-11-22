@@ -466,7 +466,7 @@ export const SettingsPage: React.FC = () => {
                   <span>Demonstration Dataset Seeder</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-xl">
-                  Quickly populates 2 departments, 12 realistic exam courses (including a dense hub and an isolated subject), 50 synthetic students, and a pre-configured scheduling cycle with calendar slots and an initial conflict graph.
+                  Quickly populates 12 academic departments, realistic exam courses (including dense hubs and isolated subjects), synthetic students, and a pre-configured scheduling cycle with calendar slots and conflict graph capabilities.
                 </p>
               </div>
               <Button

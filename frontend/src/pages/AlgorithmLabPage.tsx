@@ -45,10 +45,11 @@ export const AlgorithmLabPage: React.FC = () => {
   const [savingRunId, setSavingRunId] = useState<string | null>(null);
 
   useEffect(() => {
-    api.get<SchedulingCycle[]>("/api/v1/cycles")
+    api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        setCycles(data);
-        if (data.length > 0) setSelectedCycleId(data[0].id);
+        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        setCycles(list);
+        if (list.length > 0) setSelectedCycleId(list[0].id);
       })
       .catch((err) => console.error("Error loading cycles:", err));
   }, []);
