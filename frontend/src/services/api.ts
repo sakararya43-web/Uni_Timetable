@@ -26,6 +26,7 @@ import {
   addMockCycle,
   generateMockSlotsForCycle,
   getMockSlotsForCycle,
+  getMockSchedulesForCycle,
   buildMockGraphForCycle,
   getMockGraphForCycle,
   resetMockGraphForCycle,
@@ -146,6 +147,8 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
 
   // Dynamic Schedule Generation with algorithm variety (DSATUR, Welsh-Powell, Greedy)
   if (clean.includes("/generate")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/schedule\/generate/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : undefined;
     let payloadObj: { algorithm?: string } | undefined;
     if (typeof body === "string") {
       try {
@@ -156,7 +159,7 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
     } else if (body && typeof body === "object") {
       payloadObj = body as { algorithm?: string };
     }
-    return generateDynamicScheduleRun(payloadObj);
+    return generateDynamicScheduleRun(payloadObj, cycleId);
   }
 
   // Save generated schedule run as candidate version (PRD Tasks P8.15, P8.16, P9.1)
@@ -178,6 +181,11 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
   }
   if (clean.includes("/clone") || clean.includes("/lock") || clean.includes("/unlock")) {
     return activeScheduleVersionDetail;
+  }
+  if (clean.includes("/cycles/") && clean.endsWith("/schedules") && method === "GET") {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/schedules/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    return getMockSchedulesForCycle(cycleId);
   }
   if (clean.endsWith("/schedules") && method === "GET") {
     return mockScheduleVersions;
@@ -383,6 +391,10 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     // If backend returns empty array for core entities on unseeded live databases, fallback to demo data
     if (Array.isArray(json) && json.length === 0) {
+      // Do not fallback for cycle schedules, an empty array from backend legitimately means no schedules exist yet for this cycle
+      if (cleanEndpoint.includes("/schedules")) {
+        return [] as unknown as T;
+      }
       const fallback = resolveMockData(cleanEndpoint, method, options.body);
       if (fallback !== null && Array.isArray(fallback) && fallback.length > 0) {
         return fallback as T;

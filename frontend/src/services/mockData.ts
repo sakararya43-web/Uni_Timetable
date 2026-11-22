@@ -496,6 +496,100 @@ export const mockScheduleVersionDetails: Record<string, ScheduleVersionDetail> =
 
 export let activeScheduleVersionDetail: ScheduleVersionDetail = mockScheduleVersionDetails["ver-demo-1"];
 
+export const mockCycleSchedules: Record<string, ScheduleVersionSummary[]> = {
+  "cycle-demo-2026": mockScheduleVersions,
+};
+
+let lastRunCycleId = "cycle-demo-2026";
+
+export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail {
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  const slots = getMockSlotsForCycle(cycleId);
+  const slotsToUse = slots.length > 0 ? slots : generateMockSlotsForCycle(cycleId);
+
+  const cleanId = cycleId.replace(/[^a-zA-Z0-9]/g, "").slice(-6);
+  const verId = `ver-${cleanId}-1`;
+  const subjectList = mockSubjects.slice(0, Math.min(12, mockSubjects.length));
+  const assignments: ExamAssignmentItem[] = [];
+
+  subjectList.forEach((sub, i) => {
+    const slotIdx = slotsToUse.length > 0 ? i % slotsToUse.length : 0;
+    const slot = slotsToUse[slotIdx] || {
+      id: `slot-${cleanId}-${slotIdx + 1}`,
+      date: cycle?.startDate || "2026-12-01",
+      startTime: "09:00",
+      endTime: "12:00",
+      sessionLabel: "Morning",
+      durationMinutes: 180,
+    };
+    assignments.push({
+      id: `asg-${cleanId}-${i + 1}`,
+      scheduleVersionId: verId,
+      examId: `exam-${sub.subjectCode.toLowerCase()}`,
+      subjectCode: sub.subjectCode,
+      subjectName: sub.subjectName,
+      departmentCode: sub.departmentCode || "CS",
+      timeSlotId: slot.id,
+      slotDate: slot.date,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      sessionLabel: slot.sessionLabel,
+      durationMinutes: slot.durationMinutes,
+      studentCount: 15 + ((i * 7) % 25),
+      colorId: (i % 6) + 1,
+      locked: false,
+      manualOverride: false,
+    });
+  });
+
+  const summary: ScheduleVersionSummary = {
+    id: verId,
+    versionNumber: 1,
+    status: "Published",
+    scheduleRunId: `run-${cleanId}-1`,
+    assignmentCount: assignments.length,
+    hardViolationCount: 0,
+    softScore: 0,
+    rowVersion: 1,
+    publishedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  };
+
+  const detail: ScheduleVersionDetail = {
+    ...summary,
+    validationReport: {
+      valid: true,
+      hardViolations: [],
+      softPenaltyTotal: 0,
+      softBreakdown: [],
+    },
+    assignments,
+  };
+
+  if (!mockCycleSchedules[cycleId]) {
+    mockCycleSchedules[cycleId] = [];
+  }
+  if (!mockCycleSchedules[cycleId].some((v) => v.id === verId)) {
+    mockCycleSchedules[cycleId].push(summary);
+  }
+  mockScheduleVersionDetails[verId] = detail;
+  activeScheduleVersionDetail = detail;
+
+  return detail;
+}
+
+export function getMockSchedulesForCycle(cycleId: string): ScheduleVersionSummary[] {
+  if (mockCycleSchedules[cycleId] && mockCycleSchedules[cycleId].length > 0) {
+    return mockCycleSchedules[cycleId];
+  }
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  if (cycle) {
+    generateScheduleForCycle(cycleId);
+    return mockCycleSchedules[cycleId] || [];
+  }
+  return [];
+}
+
 // Dynamic Schedule Run Generator State
 let runSequence = 1;
 let lastRunDetails: {
@@ -506,7 +600,10 @@ let lastRunDetails: {
   assignments: ExamAssignmentItem[];
 } | null = null;
 
-export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
+export function generateDynamicScheduleRun(
+  payload?: { algorithm?: string },
+  cycleId?: string
+): {
   id: string;
   schedulingCycleId: string;
   algorithm: string;
@@ -521,6 +618,8 @@ export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
     softBreakdown: Array<{ rule: string; penalty: number; occurrences?: number }>;
   };
 } {
+  const targetCycleId = cycleId || "cycle-demo-2026";
+  lastRunCycleId = targetCycleId;
   const algo = (payload?.algorithm || "dsatur").toLowerCase();
   runSequence++;
   const runId = `run-${algo}-${Date.now().toString().slice(-4)}`;
@@ -552,8 +651,9 @@ export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
     ];
   }
 
-  // Create varied exam assignments based on algorithm
-  const slotList = mockTimeSlots;
+  // Create varied exam assignments based on algorithm using the target cycle's slots!
+  const cycleSlots = getMockSlotsForCycle(targetCycleId);
+  const slotList = cycleSlots.length > 0 ? cycleSlots : mockTimeSlots;
   const newAssignments: ExamAssignmentItem[] = [];
 
   const subjectConfigs = [
@@ -620,7 +720,7 @@ export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
 
   return {
     id: runId,
-    schedulingCycleId: "cycle-demo-2026",
+    schedulingCycleId: targetCycleId,
     algorithm: algo,
     executionTimeMs,
     colorsUsed,
@@ -635,9 +735,15 @@ export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
   };
 }
 
-export function saveRunAsCandidateVersion(runId?: string): ScheduleVersionDetail {
-  const nextVer = mockScheduleVersions.length + 1;
-  const newVerId = `ver-demo-${nextVer}`;
+export function saveRunAsCandidateVersion(runId?: string, cycleId?: string): ScheduleVersionDetail {
+  const targetCycleId = cycleId || lastRunCycleId || "cycle-demo-2026";
+  if (!mockCycleSchedules[targetCycleId]) {
+    mockCycleSchedules[targetCycleId] = [];
+  }
+  const cycleList = mockCycleSchedules[targetCycleId];
+  const nextVer = cycleList.length + 1;
+  const cleanId = targetCycleId.replace(/[^a-zA-Z0-9]/g, "").slice(-6);
+  const newVerId = `ver-${cleanId}-${nextVer}`;
   const algo = lastRunDetails?.algorithm || "dsatur";
   const soft = lastRunDetails?.softScore ?? 0.0;
   const colors = lastRunDetails?.colorsUsed ?? 6;
@@ -652,7 +758,7 @@ export function saveRunAsCandidateVersion(runId?: string): ScheduleVersionDetail
     versionNumber: nextVer,
     status: "Candidate",
     scheduleRunId: runId || lastRunDetails?.runId || `run-${algo}-saved`,
-    assignmentCount: 12,
+    assignmentCount: assignments.length,
     hardViolationCount: 0,
     softScore: soft,
     rowVersion: 1,
@@ -660,7 +766,8 @@ export function saveRunAsCandidateVersion(runId?: string): ScheduleVersionDetail
     createdAt: new Date().toISOString(),
   };
 
-  // Prepend so latest version is at the top of the version selector
+  // Prepend to cycle's schedule list
+  cycleList.unshift(summary);
   mockScheduleVersions.unshift(summary);
 
   const detail: ScheduleVersionDetail = {
@@ -1216,6 +1323,9 @@ export function addMockCycle(payload: {
 
   mockCycles.unshift(newCycle);
   saveCustomCycles(mockCycles);
+  // Automatically generate cycle-specific slots and timetable matching this cycle's dates
+  generateMockSlotsForCycle(newCycle.id);
+  generateScheduleForCycle(newCycle.id);
   return newCycle;
 }
 

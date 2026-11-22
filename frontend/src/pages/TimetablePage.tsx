@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Calendar,
   Lock,
@@ -48,6 +49,7 @@ const statusVariants: Record<string, BadgeVariant> = {
 };
 
 export const TimetablePage: React.FC = () => {
+  const navigate = useNavigate();
   const [cycles, setCycles] = useState<SchedulingCycle[]>([]);
   const [selectedCycleId, setSelectedCycleId] = useState<string>("");
   const [cycleSlots, setCycleSlots] = useState<TimeSlot[]>([]);
@@ -142,6 +144,7 @@ export const TimetablePage: React.FC = () => {
         setCycleSlots(slotData);
         if (verData.length > 0) {
           setSelectedVersionId(verData[0].id);
+          reloadDetail(verData[0].id);
         } else {
           setSelectedVersionId("");
           setVersionDetail(null);
@@ -149,7 +152,7 @@ export const TimetablePage: React.FC = () => {
       })
       .catch((err) => console.error("Error loading cycle data:", err))
       .finally(() => setIsLoading(false));
-  }, [selectedCycleId]);
+  }, [selectedCycleId, reloadDetail]);
 
   useEffect(() => {
     if (selectedVersionId) {
@@ -161,7 +164,7 @@ export const TimetablePage: React.FC = () => {
     if (!versionDetail) return;
     const cycleName =
       cycles.find((c) => c.id === selectedCycleId)?.name ||
-      "June 2026 Academic Final Examinations";
+      "Examination Timetable";
     if (type === "csv") {
       exportTimetableCsv(versionDetail);
     } else if (type === "excel") {
@@ -459,7 +462,9 @@ export const TimetablePage: React.FC = () => {
       ) : !versionDetail || sortedDates.length === 0 ? (
         <EmptyState
           title="No Schedule Version Available"
-          description="Generate a schedule or choose another cycle to view the timetable."
+          description={`No timetable has been generated yet for "${selectedCycle?.name || "this cycle"}". Click below to run the scheduling engine.`}
+          actionLabel="Generate Schedule"
+          onAction={() => navigate("/generate")}
         />
       ) : (
         /* Calendar Timetable Grid */
