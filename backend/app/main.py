@@ -28,6 +28,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     docs_url = "/docs" if settings.DEBUG or settings.APP_ENV != "production" else None
     redoc_url = "/redoc" if settings.DEBUG or settings.APP_ENV != "production" else None
 
+    tags_metadata = [
+        {"name": "System Health", "description": "Liveness, readiness, and service telemetry endpoints."},
+        {"name": "Status", "description": "API status, versioning, and environment metadata."},
+        {"name": "Authentication", "description": "User login, refresh tokens, and session denylist."},
+        {"name": "Academic Structure", "description": "Departments, academic years, semesters, programs."},
+        {"name": "Scheduling Cycles", "description": "Cycle configuration, slot generation, and state transitions."},
+        {"name": "Conflict Graph", "description": "Pure conflict graph engine, chromatic bounds, and snapshots."},
+        {"name": "Schedule Engine", "description": "Coloring algorithms (DSATUR, Welsh-Powell, Greedy) and timetable mapping."},
+    ]
+
     app = FastAPI(
         title=settings.APP_NAME,
         version="1.0.0",
@@ -38,6 +48,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         docs_url=docs_url,
         redoc_url=redoc_url,
         openapi_url="/openapi.json" if docs_url else None,
+        openapi_tags=tags_metadata,
+        contact={
+            "name": "Academic Examination Scheduling Registry",
+            "email": "registrar@university.edu",
+        },
+        license_info={
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT",
+        },
     )
 
     # Middlewares (ordered: outer-most to inner-most)
