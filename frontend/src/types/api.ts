@@ -64,6 +64,16 @@ export interface Enrollment {
   status: "active" | "withdrawn";
 }
 
+export interface PaginatedEnrollmentsResponse {
+  items: Enrollment[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
 export interface SessionConfig {
   label: string;
   startTime: string;

@@ -16,6 +16,12 @@ import {
   mockUserProfile,
   mockStudentTimetable,
   mockAuditLogs,
+  mockEnrollments,
+  addMockEnrollment,
+  withdrawMockEnrollment,
+  addMockSubject,
+  updateMockSubjectEnrollment,
+  addMockStudent,
   generateDynamicScheduleRun,
   saveRunAsCandidateVersion,
 } from "./mockData";
@@ -92,10 +98,26 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
     return mockDepartments;
   }
   if (clean === "/api/v1/subjects") {
-    return method === "POST" ? mockSubjects[0] : mockSubjects;
+    if (method === "POST") {
+      const payload = typeof body === "string" ? JSON.parse(body || "{}") : (body || {});
+      return addMockSubject(payload);
+    }
+    return mockSubjects;
+  }
+  if (clean.startsWith("/api/v1/subjects/") && (method === "PATCH" || method === "PUT")) {
+    const id = clean.replace("/api/v1/subjects/", "");
+    const payload = typeof body === "string" ? JSON.parse(body || "{}") : (body || {});
+    if (payload.enrollmentCount !== undefined) {
+      return updateMockSubjectEnrollment(id, Number(payload.enrollmentCount)) || mockSubjects[0];
+    }
+    return mockSubjects.find((s) => s.id === id) || mockSubjects[0];
   }
   if (clean === "/api/v1/students") {
-    return method === "POST" ? mockStudents[0] : mockStudents;
+    if (method === "POST") {
+      const payload = typeof body === "string" ? JSON.parse(body || "{}") : (body || {});
+      return addMockStudent(payload);
+    }
+    return mockStudents;
   }
 
   // Scheduling Cycles & Slots
@@ -179,9 +201,33 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
     return mockDistribution;
   }
 
-  // Enrollments diagnostic
+  // Enrollments CRUD & diagnostic
   if (clean.includes("/enrollments/validate")) {
     return { valid: true, errorCount: 0, warningCount: 0, errors: [] };
+  }
+  if (clean === "/api/v1/enrollments") {
+    if (method === "POST") {
+      const payload = typeof body === "string" ? JSON.parse(body || "{}") : (body || {});
+      const stuId = payload.studentId || payload.student_id;
+      const subId = payload.subjectId || payload.subject_id;
+      const cycId = payload.cycleId || payload.cycle_id;
+      return addMockEnrollment(stuId, subId, cycId);
+    }
+    const active = mockEnrollments.filter((e) => e.status !== "withdrawn");
+    return {
+      items: active,
+      total: active.length,
+      page: 1,
+      pageSize: 100,
+      totalPages: Math.max(1, Math.ceil(active.length / 100)),
+      hasNext: false,
+      hasPrev: false,
+    };
+  }
+  if (clean.startsWith("/api/v1/enrollments/") && method === "DELETE") {
+    const id = clean.replace("/api/v1/enrollments/", "");
+    const withdrawn = withdrawMockEnrollment(id);
+    return withdrawn || { id, status: "withdrawn" };
   }
 
   // User management & Audit Logs

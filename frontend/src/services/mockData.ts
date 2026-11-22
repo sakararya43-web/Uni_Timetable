@@ -3,6 +3,7 @@ import {
   Department,
   Subject,
   Student,
+  Enrollment,
   TimeSlot,
   ScheduleVersionSummary,
   ScheduleVersionDetail,
@@ -697,3 +698,278 @@ export const mockAuditLogs: AuditLogItem[] = [
     timestamp: "2026-06-01T08:00:00Z",
   },
 ];
+
+// Initial mock enrollments for students in mockStudents across mockSubjects
+export const mockEnrollments: Enrollment[] = [];
+
+// Populate realistic initial enrollments
+(function initEnrollments() {
+  const cycleId = "cycle-demo-2026";
+  // CS semester 1 (CS-001..CS-010) -> CS101, CS102
+  for (let i = 0; i < 10; i++) {
+    const s = mockStudents[i];
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs101`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs101",
+      subjectCode: "CS101",
+      subjectName: "Introduction to Programming",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs102`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs102",
+      subjectCode: "CS102",
+      subjectName: "Discrete Mathematics",
+      cycleId,
+      status: "active",
+    });
+  }
+  // CS semester 2 (CS-011..CS-020) -> CS201, CS202
+  for (let i = 10; i < 20; i++) {
+    const s = mockStudents[i];
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs201`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs201",
+      subjectCode: "CS201",
+      subjectName: "Data Structures & Algorithms",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs202`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs202",
+      subjectCode: "CS202",
+      subjectName: "Computer Organization & Architecture",
+      cycleId,
+      status: "active",
+    });
+  }
+  // CS semester 3 (CS-021..CS-030) -> CS301, CS302, CS303
+  for (let i = 20; i < 30; i++) {
+    const s = mockStudents[i];
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs301`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs301",
+      subjectCode: "CS301",
+      subjectName: "Operating Systems & Concurrency",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs302`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs302",
+      subjectCode: "CS302",
+      subjectName: "Database Management Systems",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-cs303`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-cs303",
+      subjectCode: "CS303",
+      subjectName: "Computer Networks & Protocols",
+      cycleId,
+      status: "active",
+    });
+  }
+  // EE semester 1 (EE-001..EE-010) -> EE101, EE102
+  for (let i = 30; i < 40; i++) {
+    const s = mockStudents[i];
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-ee101`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-ee101",
+      subjectCode: "EE101",
+      subjectName: "Linear Circuit Analysis",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-ee102`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-ee102",
+      subjectCode: "EE102",
+      subjectName: "Digital Logic & Microprocessors",
+      cycleId,
+      status: "active",
+    });
+  }
+  // EE semester 2 (EE-011..EE-020) -> EE201, EE202
+  for (let i = 40; i < 50; i++) {
+    const s = mockStudents[i];
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-ee201`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-ee201",
+      subjectCode: "EE201",
+      subjectName: "Signals and Linear Systems",
+      cycleId,
+      status: "active",
+    });
+    mockEnrollments.push({
+      id: `enr-${s.id}-sub-ee202`,
+      studentId: s.id,
+      studentNumber: s.studentNumber,
+      studentName: s.fullName,
+      subjectId: "sub-ee202",
+      subjectCode: "EE202",
+      subjectName: "Electromagnetic Fields & Waves",
+      cycleId,
+      status: "active",
+    });
+  }
+})();
+
+export function addMockEnrollment(studentId: string, subjectId: string, cycleId?: string): Enrollment {
+  const student = mockStudents.find((s) => s.id === studentId || s.studentNumber === studentId);
+  const subject = mockSubjects.find((sub) => sub.id === subjectId || sub.subjectCode === subjectId);
+  const cycle = mockCycles.find((c) => c.id === cycleId) || mockCycles[0];
+
+  const newEnrollment: Enrollment = {
+    id: `enr-${student?.id || studentId}-${subject?.id || subjectId}-${Date.now().toString().slice(-4)}`,
+    studentId: student?.id || studentId,
+    studentNumber: student?.studentNumber,
+    studentName: student?.fullName,
+    subjectId: subject?.id || subjectId,
+    subjectCode: subject?.subjectCode,
+    subjectName: subject?.subjectName,
+    cycleId: cycle.id,
+    status: "active",
+  };
+
+  mockEnrollments.unshift(newEnrollment);
+
+  if (student) {
+    student.enrollmentCount = (student.enrollmentCount || 0) + 1;
+  }
+  if (subject) {
+    subject.enrollmentCount = (subject.enrollmentCount || 0) + 1;
+  }
+
+  return newEnrollment;
+}
+
+export function withdrawMockEnrollment(enrollmentId: string): Enrollment | null {
+  const idx = mockEnrollments.findIndex((e) => e.id === enrollmentId);
+  if (idx !== -1) {
+    const enr = mockEnrollments[idx];
+    enr.status = "withdrawn";
+    const student = mockStudents.find((s) => s.id === enr.studentId);
+    if (student && student.enrollmentCount && student.enrollmentCount > 0) {
+      student.enrollmentCount -= 1;
+    }
+    const subject = mockSubjects.find((s) => s.id === enr.subjectId);
+    if (subject && subject.enrollmentCount && subject.enrollmentCount > 0) {
+      subject.enrollmentCount -= 1;
+    }
+    return enr;
+  }
+  return null;
+}
+
+export function addMockSubject(data: {
+  subject_code?: string;
+  subjectCode?: string;
+  subject_name?: string;
+  subjectName?: string;
+  department_id?: string;
+  departmentId?: string;
+  semester?: number;
+  credits?: number;
+  default_duration_minutes?: number;
+  defaultDurationMinutes?: number;
+  initial_enrollment?: number;
+  initialEnrollment?: number;
+}): Subject {
+  const code = (data.subjectCode || data.subject_code || "NEW101").toUpperCase();
+  const name = data.subjectName || data.subject_name || "New Course";
+  const deptId = data.departmentId || data.department_id || "dept-cs";
+  const dept = mockDepartments.find((d) => d.id === deptId) || mockDepartments[0];
+  const enrollCount = Number(data.initialEnrollment || data.initial_enrollment) || 20;
+
+  const newSub: Subject = {
+    id: `sub-${code.toLowerCase().replace(/[^a-z0-9]/g, "")}-${Date.now().toString().slice(-4)}`,
+    subjectCode: code,
+    subjectName: name,
+    departmentId: dept.id,
+    departmentCode: dept.code,
+    semester: Number(data.semester) || 1,
+    credits: Number(data.credits) || 3.0,
+    defaultDurationMinutes: Number(data.defaultDurationMinutes || data.default_duration_minutes) || 180,
+    status: "active",
+    enrollmentCount: enrollCount,
+    conflictDegree: Math.min(6, Math.max(1, Math.floor(enrollCount / 5))),
+  };
+
+  mockSubjects.unshift(newSub);
+  return newSub;
+}
+
+export function updateMockSubjectEnrollment(subjectId: string, count: number): Subject | null {
+  const sub = mockSubjects.find((s) => s.id === subjectId || s.subjectCode === subjectId);
+  if (sub) {
+    sub.enrollmentCount = count;
+    sub.conflictDegree = Math.min(8, Math.max(1, Math.floor(count / 5)));
+    return sub;
+  }
+  return null;
+}
+
+export function addMockStudent(data: {
+  student_number?: string;
+  studentNumber?: string;
+  full_name?: string;
+  fullName?: string;
+  email?: string;
+  department_id?: string;
+  departmentId?: string;
+  semester?: number;
+}): Student {
+  const num = (data.studentNumber || data.student_number || `S-${Date.now().toString().slice(-4)}`).toUpperCase();
+  const name = data.fullName || data.full_name || "New Student";
+  const deptId = data.departmentId || data.department_id || "dept-cs";
+  const dept = mockDepartments.find((d) => d.id === deptId) || mockDepartments[0];
+
+  const newStu: Student = {
+    id: `stu-${num.toLowerCase().replace(/[^a-z0-9]/g, "")}-${Date.now().toString().slice(-4)}`,
+    studentNumber: num,
+    fullName: name,
+    email: data.email || `${num.toLowerCase()}@university.edu`,
+    departmentId: dept.id,
+    departmentCode: dept.code,
+    semester: Number(data.semester) || 1,
+    status: "active",
+    enrollmentCount: 0,
+  };
+
+  mockStudents.unshift(newStu);
+  return newStu;
+}
