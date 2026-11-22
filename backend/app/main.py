@@ -29,13 +29,31 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     redoc_url = "/redoc" if settings.DEBUG or settings.APP_ENV != "production" else None
 
     tags_metadata = [
-        {"name": "System Health", "description": "Liveness, readiness, and service telemetry endpoints."},
+        {
+            "name": "System Health",
+            "description": "Liveness, readiness, and service telemetry endpoints.",
+        },
         {"name": "Status", "description": "API status, versioning, and environment metadata."},
-        {"name": "Authentication", "description": "User login, refresh tokens, and session denylist."},
-        {"name": "Academic Structure", "description": "Departments, academic years, semesters, programs."},
-        {"name": "Scheduling Cycles", "description": "Cycle configuration, slot generation, and state transitions."},
-        {"name": "Conflict Graph", "description": "Pure conflict graph engine, chromatic bounds, and snapshots."},
-        {"name": "Schedule Engine", "description": "Coloring algorithms (DSATUR, Welsh-Powell, Greedy) and timetable mapping."},
+        {
+            "name": "Authentication",
+            "description": "User login, refresh tokens, and session denylist.",
+        },
+        {
+            "name": "Academic Structure",
+            "description": "Departments, academic years, semesters, programs.",
+        },
+        {
+            "name": "Scheduling Cycles",
+            "description": "Cycle configuration, slot generation, and state transitions.",
+        },
+        {
+            "name": "Conflict Graph",
+            "description": "Pure conflict graph engine, chromatic bounds, and snapshots.",
+        },
+        {
+            "name": "Schedule Engine",
+            "description": "Coloring algorithms (DSATUR, Welsh-Powell, Greedy) and timetable mapping.",
+        },
     ]
 
     app = FastAPI(
