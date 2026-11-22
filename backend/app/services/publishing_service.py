@@ -170,7 +170,7 @@ class PublishingService:
                 )
             ).all()
         )
-        enrollments_tuples = [(str(r[0]), str(r[1])) for r in enrollments]
+        enrollments_tuples = [(r[0], r[1]) for r in enrollments]
 
         validation_report = validate_schedule(
             exams=exams_dict,
@@ -208,8 +208,9 @@ class PublishingService:
             db.flush()
 
         # 4. Mark version Published
+        now = datetime.now(UTC)
         ver.status = ScheduleStatus.PUBLISHED
-        ver.published_at = datetime.now(UTC)
+        ver.published_at = now
         ver.published_by = actor.id
 
         # 5. Advance cycle status to Published
@@ -226,7 +227,7 @@ class PublishingService:
             after={
                 "versionNumber": ver.version_number,
                 "cycleId": cycle.id,
-                "publishedAt": ver.published_at.isoformat(),
+                "publishedAt": now.isoformat(),
                 "notes": req.notes,
                 "supersededVersions": [p.id for p in prev_published],
             },
@@ -451,7 +452,7 @@ class PublishingService:
                 if actor.department_id and sub.department_id != actor.department_id:
                     continue
 
-            if date_filter and str(slot.date) != str(date_filter):
+            if date_filter and str(slot.date) != date_filter:
                 continue
             if session_label and slot.session_label != session_label:
                 continue
@@ -949,10 +950,10 @@ class PublishingService:
         exam_date_map: dict[str, date] = {a.exam_id: a.time_slot.date for a in assignments}
         student_days: dict[str, dict[date, int]] = {}
         for sid, eid in enrollments:
-            slot_date: date | None = exam_date_map.get(str(eid))
+            slot_date: date | None = exam_date_map.get(eid)
             if slot_date is not None:
-                student_days.setdefault(str(sid), {}).setdefault(slot_date, 0)
-                student_days[str(sid)][slot_date] += 1
+                student_days.setdefault(sid, {}).setdefault(slot_date, 0)
+                student_days[sid][slot_date] += 1
 
         histogram: dict[int, int] = {}
         for _sid, dmap in student_days.items():
