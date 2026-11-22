@@ -70,6 +70,7 @@ function getCookie(name: string): string | null {
 function resolveMockData(endpoint: string, method = "GET"): unknown {
   const clean = endpoint.split("?")[0];
 
+  // Authentication endpoints
   if (clean === "/api/v1/auth/me") {
     return { user: mockUserProfile };
   }
@@ -79,9 +80,8 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
   if (clean === "/api/v1/auth/logout") {
     return { success: true };
   }
-  if (clean === "/api/v1/cycles" && method === "GET") {
-    return mockCycles;
-  }
+
+  // Academic structure endpoints
   if (clean === "/api/v1/academic/years") {
     return mockAcademicYears;
   }
@@ -89,41 +89,27 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
     return mockDepartments;
   }
   if (clean === "/api/v1/subjects") {
-    return mockSubjects;
+    return method === "POST" ? mockSubjects[0] : mockSubjects;
   }
   if (clean === "/api/v1/students") {
-    return mockStudents;
+    return method === "POST" ? mockStudents[0] : mockStudents;
   }
-  if (clean.includes("/reports/summary")) {
-    return mockCycleSummary;
+
+  // Scheduling Cycles & Slots
+  if (clean === "/api/v1/cycles") {
+    return method === "POST" ? mockCycles[0] : mockCycles;
   }
-  if (clean.includes("/reports/distribution")) {
-    return mockDistribution;
-  }
-  if (clean.endsWith("/slots")) {
+  if (clean.includes("/slots/generate") || clean.endsWith("/slots")) {
     return mockTimeSlots;
   }
-  if (clean.endsWith("/schedules") && method === "GET") {
-    return mockScheduleVersions;
-  }
-  if (clean.match(/\/schedules\/[^/]+$/) && method === "GET") {
+
+  // Schedule Runs & Candidate Saving (PRD Tasks P8.15, P8.16, P9.1)
+  if (clean.includes("/schedule-runs") || clean.endsWith("/save")) {
     return mockScheduleVersionDetail;
-  }
-  if (clean.includes("/graph/summary")) {
-    return mockGraphSummary;
-  }
-  if (clean.includes("/graph/data")) {
-    return mockRawGraph;
-  }
-  if (clean.endsWith("/graph")) {
-    return { summary: mockGraphSummary, data: mockRawGraph };
-  }
-  if (clean.includes("/compare")) {
-    return mockComparison;
   }
   if (clean.includes("/generate")) {
     return {
-      id: "run-demo-dsatur",
+      id: "run-demo",
       schedulingCycleId: "cycle-demo-2026",
       algorithm: "dsatur",
       executionTimeMs: 1.84,
@@ -134,18 +120,85 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
       validationReport: { valid: true, hardViolations: [], softBreakdown: [] },
     };
   }
+
+  // Schedule Versions & Timetable Operations
+  if (clean.includes("/publish")) {
+    return { success: true, message: "Schedule version published successfully." };
+  }
+  if (clean.includes("/regenerate")) {
+    return { id: "ver-demo-1", versionNumber: 2 };
+  }
+  if (clean.includes("/move/preview") || clean.includes("/move")) {
+    return { valid: true, conflicts: [], candidateSlotId: "slot-02" };
+  }
+  if (clean.includes("/clone") || clean.includes("/lock") || clean.includes("/unlock")) {
+    return mockScheduleVersionDetail;
+  }
+  if (clean.endsWith("/schedules") && method === "GET") {
+    return mockScheduleVersions;
+  }
+  if (clean.includes("/schedules/")) {
+    if (clean.includes("/reports/distribution")) {
+      return mockDistribution;
+    }
+    return mockScheduleVersionDetail;
+  }
+
+  // Conflict Graph
+  if (clean.includes("/graph/build") || clean.endsWith("/graph")) {
+    return { summary: mockGraphSummary, data: mockRawGraph };
+  }
+  if (clean.includes("/graph/summary")) {
+    return mockGraphSummary;
+  }
+  if (clean.includes("/graph/data")) {
+    return mockRawGraph;
+  }
+
+  // Algorithm Lab comparison
+  if (clean.includes("/compare")) {
+    return mockComparison;
+  }
+
+  // Reports & Analytics
+  if (clean.includes("/reports/summary")) {
+    return mockCycleSummary;
+  }
+  if (clean.includes("/reports/distribution")) {
+    return mockDistribution;
+  }
+
+  // Enrollments diagnostic
   if (clean.includes("/enrollments/validate")) {
     return { valid: true, errorCount: 0, warningCount: 0, errors: [] };
   }
+
+  // User management & Audit Logs
   if (clean === "/api/v1/users") {
-    return [mockUserProfile];
+    return method === "POST" ? mockUserProfile : [mockUserProfile];
   }
   if (clean.includes("/audit-logs")) {
     return { total: mockAuditLogs.length, items: mockAuditLogs };
   }
+
+  // Student Timetable Portal
   if (clean === "/api/v1/me/timetable") {
     return mockStudentTimetable;
   }
+
+  // CSV Imports
+  if (clean.includes("/imports/")) {
+    return {
+      batchId: "batch-demo-1",
+      importType: "subjects",
+      totalRows: 12,
+      validRows: 12,
+      invalidRows: 0,
+      errors: [],
+    };
+  }
+
+  // Developer demonstration controls
   if (clean.includes("/dev/seed-demo")) {
     return {
       success: true,
