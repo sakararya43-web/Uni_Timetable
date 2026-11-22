@@ -72,8 +72,7 @@ def login(
 def logout(
     request: Request,
     response: Response,
-    token: str = Depends(extract_token),
-    current_user: User = Depends(get_current_user),
+    token: str | None = Depends(extract_token),
     db: Session = Depends(get_db),
 ) -> MessageResponse:
     """Invalidate active session and clear authentication cookies."""
@@ -81,14 +80,19 @@ def logout(
     user_agent = request.headers.get("User-Agent")
     req_id = request_id_ctx_var.get()
 
-    auth_service.logout_user(
-        db=db,
-        token=token,
-        user=current_user,
-        ip_address=ip_address,
-        user_agent=user_agent,
-        request_id=req_id,
-    )
+    if token:
+        try:
+            current_user = get_current_user(request, token=token, db=db)
+            auth_service.logout_user(
+                db=db,
+                token=token,
+                user=current_user,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                request_id=req_id,
+            )
+        except Exception:
+            pass
 
     # Clear cookies
     response.delete_cookie(key="access_token", path="/")

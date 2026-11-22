@@ -24,26 +24,87 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      try {
+        const saved = window.localStorage.getItem("timetabling_auth_user");
+        if (saved) return JSON.parse(saved);
+      } catch {
+        // ignore
+      }
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Check active session on initial load
     api
-      .get<{ user: UserProfile }>("/api/v1/auth/me")
-      .then((data) => setUser(data.user))
-      .catch(() => setUser(null))
+      .get<{ user?: UserProfile } | UserProfile>("/api/v1/auth/me")
+      .then((data) => {
+        const profile = (data && "user" in data && data.user) ? data.user : (data as UserProfile);
+        if (profile && profile.role) {
+          const normalized: UserProfile = {
+            id: profile.id,
+            email: profile.email,
+            fullName: profile.fullName || (profile as unknown as { full_name?: string }).full_name || "Staff Registrar",
+            role: profile.role,
+            departmentId: profile.departmentId || (profile as unknown as { department_id?: string }).department_id,
+            studentId: profile.studentId || (profile as unknown as { student_id?: string }).student_id,
+          };
+          setUser(normalized);
+          try {
+            localStorage.setItem("timetabling_auth_user", JSON.stringify(normalized));
+          } catch {
+            // ignore
+          }
+        } else {
+          setUser(null);
+          try {
+            localStorage.removeItem("timetabling_auth_user");
+          } catch {
+            // ignore
+          }
+        }
+      })
+      .catch(() => {
+        try {
+          const token = localStorage.getItem("timetabling_token");
+          if (!token) {
+            setUser(null);
+            localStorage.removeItem("timetabling_auth_user");
+          }
+        } catch {
+          setUser(null);
+        }
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = (_token: string, profile: UserProfile) => {
+  const login = (token: string, profile: UserProfile) => {
+    try {
+      localStorage.setItem("timetabling_auth_user", JSON.stringify(profile));
+      if (token) {
+        localStorage.setItem("timetabling_token", token);
+      }
+    } catch {
+      // ignore
+    }
     setUser(profile);
   };
 
   const logout = async () => {
     try {
       await api.post("/api/v1/auth/logout");
+    } catch {
+      // ignore network errors on logout
     } finally {
+      try {
+        localStorage.removeItem("timetabling_auth_user");
+        localStorage.removeItem("timetabling_token");
+      } catch {
+        // ignore
+      }
       setUser(null);
     }
   };

@@ -88,12 +88,63 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
 
   // Authentication endpoints
   if (clean === "/api/v1/auth/me") {
-    return { user: mockUserProfile };
+    if (typeof window !== "undefined" && window.localStorage) {
+      try {
+        const saved = window.localStorage.getItem("timetabling_auth_user");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return { user: parsed };
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return null;
   }
   if (clean === "/api/v1/auth/login" || clean === "/api/v1/auth/refresh") {
-    return { success: true, token: "demo-bearer-token", user: mockUserProfile };
+    let parsedBody: Record<string, unknown> = {};
+    if (typeof body === "string") {
+      try {
+        parsedBody = JSON.parse(body);
+      } catch {
+        // ignore
+      }
+    } else if (body && typeof body === "object") {
+      parsedBody = body as Record<string, unknown>;
+    }
+    const email = typeof parsedBody.email === "string" ? parsedBody.email : "admin@university.edu";
+    let role: "admin" | "coordinator" | "faculty" | "student" = "admin";
+    if (email.includes("coordinator")) role = "coordinator";
+    else if (email.includes("faculty")) role = "faculty";
+    else if (email.includes("student")) role = "student";
+
+    const demoUser = {
+      id: `usr-${role}-demo`,
+      email,
+      fullName: `${role.charAt(0).toUpperCase() + role.slice(1)} Registrar`,
+      role,
+      departmentId: "dept-cs",
+      studentId: role === "student" ? "stu-cs-001" : undefined,
+    };
+    if (typeof window !== "undefined" && window.localStorage) {
+      try {
+        window.localStorage.setItem("timetabling_auth_user", JSON.stringify(demoUser));
+        window.localStorage.setItem("timetabling_token", "demo-bearer-token");
+      } catch {
+        // ignore
+      }
+    }
+    return { success: true, token: "demo-bearer-token", user: demoUser };
   }
   if (clean === "/api/v1/auth/logout") {
+    if (typeof window !== "undefined" && window.localStorage) {
+      try {
+        window.localStorage.removeItem("timetabling_auth_user");
+        window.localStorage.removeItem("timetabling_token");
+      } catch {
+        // ignore
+      }
+    }
     return { success: true };
   }
 
@@ -367,6 +418,24 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     }
 
     if (!response.ok) {
+      // Do not mask explicit authentication errors (401 / 403) on auth endpoints with fallback mock data
+      if (cleanEndpoint.startsWith("/api/v1/auth/") && (response.status === 401 || response.status === 403)) {
+        let errorPayload: ApiErrorPayload;
+        try {
+          errorPayload = await response.json();
+        } catch {
+          errorPayload = {
+            error: {
+              code: `HTTP_${response.status}`,
+              message: response.statusText || "Authentication failed with HTTP status " + response.status,
+              details: [],
+              requestId: response.headers.get("X-Request-ID") || undefined,
+            },
+          };
+        }
+        throw new ApiError(response.status, errorPayload);
+      }
+
       // Check if fallback data is available for this endpoint
       const fallback = resolveMockData(cleanEndpoint, method, options.body);
       if (fallback !== null) {
@@ -422,6 +491,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     return json as T;
   } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
     // If backend is unreachable or offline, transparently serve demonstration dataset
     const fallback = resolveMockData(cleanEndpoint, method, options.body);
     if (fallback !== null) {

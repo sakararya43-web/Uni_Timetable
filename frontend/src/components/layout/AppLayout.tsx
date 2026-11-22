@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   LayoutDashboard,
@@ -19,8 +19,32 @@ import {
 } from "lucide-react";
 
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[var(--color-paper)]">
+        <div className="flex items-center gap-2 text-xs font-mono text-[var(--color-muted)]">
+          <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
+          <span>Verifying session...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   const isStudent = user?.role === "student";
 
@@ -116,9 +140,10 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
               </p>
             </div>
             <button
-              onClick={() => logout()}
+              onClick={handleLogout}
               title="Sign Out"
-              className="p-1.5 text-[var(--color-muted)] hover:text-[var(--color-error)] rounded hover:bg-white transition-colors"
+              aria-label="Sign Out"
+              className="p-1.5 text-[var(--color-muted)] hover:text-[var(--color-error)] rounded hover:bg-white transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>
