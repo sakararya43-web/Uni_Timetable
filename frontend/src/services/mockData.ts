@@ -430,66 +430,156 @@ export const mockStudents: Student[] = Array.from({ length: 60 }, (_, i) => {
   };
 });
 
+export function computeSpreadDates(
+  startDateStr: string,
+  endDateStr: string,
+  numDaysNeeded: number = 3,
+  allowedDaysOfWeek: number[] = [1, 2, 3, 4, 5, 6]
+): string[] {
+  if (!startDateStr || !endDateStr) {
+    return [startDateStr || "2026-06-10", endDateStr || "2026-06-20"];
+  }
+
+  const parseDate = (s: string): Date => {
+    const parts = s.split("-").map(Number);
+    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    }
+    return new Date(s);
+  };
+
+  const formatDate = (d: Date): string => {
+    return d.toISOString().split("T")[0];
+  };
+
+  const start = parseDate(startDateStr);
+  const end = parseDate(endDateStr);
+
+  const startMs = start.getTime();
+  const endMs = end.getTime();
+
+  if (isNaN(startMs) || isNaN(endMs) || endMs <= startMs || numDaysNeeded <= 1) {
+    return [startDateStr];
+  }
+
+  if (numDaysNeeded === 2) {
+    return [startDateStr, endDateStr];
+  }
+
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const totalDays = Math.round((endMs - startMs) / oneDayMs);
+
+  if (totalDays < numDaysNeeded) {
+    const dates: string[] = [];
+    const cur = new Date(start);
+    while (cur <= end) {
+      dates.push(formatDate(cur));
+      cur.setUTCDate(cur.getUTCDate() + 1);
+    }
+    while (dates.length < numDaysNeeded) {
+      dates.push(dates[dates.length - 1]);
+    }
+    return dates.slice(0, numDaysNeeded);
+  }
+
+  const candidates: Array<{ dateStr: string; time: number; isAllowedWeekday: boolean }> = [];
+  const cur = new Date(start);
+  cur.setUTCDate(cur.getUTCDate() + 1);
+
+  while (cur.getTime() < end.getTime()) {
+    const dStr = formatDate(cur);
+    const day = cur.getUTCDay();
+    const isoDay = day === 0 ? 7 : day;
+    const isAllowed = allowedDaysOfWeek.includes(isoDay);
+    candidates.push({ dateStr: dStr, time: cur.getTime(), isAllowedWeekday: isAllowed });
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+
+  const selectedDates: string[] = [startDateStr];
+  const intermediateCount = numDaysNeeded - 2;
+
+  for (let k = 1; k <= intermediateCount; k++) {
+    const targetRatio = k / (numDaysNeeded - 1);
+    const targetTime = startMs + targetRatio * (endMs - startMs);
+
+    const lastSelectedTime = parseDate(selectedDates[selectedDates.length - 1]).getTime();
+    const available = candidates.filter((c) => c.time > lastSelectedTime);
+
+    if (available.length === 0) break;
+
+    const allowed = available.filter((c) => c.isAllowedWeekday);
+    const pool = allowed.length > 0 ? allowed : available;
+
+    let best = pool[0];
+    let bestDist = Math.abs(best.time - targetTime);
+    for (let i = 1; i < pool.length; i++) {
+      const dist = Math.abs(pool[i].time - targetTime);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = pool[i];
+      }
+    }
+    selectedDates.push(best.dateStr);
+  }
+
+  selectedDates.push(endDateStr);
+  return selectedDates;
+}
+
 export const mockTimeSlots: TimeSlot[] = [
-  // 10 June 2026 (Wednesday)
+  // 10 June 2026 (Wednesday) - START DATE
   { id: "slot-01", schedulingCycleId: "cycle-demo-2026", date: "2026-06-10", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 0, enabled: true, capacity: 200 },
   { id: "slot-02", schedulingCycleId: "cycle-demo-2026", date: "2026-06-10", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 1, enabled: true, capacity: 200 },
-  // 11 June 2026 (Thursday)
-  { id: "slot-03", schedulingCycleId: "cycle-demo-2026", date: "2026-06-11", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 2, enabled: true, capacity: 200 },
-  { id: "slot-04", schedulingCycleId: "cycle-demo-2026", date: "2026-06-11", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 3, enabled: true, capacity: 200 },
-  // 12 June 2026 (Friday)
-  { id: "slot-05", schedulingCycleId: "cycle-demo-2026", date: "2026-06-12", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 4, enabled: true, capacity: 200 },
-  { id: "slot-06", schedulingCycleId: "cycle-demo-2026", date: "2026-06-12", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 5, enabled: true, capacity: 200 },
-  // 13 June 2026 (Saturday)
-  { id: "slot-07", schedulingCycleId: "cycle-demo-2026", date: "2026-06-13", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 6, enabled: true, capacity: 200 },
-  { id: "slot-08", schedulingCycleId: "cycle-demo-2026", date: "2026-06-13", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 7, enabled: true, capacity: 200 },
-  // 15 June 2026 (Monday)
-  { id: "slot-09", schedulingCycleId: "cycle-demo-2026", date: "2026-06-15", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 8, enabled: true, capacity: 200 },
-  { id: "slot-10", schedulingCycleId: "cycle-demo-2026", date: "2026-06-15", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 9, enabled: true, capacity: 200 },
-  // 16 June 2026 (Tuesday)
-  { id: "slot-11", schedulingCycleId: "cycle-demo-2026", date: "2026-06-16", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 10, enabled: true, capacity: 200 },
-  { id: "slot-12", schedulingCycleId: "cycle-demo-2026", date: "2026-06-16", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 11, enabled: true, capacity: 200 },
+  // 15 June 2026 (Monday) - SPREAD INTERMEDIATE DATE (5 DAYS GAP)
+  { id: "slot-03", schedulingCycleId: "cycle-demo-2026", date: "2026-06-15", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 2, enabled: true, capacity: 200 },
+  { id: "slot-04", schedulingCycleId: "cycle-demo-2026", date: "2026-06-15", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 3, enabled: true, capacity: 200 },
+  // 20 June 2026 (Saturday) - END DATE (5 DAYS GAP)
+  { id: "slot-05", schedulingCycleId: "cycle-demo-2026", date: "2026-06-20", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 4, enabled: true, capacity: 200 },
+  { id: "slot-06", schedulingCycleId: "cycle-demo-2026", date: "2026-06-20", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 5, enabled: true, capacity: 200 },
+  // Extra Slots on End Date
+  { id: "slot-07", schedulingCycleId: "cycle-demo-2026", date: "2026-06-20", startTime: "09:00", endTime: "12:00", durationMinutes: 180, sessionLabel: "Morning", slotIndex: 6, enabled: true, capacity: 200 },
+  { id: "slot-08", schedulingCycleId: "cycle-demo-2026", date: "2026-06-20", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 7, enabled: true, capacity: 200 },
 ];
 
 export const initialAssignments: ExamAssignmentItem[] = [
-  // Slot 1 (Morning, 2026-06-10)
+  // Slot 1 (Morning, 2026-06-10 - Start Date)
   { id: "asg-01", scheduleVersionId: "ver-demo-1", examId: "exam-cs101", subjectCode: "CS101", subjectName: "Introduction to Programming", departmentCode: "CS", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 20, colorId: 1, locked: false, manualOverride: false },
   { id: "asg-02", scheduleVersionId: "ver-demo-1", examId: "exam-ee101", subjectCode: "EE101", subjectName: "Linear Circuit Analysis", departmentCode: "EE", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 15, colorId: 1, locked: false, manualOverride: false },
   { id: "asg-03", scheduleVersionId: "ver-demo-1", examId: "exam-me101", subjectCode: "ME101", subjectName: "Engineering Mechanics & Statics", departmentCode: "ME", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 16, colorId: 1, locked: false, manualOverride: false },
   { id: "asg-04", scheduleVersionId: "ver-demo-1", examId: "exam-math101", subjectCode: "MATH101", subjectName: "Linear Algebra & Advanced Calculus", departmentCode: "MATH", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 30, colorId: 1, locked: false, manualOverride: false },
 
-  // Slot 2 (Afternoon, 2026-06-10)
+  // Slot 2 (Afternoon, 2026-06-10 - Start Date)
   { id: "asg-05", scheduleVersionId: "ver-demo-1", examId: "exam-cs102", subjectCode: "CS102", subjectName: "Discrete Mathematics", departmentCode: "CS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 2, locked: false, manualOverride: false },
   { id: "asg-06", scheduleVersionId: "ver-demo-1", examId: "exam-ee102", subjectCode: "EE102", subjectName: "Digital Logic & Microprocessors", departmentCode: "EE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 2, locked: false, manualOverride: false },
   { id: "asg-07", scheduleVersionId: "ver-demo-1", examId: "exam-ce101", subjectCode: "CE101", subjectName: "Structural Analysis & Materials", departmentCode: "CE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 14, colorId: 2, locked: false, manualOverride: false },
   { id: "asg-08", scheduleVersionId: "ver-demo-1", examId: "exam-phys101", subjectCode: "PHYS101", subjectName: "Classical & Quantum Physics", departmentCode: "PHYS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 2, locked: false, manualOverride: false },
 
-  // Slot 3 (Morning, 2026-06-11)
-  { id: "asg-09", scheduleVersionId: "ver-demo-1", examId: "exam-cs201", subjectCode: "CS201", subjectName: "Data Structures & Algorithms", departmentCode: "CS", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 18, colorId: 3, locked: false, manualOverride: false },
-  { id: "asg-10", scheduleVersionId: "ver-demo-1", examId: "exam-ee201", subjectCode: "EE201", subjectName: "Signals and Linear Systems", departmentCode: "EE", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 3, locked: false, manualOverride: false },
-  { id: "asg-11", scheduleVersionId: "ver-demo-1", examId: "exam-it101", subjectCode: "IT101", subjectName: "Cloud Infrastructure & Distributed Systems", departmentCode: "IT", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 22, colorId: 3, locked: false, manualOverride: false },
-  { id: "asg-12", scheduleVersionId: "ver-demo-1", examId: "exam-chem101", subjectCode: "CHEM101", subjectName: "General & Physical Chemistry", departmentCode: "CHEM", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 16, colorId: 3, locked: false, manualOverride: false },
+  // Slot 3 (Morning, 2026-06-15 - Spread Gap 5 Days)
+  { id: "asg-09", scheduleVersionId: "ver-demo-1", examId: "exam-cs201", subjectCode: "CS201", subjectName: "Data Structures & Algorithms", departmentCode: "CS", timeSlotId: "slot-03", slotDate: "2026-06-15", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 18, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-10", scheduleVersionId: "ver-demo-1", examId: "exam-ee201", subjectCode: "EE201", subjectName: "Signals and Linear Systems", departmentCode: "EE", timeSlotId: "slot-03", slotDate: "2026-06-15", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-11", scheduleVersionId: "ver-demo-1", examId: "exam-it101", subjectCode: "IT101", subjectName: "Cloud Infrastructure & Distributed Systems", departmentCode: "IT", timeSlotId: "slot-03", slotDate: "2026-06-15", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 22, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-12", scheduleVersionId: "ver-demo-1", examId: "exam-chem101", subjectCode: "CHEM101", subjectName: "General & Physical Chemistry", departmentCode: "CHEM", timeSlotId: "slot-03", slotDate: "2026-06-15", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 16, colorId: 3, locked: false, manualOverride: false },
 
-  // Slot 4 (Afternoon, 2026-06-11)
-  { id: "asg-13", scheduleVersionId: "ver-demo-1", examId: "exam-cs202", subjectCode: "CS202", subjectName: "Computer Organization & Architecture", departmentCode: "CS", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 4, locked: false, manualOverride: false },
-  { id: "asg-14", scheduleVersionId: "ver-demo-1", examId: "exam-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields & Waves", departmentCode: "EE", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 12, colorId: 4, locked: false, manualOverride: false },
-  { id: "asg-15", scheduleVersionId: "ver-demo-1", examId: "exam-me201", subjectCode: "ME201", subjectName: "Thermodynamics & Fluid Dynamics", departmentCode: "ME", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 4, locked: false, manualOverride: false },
-  { id: "asg-16", scheduleVersionId: "ver-demo-1", examId: "exam-mgmt101", subjectCode: "MGMT101", subjectName: "Principles of Management & Economics", departmentCode: "MGMT", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 4, locked: false, manualOverride: false },
+  // Slot 4 (Afternoon, 2026-06-15 - Spread Gap 5 Days)
+  { id: "asg-13", scheduleVersionId: "ver-demo-1", examId: "exam-cs202", subjectCode: "CS202", subjectName: "Computer Organization & Architecture", departmentCode: "CS", timeSlotId: "slot-04", slotDate: "2026-06-15", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-14", scheduleVersionId: "ver-demo-1", examId: "exam-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields & Waves", departmentCode: "EE", timeSlotId: "slot-04", slotDate: "2026-06-15", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 12, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-15", scheduleVersionId: "ver-demo-1", examId: "exam-me201", subjectCode: "ME201", subjectName: "Thermodynamics & Fluid Dynamics", departmentCode: "ME", timeSlotId: "slot-04", slotDate: "2026-06-15", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-16", scheduleVersionId: "ver-demo-1", examId: "exam-mgmt101", subjectCode: "MGMT101", subjectName: "Principles of Management & Economics", departmentCode: "MGMT", timeSlotId: "slot-04", slotDate: "2026-06-15", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 4, locked: false, manualOverride: false },
 
-  // Slot 5 (Morning, 2026-06-12)
-  { id: "asg-17", scheduleVersionId: "ver-demo-1", examId: "exam-cs301", subjectCode: "CS301", subjectName: "Operating Systems & Concurrency", departmentCode: "CS", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 28, colorId: 5, locked: true, manualOverride: false },
-  { id: "asg-18", scheduleVersionId: "ver-demo-1", examId: "exam-ai101", subjectCode: "AI101", subjectName: "Machine Learning & Neural Networks", departmentCode: "AI", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 25, colorId: 5, locked: false, manualOverride: false },
-  { id: "asg-19", scheduleVersionId: "ver-demo-1", examId: "exam-bme101", subjectCode: "BME101", subjectName: "Biomedical Instrumentation & Sensors", departmentCode: "BME", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 5, locked: false, manualOverride: false },
+  // Slot 5 (Morning, 2026-06-20 - End Date)
+  { id: "asg-17", scheduleVersionId: "ver-demo-1", examId: "exam-cs301", subjectCode: "CS301", subjectName: "Operating Systems & Concurrency", departmentCode: "CS", timeSlotId: "slot-05", slotDate: "2026-06-20", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 28, colorId: 5, locked: true, manualOverride: false },
+  { id: "asg-18", scheduleVersionId: "ver-demo-1", examId: "exam-ai101", subjectCode: "AI101", subjectName: "Machine Learning & Neural Networks", departmentCode: "AI", timeSlotId: "slot-05", slotDate: "2026-06-20", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 25, colorId: 5, locked: false, manualOverride: false },
+  { id: "asg-19", scheduleVersionId: "ver-demo-1", examId: "exam-bme101", subjectCode: "BME101", subjectName: "Biomedical Instrumentation & Sensors", departmentCode: "BME", timeSlotId: "slot-05", slotDate: "2026-06-20", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 5, locked: false, manualOverride: false },
 
-  // Slot 6 (Afternoon, 2026-06-12)
-  { id: "asg-20", scheduleVersionId: "ver-demo-1", examId: "exam-cs302", subjectCode: "CS302", subjectName: "Database Management Systems", departmentCode: "CS", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 22, colorId: 6, locked: false, manualOverride: false },
-  { id: "asg-21", scheduleVersionId: "ver-demo-1", examId: "exam-che101", subjectCode: "CHE101", subjectName: "Chemical Reaction Engineering", departmentCode: "CHE", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 6, locked: false, manualOverride: false },
+  // Slot 6 (Afternoon, 2026-06-20 - End Date)
+  { id: "asg-20", scheduleVersionId: "ver-demo-1", examId: "exam-cs302", subjectCode: "CS302", subjectName: "Database Management Systems", departmentCode: "CS", timeSlotId: "slot-06", slotDate: "2026-06-20", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 22, colorId: 6, locked: false, manualOverride: false },
+  { id: "asg-21", scheduleVersionId: "ver-demo-1", examId: "exam-che101", subjectCode: "CHE101", subjectName: "Chemical Reaction Engineering", departmentCode: "CHE", timeSlotId: "slot-06", slotDate: "2026-06-20", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 6, locked: false, manualOverride: false },
 
-  // Slot 7 (Morning, 2026-06-13)
-  { id: "asg-22", scheduleVersionId: "ver-demo-1", examId: "exam-cs303", subjectCode: "CS303", subjectName: "Computer Networks & Protocols", departmentCode: "CS", timeSlotId: "slot-07", slotDate: "2026-06-13", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 19, colorId: 7, locked: false, manualOverride: false },
+  // Slot 7 (Morning, 2026-06-20 - End Date)
+  { id: "asg-22", scheduleVersionId: "ver-demo-1", examId: "exam-cs303", subjectCode: "CS303", subjectName: "Computer Networks & Protocols", departmentCode: "CS", timeSlotId: "slot-07", slotDate: "2026-06-20", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 19, colorId: 7, locked: false, manualOverride: false },
 
-  // Slot 8 (Afternoon, 2026-06-13)
-  { id: "asg-23", scheduleVersionId: "ver-demo-1", examId: "exam-cs401", subjectCode: "CS401", subjectName: "Advanced Machine Learning Capstone", departmentCode: "CS", timeSlotId: "slot-08", slotDate: "2026-06-13", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 8, colorId: 8, locked: false, manualOverride: false },
+  // Slot 8 (Afternoon, 2026-06-20 - End Date)
+  { id: "asg-23", scheduleVersionId: "ver-demo-1", examId: "exam-cs401", subjectCode: "CS401", subjectName: "Advanced Machine Learning Capstone", departmentCode: "CS", timeSlotId: "slot-08", slotDate: "2026-06-20", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 8, colorId: 8, locked: false, manualOverride: false },
 ];
 
 export const mockScheduleVersions: ScheduleVersionSummary[] = [
@@ -530,8 +620,7 @@ let lastRunCycleId = "cycle-demo-2026";
 
 export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail {
   const cycle = mockCycles.find((c) => c.id === cycleId);
-  const slots = getMockSlotsForCycle(cycleId);
-  const slotsToUse = slots.length > 0 ? slots : generateMockSlotsForCycle(cycleId);
+  const slotsToUse = generateMockSlotsForCycle(cycleId);
 
   const cleanId = cycleId.replace(/[^a-zA-Z0-9]/g, "").slice(-6);
   const verId = `ver-${cleanId}-1`;
@@ -539,7 +628,7 @@ export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail
   const assignments: ExamAssignmentItem[] = [];
 
   subjectList.forEach((sub, i) => {
-    const slotIdx = slotsToUse.length > 0 ? i % slotsToUse.length : 0;
+    const slotIdx = slotsToUse.length > 0 ? i % Math.min(6, slotsToUse.length) : 0;
     const slot = slotsToUse[slotIdx] || {
       id: `slot-${cleanId}-${slotIdx + 1}`,
       date: cycle?.startDate || "2026-12-01",
@@ -562,7 +651,7 @@ export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail
       sessionLabel: slot.sessionLabel,
       durationMinutes: slot.durationMinutes,
       studentCount: 15 + ((i * 7) % 25),
-      colorId: (i % 6) + 1,
+      colorId: slotIdx + 1,
       locked: false,
       manualOverride: false,
     });
@@ -605,12 +694,37 @@ export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail
 }
 
 export function getMockSchedulesForCycle(cycleId: string): ScheduleVersionSummary[] {
-  if (mockCycleSchedules[cycleId] && mockCycleSchedules[cycleId].length > 0) {
-    return mockCycleSchedules[cycleId];
-  }
   const cycle = mockCycles.find((c) => c.id === cycleId);
   if (cycle) {
-    generateScheduleForCycle(cycleId);
+    if (!mockCycleSchedules[cycleId] || mockCycleSchedules[cycleId].length === 0) {
+      generateScheduleForCycle(cycleId);
+    } else {
+      const currentList = mockCycleSchedules[cycleId];
+      if (currentList.length > 0) {
+        const topVer = currentList[0];
+        const detail = mockScheduleVersionDetails[topVer.id];
+        if (detail && detail.assignments && detail.assignments.length > 0) {
+          const datesInAssignments = Array.from(new Set(detail.assignments.map((a) => a.slotDate))).sort();
+          const firstDate = datesInAssignments[0];
+          const lastDate = datesInAssignments[datesInAssignments.length - 1];
+          const expectedDates = computeSpreadDates(
+            cycle.startDate,
+            cycle.endDate,
+            3,
+            cycle.configurationJson?.examDaysOfWeek || [1, 2, 3, 4, 5, 6]
+          );
+          const matchesExpected =
+            firstDate === cycle.startDate &&
+            lastDate === cycle.endDate &&
+            datesInAssignments.length === expectedDates.length &&
+            datesInAssignments.every((d, idx) => d === expectedDates[idx]);
+
+          if (!matchesExpected) {
+            generateScheduleForCycle(cycleId);
+          }
+        }
+      }
+    }
     return mockCycleSchedules[cycleId] || [];
   }
   return [];
@@ -1748,44 +1862,123 @@ export function generateMockSlotsForCycle(cycleId: string): TimeSlot[] {
   const cycle = mockCycles.find((c) => c.id === cycleId);
   const startStr = cycle?.startDate || "2026-12-01";
   const endStr = cycle?.endDate || "2026-12-15";
-  const startDate = new Date(startStr);
-  const endDate = new Date(endStr);
+  const daysOfWeek = cycle?.configurationJson?.examDaysOfWeek || [1, 2, 3, 4, 5, 6];
+
+  // Distribute across spread dates anchoring start and end to cycle's dates
+  const spreadDates = computeSpreadDates(startStr, endStr, 3, daysOfWeek);
+  const dStart = spreadDates[0];
+  const dMid = spreadDates[1] || dStart;
+  const dEnd = spreadDates[spreadDates.length - 1];
+
   const sessions = cycle?.configurationJson?.sessions || [
     { label: "Morning", startTime: "09:00", endTime: "12:00", enabled: true },
     { label: "Afternoon", startTime: "14:00", endTime: "17:00", enabled: true },
   ];
-  const daysOfWeek = cycle?.configurationJson?.examDaysOfWeek || [1, 2, 3, 4, 5];
+  const sessMorning = sessions[0] || { label: "Morning", startTime: "09:00", endTime: "12:00" };
+  const sessAfternoon = sessions[1] || { label: "Afternoon", startTime: "14:00", endTime: "17:00" };
 
-  const generated: TimeSlot[] = [];
-  let slotIdx = 0;
-  const cur = new Date(startDate);
-  let safety = 0;
-  while (cur <= endDate && safety < 60) {
-    safety++;
-    const day = cur.getDay(); // 0=Sun..6=Sat
-    const isoDay = day === 0 ? 7 : day;
-    if (daysOfWeek.includes(isoDay)) {
-      const dateStr = cur.toISOString().split("T")[0];
-      for (const sess of sessions) {
-        if (sess.enabled !== false) {
-          generated.push({
-            id: `slot-${cycleId.slice(-4)}-${slotIdx + 1}`,
-            schedulingCycleId: cycleId,
-            date: dateStr,
-            startTime: sess.startTime || "09:00",
-            endTime: sess.endTime || "12:00",
-            durationMinutes: 180,
-            sessionLabel: sess.label,
-            slotIndex: slotIdx,
-            enabled: true,
-            capacity: 200,
-          });
-          slotIdx++;
-        }
-      }
-    }
-    cur.setDate(cur.getDate() + 1);
-  }
+  const generated: TimeSlot[] = [
+    // Day 1: Start Date (Slots 0 & 1)
+    {
+      id: `slot-${cycleId.slice(-4)}-1`,
+      schedulingCycleId: cycleId,
+      date: dStart,
+      startTime: sessMorning.startTime || "09:00",
+      endTime: sessMorning.endTime || "12:00",
+      durationMinutes: 180,
+      sessionLabel: sessMorning.label || "Morning",
+      slotIndex: 0,
+      enabled: true,
+      capacity: 200,
+    },
+    {
+      id: `slot-${cycleId.slice(-4)}-2`,
+      schedulingCycleId: cycleId,
+      date: dStart,
+      startTime: sessAfternoon.startTime || "14:00",
+      endTime: sessAfternoon.endTime || "17:00",
+      durationMinutes: 180,
+      sessionLabel: sessAfternoon.label || "Afternoon",
+      slotIndex: 1,
+      enabled: true,
+      capacity: 200,
+    },
+    // Day 2: Intermediate Spread Date (Slots 2 & 3)
+    {
+      id: `slot-${cycleId.slice(-4)}-3`,
+      schedulingCycleId: cycleId,
+      date: dMid,
+      startTime: sessMorning.startTime || "09:00",
+      endTime: sessMorning.endTime || "12:00",
+      durationMinutes: 180,
+      sessionLabel: sessMorning.label || "Morning",
+      slotIndex: 2,
+      enabled: true,
+      capacity: 200,
+    },
+    {
+      id: `slot-${cycleId.slice(-4)}-4`,
+      schedulingCycleId: cycleId,
+      date: dMid,
+      startTime: sessAfternoon.startTime || "14:00",
+      endTime: sessAfternoon.endTime || "17:00",
+      durationMinutes: 180,
+      sessionLabel: sessAfternoon.label || "Afternoon",
+      slotIndex: 3,
+      enabled: true,
+      capacity: 200,
+    },
+    // Day 3: End Date (Slots 4 & 5)
+    {
+      id: `slot-${cycleId.slice(-4)}-5`,
+      schedulingCycleId: cycleId,
+      date: dEnd,
+      startTime: sessMorning.startTime || "09:00",
+      endTime: sessMorning.endTime || "12:00",
+      durationMinutes: 180,
+      sessionLabel: sessMorning.label || "Morning",
+      slotIndex: 4,
+      enabled: true,
+      capacity: 200,
+    },
+    {
+      id: `slot-${cycleId.slice(-4)}-6`,
+      schedulingCycleId: cycleId,
+      date: dEnd,
+      startTime: sessAfternoon.startTime || "14:00",
+      endTime: sessAfternoon.endTime || "17:00",
+      durationMinutes: 180,
+      sessionLabel: sessAfternoon.label || "Afternoon",
+      slotIndex: 5,
+      enabled: true,
+      capacity: 200,
+    },
+    // Extra Slots on End Date (Slots 6 & 7 for Greedy/extra colors)
+    {
+      id: `slot-${cycleId.slice(-4)}-7`,
+      schedulingCycleId: cycleId,
+      date: dEnd,
+      startTime: sessMorning.startTime || "09:00",
+      endTime: sessMorning.endTime || "12:00",
+      durationMinutes: 180,
+      sessionLabel: sessMorning.label || "Morning",
+      slotIndex: 6,
+      enabled: true,
+      capacity: 200,
+    },
+    {
+      id: `slot-${cycleId.slice(-4)}-8`,
+      schedulingCycleId: cycleId,
+      date: dEnd,
+      startTime: sessAfternoon.startTime || "14:00",
+      endTime: sessAfternoon.endTime || "17:00",
+      durationMinutes: 180,
+      sessionLabel: sessAfternoon.label || "Afternoon",
+      slotIndex: 7,
+      enabled: true,
+      capacity: 200,
+    },
+  ];
 
   for (let i = mockTimeSlots.length - 1; i >= 0; i--) {
     if (mockTimeSlots[i].schedulingCycleId === cycleId) {
@@ -1801,8 +1994,15 @@ export function generateMockSlotsForCycle(cycleId: string): TimeSlot[] {
 }
 
 export function getMockSlotsForCycle(cycleId: string): TimeSlot[] {
+  const cycle = mockCycles.find((c) => c.id === cycleId);
   const existing = mockTimeSlots.filter((s) => s.schedulingCycleId === cycleId);
-  if (existing.length > 0) return existing;
+  if (existing.length >= 6 && cycle) {
+    const firstDate = existing[0]?.date;
+    const lastDate = existing[5]?.date;
+    if (firstDate === cycle.startDate && lastDate === cycle.endDate) {
+      return existing;
+    }
+  }
   return generateMockSlotsForCycle(cycleId);
 }
 

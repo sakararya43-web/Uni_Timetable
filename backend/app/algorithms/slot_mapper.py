@@ -195,7 +195,7 @@ def map_colors_to_slots(
                 continue
             eligible_for_c.append(s)
 
-        # Quality sorting: prefer prior slots (disruption minimization), preferred dates, then earlier slots (P8.3, P9.17)
+        # Quality sorting: prefer prior slots (disruption minimization), preferred dates, then optimal spread across date range (P8.3, P9.17)
         preferred_dates: set[str] = set()
         prior_slots: set[str] = set()
         for e in class_exams:
@@ -206,12 +206,29 @@ def map_colors_to_slots(
         pref_set = set(preferred_dates)
         prior_set = set(prior_slots)
 
+        min_date = min((s.date for s in available_slots), default=date.min)
+        max_date = max((s.date for s in available_slots), default=date.max)
+        date_span = (max_date - min_date).days
+
+        # Target date ratio for this color class to spread across the cycle from start to end
+        color_idx_pos = unlocked_colors.index(c_id) if c_id in unlocked_colors else 0
+        target_ratio = (
+            color_idx_pos / (len(unlocked_colors) - 1) if len(unlocked_colors) > 1 else 0.0
+        )
+
         def slot_preference_key(
-            s: SlotInfo, _pref: set[str] = pref_set, _priors: set[str] = prior_set
-        ) -> tuple[int, int, int, str]:
+            s: SlotInfo,
+            _pref: set[str] = pref_set,
+            _priors: set[str] = prior_set,
+            _min_date: date = min_date,
+            _date_span: int = date_span,
+            _target_ratio: float = target_ratio,
+        ) -> tuple[int, int, float, int, str]:
             prior_match = 0 if s.id in _priors else 1
             is_pref = 0 if str(s.date) in _pref else 1
-            return (prior_match, is_pref, s.slot_index, s.start_time)
+            slot_ratio = (s.date - _min_date).days / _date_span if _date_span > 0 else 0.0
+            spread_dist = abs(slot_ratio - _target_ratio)
+            return (prior_match, is_pref, spread_dist, s.slot_index, s.start_time)
 
         eligible_for_c.sort(key=slot_preference_key)
         eligibility_graph[c_id] = [s.id for s in eligible_for_c]
