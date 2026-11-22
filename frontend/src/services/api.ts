@@ -11,7 +11,6 @@ import {
   mockGraphSummary,
   mockRawGraph,
   mockDistribution,
-  mockComparison,
   mockUserProfile,
   mockStudentTimetable,
   mockAuditLogs,
@@ -30,6 +29,8 @@ import {
   buildMockGraphForCycle,
   getMockGraphForCycle,
   resetMockGraphForCycle,
+  getMockComparisonForCycle,
+  applyAlgorithmToTimetable,
 } from "./mockData";
 
 export interface ApiErrorDetail {
@@ -232,9 +233,27 @@ function resolveMockData(endpoint: string, method = "GET", body?: unknown): unkn
     return { summary: graph.summary, data: graph.data };
   }
 
-  // Algorithm Lab comparison
+  // Algorithm Lab comparison & apply algorithm
   if (clean.includes("/compare")) {
-    return mockComparison;
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\/schedule\/compare/);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    return getMockComparisonForCycle(cycleId);
+  }
+  if (clean.includes("/apply-algorithm") || clean.includes("/apply-best")) {
+    const cycleIdMatch = clean.match(/\/cycles\/([^/]+)\//);
+    const cycleId = cycleIdMatch ? cycleIdMatch[1] : "cycle-demo-2026";
+    let algo = "dsatur";
+    if (typeof body === "string") {
+      try {
+        const parsed = JSON.parse(body);
+        if (parsed?.algorithm) algo = parsed.algorithm;
+      } catch {
+        // default
+      }
+    } else if (body && typeof body === "object" && "algorithm" in body) {
+      algo = String((body as { algorithm: string }).algorithm);
+    }
+    return applyAlgorithmToTimetable(cycleId, algo);
   }
 
   // Reports & Analytics

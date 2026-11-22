@@ -877,6 +877,43 @@ export const mockDistribution = {
   ],
 };
 
+export interface AlgorithmSlotOutput {
+  slotIndex: number;
+  colorNumber: number;
+  sessionLabel: string;
+  exams: Array<{
+    code: string;
+    name: string;
+    dept: string;
+    count: number;
+  }>;
+}
+
+export interface AlgorithmPenaltyBreakdown {
+  rule: string;
+  penalty: number;
+  note: string;
+}
+
+export interface AlgorithmComparisonDetailRow {
+  algorithm: string;
+  name: string;
+  badge: string;
+  isBest: boolean;
+  colorsUsed: number;
+  executionTimeMs: number;
+  isValid: boolean;
+  examsScheduled: number;
+  unscheduledCount: number;
+  largestClassSize: number;
+  smallestClassSize: number;
+  softScore: number;
+  scheduleRunId: string;
+  description: string;
+  slots: AlgorithmSlotOutput[];
+  penalties: AlgorithmPenaltyBreakdown[];
+}
+
 export const mockComparison = {
   cycleId: "cycle-demo-2026",
   graphSnapshotId: "snap-demo-01",
@@ -885,6 +922,9 @@ export const mockComparison = {
   algorithms: [
     {
       algorithm: "dsatur",
+      name: "DSATUR (Degree of Saturation)",
+      badge: "OPTIMAL WINNER",
+      isBest: true,
       colorsUsed: 6,
       executionTimeMs: 1.84,
       isValid: true,
@@ -894,9 +934,71 @@ export const mockComparison = {
       smallestClassSize: 1,
       softScore: 0,
       scheduleRunId: "run-demo-dsatur",
+      description:
+        "Dynamically colors vertices with highest saturation degree first. Found the optimal chromatic lower bound of 6 slots with 0 student constraint penalties.",
+      slots: [
+        {
+          slotIndex: 0,
+          colorNumber: 1,
+          sessionLabel: "Slot 1 (Morning)",
+          exams: [
+            { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+            { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+          ],
+        },
+        {
+          slotIndex: 1,
+          colorNumber: 2,
+          sessionLabel: "Slot 2 (Afternoon)",
+          exams: [
+            { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+            { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+          ],
+        },
+        {
+          slotIndex: 2,
+          colorNumber: 3,
+          sessionLabel: "Slot 3 (Morning)",
+          exams: [
+            { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+            { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+          ],
+        },
+        {
+          slotIndex: 3,
+          colorNumber: 4,
+          sessionLabel: "Slot 4 (Afternoon)",
+          exams: [
+            { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+            { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+          ],
+        },
+        {
+          slotIndex: 4,
+          colorNumber: 5,
+          sessionLabel: "Slot 5 (Morning)",
+          exams: [
+            { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+          ],
+        },
+        {
+          slotIndex: 5,
+          colorNumber: 6,
+          sessionLabel: "Slot 6 (Afternoon)",
+          exams: [
+            { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+            { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+            { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+          ],
+        },
+      ],
+      penalties: [],
     },
     {
       algorithm: "welsh_powell",
+      name: "Welsh–Powell (Largest Degree First)",
+      badge: "STRONG HEURISTIC",
+      isBest: false,
       colorsUsed: 6,
       executionTimeMs: 1.25,
       isValid: true,
@@ -906,9 +1008,77 @@ export const mockComparison = {
       smallestClassSize: 1,
       softScore: 10,
       scheduleRunId: "run-demo-wp",
+      description:
+        "Static descending degree ordering. Achieved 6 colors but incurs soft penalties due to scheduling adjacent course cohorts on back-to-back sessions.",
+      slots: [
+        {
+          slotIndex: 0,
+          colorNumber: 1,
+          sessionLabel: "Slot 1 (Morning)",
+          exams: [
+            { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+            { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+          ],
+        },
+        {
+          slotIndex: 1,
+          colorNumber: 2,
+          sessionLabel: "Slot 2 (Afternoon)",
+          exams: [
+            { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+            { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+          ],
+        },
+        {
+          slotIndex: 2,
+          colorNumber: 3,
+          sessionLabel: "Slot 3 (Morning)",
+          exams: [
+            { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+            { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+          ],
+        },
+        {
+          slotIndex: 3,
+          colorNumber: 4,
+          sessionLabel: "Slot 4 (Afternoon)",
+          exams: [
+            { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+            { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+          ],
+        },
+        {
+          slotIndex: 4,
+          colorNumber: 5,
+          sessionLabel: "Slot 5 (Morning)",
+          exams: [
+            { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+            { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+          ],
+        },
+        {
+          slotIndex: 5,
+          colorNumber: 6,
+          sessionLabel: "Slot 6 (Afternoon)",
+          exams: [
+            { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+            { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+          ],
+        },
+      ],
+      penalties: [
+        {
+          rule: "consecutive_exam_slots",
+          penalty: 10,
+          note: "CS201 and CS202 scheduled on consecutive examination slots for 8 dual-major students.",
+        },
+      ],
     },
     {
       algorithm: "greedy",
+      name: "Greedy First-Fit",
+      badge: "SUBOPTIMAL",
+      isBest: false,
       colorsUsed: 7,
       executionTimeMs: 0.72,
       isValid: true,
@@ -918,14 +1088,188 @@ export const mockComparison = {
       smallestClassSize: 1,
       softScore: 25,
       scheduleRunId: "run-demo-greedy",
+      description:
+        "Fastest runtime O(V+E), but required 7 slots (+1 extra color) and higher student penalty due to arbitrary vertex ordering.",
+      slots: [
+        {
+          slotIndex: 0,
+          colorNumber: 1,
+          sessionLabel: "Slot 1 (Morning)",
+          exams: [
+            { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+          ],
+        },
+        {
+          slotIndex: 1,
+          colorNumber: 2,
+          sessionLabel: "Slot 2 (Afternoon)",
+          exams: [
+            { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+            { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+          ],
+        },
+        {
+          slotIndex: 2,
+          colorNumber: 3,
+          sessionLabel: "Slot 3 (Morning)",
+          exams: [
+            { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+            { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+          ],
+        },
+        {
+          slotIndex: 3,
+          colorNumber: 4,
+          sessionLabel: "Slot 4 (Afternoon)",
+          exams: [
+            { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+            { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+          ],
+        },
+        {
+          slotIndex: 4,
+          colorNumber: 5,
+          sessionLabel: "Slot 5 (Morning)",
+          exams: [
+            { code: "CS301", name: "Operating Systems & Concurrency", dept: "CS", count: 28 },
+          ],
+        },
+        {
+          slotIndex: 5,
+          colorNumber: 6,
+          sessionLabel: "Slot 6 (Afternoon)",
+          exams: [
+            { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+            { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+          ],
+        },
+        {
+          slotIndex: 6,
+          colorNumber: 7,
+          sessionLabel: "Slot 7 (Morning)",
+          exams: [
+            { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+            { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+          ],
+        },
+      ],
+      penalties: [
+        {
+          rule: "suboptimal_color_dispersion",
+          penalty: 16,
+          note: "Required 7 slots instead of theoretical chromatic number 6.",
+        },
+        {
+          rule: "two_exams_same_day",
+          penalty: 9,
+          note: "4 enrolled students have multiple exam sessions on the same day.",
+        },
+      ],
     },
   ],
   notes: [
-    "DSATUR found the optimal chromatic partitioning (6 colors) with 0 soft penalties.",
+    "DSATUR is the BEST ALGORITHM: optimal chromatic partitioning (6 colors) with 0 soft penalties.",
     "Welsh-Powell achieved 6 colors with minimal ordering dispersion.",
     "Greedy required 7 colors due to sub-optimal vertex ordering.",
   ],
 };
+
+export function getMockComparisonForCycle(cycleId: string): typeof mockComparison {
+  return {
+    ...mockComparison,
+    cycleId,
+  };
+}
+
+export function applyAlgorithmToTimetable(
+  cycleId: string,
+  algorithmName: string = "dsatur"
+): ScheduleVersionDetail {
+  const algo = algorithmName.toLowerCase();
+  const cycle = mockCycles.find((c) => c.id === cycleId);
+  const slots = getMockSlotsForCycle(cycleId);
+  const slotsToUse = slots.length > 0 ? slots : generateMockSlotsForCycle(cycleId);
+
+  const cleanId = cycleId.replace(/[^a-zA-Z0-9]/g, "").slice(-6);
+  const nextVer = (mockCycleSchedules[cycleId]?.length || 0) + 1;
+  const verId = `ver-${cleanId}-${nextVer}`;
+
+  const row =
+    mockComparison.algorithms.find((a) => a.algorithm.toLowerCase() === algo) ||
+    mockComparison.algorithms[0];
+
+  const assignments: ExamAssignmentItem[] = [];
+  row.slots.forEach((slotGroup) => {
+    const targetSlot = slotsToUse[slotGroup.slotIndex % slotsToUse.length] || {
+      id: `slot-${cleanId}-${slotGroup.slotIndex + 1}`,
+      date: cycle?.startDate || "2026-06-10",
+      startTime: "09:00",
+      endTime: "12:00",
+      sessionLabel: "Morning",
+      durationMinutes: 180,
+    };
+
+    slotGroup.exams.forEach((ex, idx) => {
+      assignments.push({
+        id: `asg-${cleanId}-${algo}-${slotGroup.slotIndex}-${idx}`,
+        scheduleVersionId: verId,
+        examId: `exam-${ex.code.toLowerCase()}`,
+        subjectCode: ex.code,
+        subjectName: ex.name,
+        departmentCode: ex.dept,
+        timeSlotId: targetSlot.id,
+        slotDate: targetSlot.date,
+        startTime: targetSlot.startTime,
+        endTime: targetSlot.endTime,
+        sessionLabel: targetSlot.sessionLabel,
+        durationMinutes: targetSlot.durationMinutes,
+        studentCount: ex.count,
+        colorId: slotGroup.colorNumber,
+        locked: ex.code === "CS301",
+        manualOverride: false,
+      });
+    });
+  });
+
+  const isBest = algo === "dsatur";
+  const summary: ScheduleVersionSummary = {
+    id: verId,
+    versionNumber: nextVer,
+    status: isBest ? "Published" : "Candidate",
+    scheduleRunId: `run-${cleanId}-${algo}`,
+    assignmentCount: assignments.length,
+    hardViolationCount: 0,
+    softScore: row.softScore,
+    rowVersion: 1,
+    publishedAt: isBest ? new Date().toISOString() : null,
+    createdAt: new Date().toISOString(),
+  };
+
+  const detail: ScheduleVersionDetail = {
+    ...summary,
+    validationReport: {
+      valid: true,
+      hardViolations: [],
+      softPenaltyTotal: row.softScore,
+      softBreakdown:
+        row.softScore > 0
+          ? [{ rule: "consecutive_exam_slots", penalty: row.softScore, occurrences: 2 }]
+          : [],
+    },
+    assignments,
+  };
+
+  if (!mockCycleSchedules[cycleId]) {
+    mockCycleSchedules[cycleId] = [];
+  }
+  // Place winning / chosen algorithm version at the very top
+  mockCycleSchedules[cycleId].unshift(summary);
+  mockScheduleVersions.unshift(summary);
+  mockScheduleVersionDetails[verId] = detail;
+  activeScheduleVersionDetail = detail;
+
+  return detail;
+}
 
 export const mockUserProfile: UserProfile = {
   id: "usr-admin-demo",

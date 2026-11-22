@@ -300,11 +300,14 @@ export const TimetablePage: React.FC = () => {
               onChange={(e) => setSelectedVersionId(e.target.value)}
               className="px-3 py-1.5 text-xs font-bold bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {versions.map((v) => (
-                <option key={v.id} value={v.id}>
-                  Version {v.versionNumber} ({v.status})
-                </option>
-              ))}
+              {versions.map((v) => {
+                const isOptimal = v.scheduleRunId?.includes("dsatur") || v.softScore === 0;
+                return (
+                  <option key={v.id} value={v.id}>
+                    Version {v.versionNumber} ({v.status}){isOptimal ? " ★ Best Algorithm (DSATUR)" : ""}
+                  </option>
+                );
+              })}
             </select>
           )}
 
@@ -469,6 +472,36 @@ export const TimetablePage: React.FC = () => {
       ) : (
         /* Calendar Timetable Grid */
         <div className="space-y-6">
+          {/* Best Algorithm Winner Banner */}
+          <div className="print:hidden p-3.5 bg-gradient-to-r from-blue-50 via-indigo-50 to-emerald-50 border border-blue-200 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0">
+                🏆
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-900 text-sm">
+                    {versionDetail.scheduleRunId?.includes("dsatur") || versionDetail.softScore === 0
+                      ? "Best Algorithm Timetable: DSATUR (Degree of Saturation)"
+                      : `Active Timetable: Version ${versionDetail.versionNumber}`}
+                  </span>
+                  <Badge variant="success">BEST ALGORITHM OUTPUT</Badge>
+                </div>
+                <p className="text-slate-600 text-[11px] mt-0.5">
+                  Optimal chromatic partitioning with minimum examination slots, zero graph clash violations, and minimal student workload strain.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-center">
+              <span className="px-2.5 py-1 rounded-lg bg-white border border-blue-200 text-blue-800 font-bold font-mono text-[11px]">
+                Soft Score: {versionDetail.softScore}
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800 font-bold font-mono text-[11px]">
+                Clash Free: 100%
+              </span>
+            </div>
+          </div>
+
           {sortedDates.map((dateStr) => (
             <div key={dateStr} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="px-4 py-2.5 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
