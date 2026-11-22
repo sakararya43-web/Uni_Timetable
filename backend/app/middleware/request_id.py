@@ -1,7 +1,6 @@
 import uuid
-from collections.abc import Callable
 
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -15,7 +14,7 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
     Sets the ID into ContextVar for logging and echoes it in the response header.
     """
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         header_request_id = request.headers.get("X-Request-ID")
         request_id = header_request_id or f"req_{uuid.uuid4().hex[:16]}"
 

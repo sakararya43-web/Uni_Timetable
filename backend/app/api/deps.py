@@ -12,6 +12,15 @@ from app.models.user import TokenDenylist, User
 from app.services.audit_service import audit_service
 from app.utils.security import decode_token
 
+__all__ = [
+    "get_db",
+    "extract_token",
+    "get_current_user",
+    "require_role",
+    "check_department_scope",
+    "check_student_self_access",
+]
+
 
 def extract_token(
     authorization: str | None = Header(default=None),

@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -95,7 +96,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     # Health & Readiness Endpoints (PRD Task P1.6)
     @app.get("/health", tags=["System Health"], status_code=status.HTTP_200_OK)
-    def health_check() -> dict:
+    def health_check() -> dict[str, str]:
         return {
             "status": "ok",
             "service": settings.APP_NAME,
@@ -104,7 +105,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     @app.get("/ready", tags=["System Health"], status_code=status.HTTP_200_OK)
-    def readiness_check(db: Session = Depends(get_db)) -> dict:
+    def readiness_check(db: Session = Depends(get_db)) -> dict[str, Any]:
         try:
             # Verify database connectivity
             db.execute(text("SELECT 1"))

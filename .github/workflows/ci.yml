@@ -48,7 +48,7 @@ jobs:
 
       - name: Run Mypy Strict Type Checking
         run: |
-          python -m mypy backend/app
+          python -m mypy --config-file backend/pyproject.toml backend/app
 
       - name: Run Pytest with Coverage
         env:
@@ -96,7 +96,7 @@ jobs:
       - name: Run Vitest Unit Tests
         working-directory: frontend
         run: |
-          npm test -- --run
+          npm run test:run
 
       - name: Run Frontend Production Build
         working-directory: frontend

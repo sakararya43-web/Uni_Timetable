@@ -14,11 +14,17 @@ import {
   Lightbulb,
   ShieldCheck,
   Compass,
+  SlidersHorizontal,
+  Building2,
+  UserCheck,
+  Layers,
+  Filter,
 } from "lucide-react";
 
 export interface QuickGuideBoxProps {
   variant?: "full" | "compact";
   defaultExpanded?: boolean;
+  defaultTab?: "overview" | "dropdown" | "student" | "staff";
   onSelectSampleStudent?: (rollNumber: string) => void;
   className?: string;
   id?: string;
@@ -27,12 +33,13 @@ export interface QuickGuideBoxProps {
 export const QuickGuideBox: React.FC<QuickGuideBoxProps> = ({
   variant = "full",
   defaultExpanded = true,
+  defaultTab = "overview",
   onSelectSampleStudent,
   className = "",
   id = "how-to-use",
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
-  const [activeTab, setActiveTab] = useState<"overview" | "student" | "staff">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "dropdown" | "student" | "staff">(defaultTab);
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -111,41 +118,83 @@ export const QuickGuideBox: React.FC<QuickGuideBoxProps> = ({
       {/* 2. Expanded Interactive Content */}
       {isExpanded && (
         <div>
-          {/* Tab Selection */}
-          <div className="border-b border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 sm:px-6 flex gap-2 sm:gap-4 overflow-x-auto text-xs font-sans">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`py-2.5 px-3 border-b-2 font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === "overview"
-                  ? "border-[var(--color-accent)] text-[var(--color-accent)] bg-white font-semibold rounded-t"
-                  : "border-transparent text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>3-Step Overview</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("student")}
-              className={`py-2.5 px-3 border-b-2 font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === "student"
-                  ? "border-[var(--color-accent)] text-[var(--color-accent)] bg-white font-semibold rounded-t"
-                  : "border-transparent text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>For Students (Look Up Dates)</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("staff")}
-              className={`py-2.5 px-3 border-b-2 font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-                activeTab === "staff"
-                  ? "border-[var(--color-accent)] text-[var(--color-accent)] bg-white font-semibold rounded-t"
-                  : "border-transparent text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-              }`}
-            >
-              <Calendar className="w-3.5 h-3.5" />
-              <span>For Exam Coordinators & Staff</span>
-            </button>
+          {/* Method Selector: Dropdown Menu & Quick Tabs */}
+          <div className="border-b border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs font-sans">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="guide-method-select"
+                className="font-medium text-[var(--color-ink)] flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+                <span>Guide Method:</span>
+              </label>
+              <select
+                id="guide-method-select"
+                aria-label="Select Guide Method"
+                value={activeTab}
+                onChange={(e) =>
+                  setActiveTab(
+                    e.target.value as "overview" | "dropdown" | "student" | "staff"
+                  )
+                }
+                className="px-2.5 py-1 text-xs font-sans font-medium rounded border border-[var(--color-rule)] bg-white text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] shadow-xs cursor-pointer"
+              >
+                <option value="overview">3-Step Overview (System Fundamentals)</option>
+                <option value="dropdown">Dropdown Menu Method (No Spreadsheets Needed)</option>
+                <option value="student">For Students (Look Up Dates & Hall Tickets)</option>
+                <option value="staff">For Exam Coordinators & Staff (Complete Pipeline)</option>
+              </select>
+            </div>
+
+            {/* Quick-Switch Pill Buttons */}
+            <div className="flex items-center gap-1.5 overflow-x-auto">
+              <button
+                onClick={() => setActiveTab("overview")}
+                className={`py-1 px-2.5 rounded font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs ${
+                  activeTab === "overview"
+                    ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs"
+                    : "border border-[var(--color-rule)] bg-white text-[var(--color-ink-2)] hover:border-[var(--color-ink)]"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>3-Step Overview</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("dropdown")}
+                aria-label="Dropdown Menu Method Tab"
+                className={`py-1 px-2.5 rounded font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs ${
+                  activeTab === "dropdown"
+                    ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs"
+                    : "border border-[var(--color-rule)] bg-white text-[var(--color-ink-2)] hover:border-[var(--color-ink)]"
+                }`}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>Dropdown Menu Method</span>
+                <span className="text-[10px] uppercase font-mono px-1 rounded bg-amber-100 text-amber-800 font-bold">Recommended</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("student")}
+                className={`py-1 px-2.5 rounded font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs ${
+                  activeTab === "student"
+                    ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs"
+                    : "border border-[var(--color-rule)] bg-white text-[var(--color-ink-2)] hover:border-[var(--color-ink)]"
+                }`}
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>For Students</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("staff")}
+                className={`py-1 px-2.5 rounded font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs ${
+                  activeTab === "staff"
+                    ? "bg-[var(--color-accent)] text-white font-semibold shadow-xs"
+                    : "border border-[var(--color-rule)] bg-white text-[var(--color-ink-2)] hover:border-[var(--color-ink)]"
+                }`}
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                <span>For Exam Coordinators</span>
+              </button>
+            </div>
           </div>
 
           <div className={`${variant === "compact" ? "p-4 sm:p-5" : "p-5 sm:p-6"} space-y-6`}>
@@ -243,6 +292,13 @@ export const QuickGuideBox: React.FC<QuickGuideBoxProps> = ({
                 <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs">
                   <div className="flex flex-wrap items-center gap-2">
                     <button
+                      onClick={() => setActiveTab("dropdown")}
+                      className="px-3 py-1.5 rounded border border-[var(--color-accent)] bg-amber-50 text-[var(--color-accent-deep)] font-semibold hover:bg-amber-100 transition-colors flex items-center gap-1.5"
+                    >
+                      <SlidersHorizontal className="w-3.5 h-3.5" />
+                      <span>Learn Dropdown Menu Method →</span>
+                    </button>
+                    <button
                       onClick={() => setActiveTab("student")}
                       className="px-3 py-1.5 rounded border border-[var(--color-rule)] hover:border-[var(--color-ink)] bg-[var(--color-paper-2)] text-[var(--color-ink)] font-medium transition-colors"
                     >
@@ -261,6 +317,189 @@ export const QuickGuideBox: React.FC<QuickGuideBoxProps> = ({
                       className="px-3.5 py-1.5 bg-[var(--color-accent)] text-white font-medium rounded hover:bg-[var(--color-accent-deep)] transition-colors flex items-center gap-1.5 shadow-sm"
                     >
                       <span>Open Operations Console</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB: DROPDOWN MENU METHOD */}
+            {activeTab === "dropdown" && (
+              <div className="space-y-6">
+                {/* Non-technical Statement */}
+                <div className="p-4 rounded border border-blue-200 bg-blue-50/70">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded border border-blue-600 bg-white flex items-center justify-center shrink-0 mt-0.5">
+                      <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-sm font-bold text-slate-900 font-sans">
+                          The Dropdown Menu Method (Zero CSV / Spreadsheet Required)
+                        </h3>
+                        <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-blue-600 text-white">
+                          Point-and-Click Guide
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-700 font-sans leading-relaxed">
+                        You don't need to format spreadsheets or edit CSV templates to manage your examinations.
+                        With the <strong>Dropdown Menu Method</strong>, exam coordinators and registrars can set up examination cycles, register courses across all 12 academic departments, enroll students, and filter timetables entirely using simple point-and-click dropdown menus.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6 Dropdown Menu Steps */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Step 1 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-200">
+                          DROPDOWN 1
+                        </span>
+                        <Calendar className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        1. Exam Cycle Dropdown
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        Use the <strong>Cycle Picker Dropdown</strong> at the top of any page to switch between examination periods (e.g., <em>June 2026 Finals</em> or <em>Winter 2026 Resits</em>). All time slots, courses, and timetables are scoped to your selected cycle.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: Header Bar (Top-Right)
+                    </div>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-900 border border-indigo-200">
+                          DROPDOWN 2
+                        </span>
+                        <Building2 className="w-4 h-4 text-indigo-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        2. Department & Semester Dropdowns
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        In <strong>Students</strong> or <strong>Subjects</strong>, click <em>Register Student</em> or <em>Add Subject</em>. Select the <strong>Department Dropdown</strong> (CS, EE, ME, CE, IT, AI, BME, CHE, MATH, PHYS, CHEM, MGMT) and <strong>Semester Dropdown</strong> (1–8) with zero typing.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: /students & /subjects Modals
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-200">
+                          DROPDOWN 3
+                        </span>
+                        <UserCheck className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        3. Student Enrollment Dropdowns
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        Click <em>Enroll Student</em> on the Students page. Pick the student from the <strong>Student Dropdown</strong>, the course from the <strong>Subject Dropdown</strong>, and cycle from the <strong>Cycle Dropdown</strong>. The conflict graph connects the courses automatically!
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: Students Page → Enroll Button
+                    </div>
+                  </div>
+
+                  {/* Step 4 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">
+                          DROPDOWN 4
+                        </span>
+                        <Layers className="w-4 h-4 text-amber-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        4. Algorithm Selector Dropdown
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        On <strong>Generate Schedule</strong> or <strong>Algorithm Lab</strong>, select your solver from the <strong>Algorithm Dropdown</strong>: <em>DSATUR (Optimal)</em>, <em>Welsh–Powell</em>, or <em>Greedy First-Fit</em>. Click Generate to color vertices into clash-free slots in seconds.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: /generate & /lab Selectors
+                    </div>
+                  </div>
+
+                  {/* Step 5 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-200">
+                          DROPDOWN 5
+                        </span>
+                        <Filter className="w-4 h-4 text-purple-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        5. Department Timetable Filter Dropdown
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        On the <strong>Examination Timetable Grid</strong>, use the <strong>Department Filter Dropdown</strong> to view <em>All Departments</em> simultaneously or filter down to any single department (e.g. ME, AI, MATH, CHE, EE) to inspect sessions, dates, and student headcounts.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: /timetable Filter Bar
+                    </div>
+                  </div>
+
+                  {/* Step 6 */}
+                  <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper)] flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-teal-100 text-teal-900 border border-teal-200">
+                          DROPDOWN 6
+                        </span>
+                        <CheckCircle2 className="w-4 h-4 text-teal-600" />
+                      </div>
+                      <h4 className="font-display text-base text-[var(--color-ink)] font-medium">
+                        6. Version Switcher & Move Slot Dropdowns
+                      </h4>
+                      <p className="text-xs text-[var(--color-ink-2)] font-sans leading-relaxed">
+                        Switch between candidate timetables using the <strong>Version Switcher Dropdown</strong>. In Edit Mode, click any exam card and use the <strong>Candidate Slot Dropdown</strong> to move exams with instant real-time clash verification.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-rule)] text-[11px] text-[var(--color-muted)] font-mono">
+                      Location: /timetable Edit Mode Modal
+                    </div>
+                  </div>
+                </div>
+
+                {/* Direct Action Links */}
+                <div className="p-4 rounded border border-[var(--color-rule)] bg-[var(--color-paper-2)] flex flex-wrap items-center justify-between gap-3 text-xs font-sans">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
+                    <span>
+                      <strong>Ready to use the Dropdown Menu Method?</strong> Try direct dropdown actions in the system:
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                      to="/students"
+                      className="px-3 py-1.5 rounded border border-[var(--color-ink)] bg-white text-[var(--color-ink)] font-medium hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+                    >
+                      <span>Enroll Students (Dropdown)</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                    <Link
+                      to="/timetable"
+                      className="px-3.5 py-1.5 bg-[var(--color-accent)] text-white font-medium rounded hover:bg-[var(--color-accent-deep)] transition-colors flex items-center gap-1.5"
+                    >
+                      <span>Open Timetable Filter Dropdown</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>

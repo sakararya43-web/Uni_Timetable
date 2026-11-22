@@ -8,12 +8,12 @@ from datetime import UTC, date, datetime
 from io import BytesIO, StringIO
 from typing import Any
 
-import openpyxl  # type: ignore[import-untyped]
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side  # type: ignore[import-untyped]
-from reportlab.lib import colors  # type: ignore[import-untyped]
-from reportlab.lib.pagesizes import landscape, letter  # type: ignore[import-untyped]
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # type: ignore[import-untyped]
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # type: ignore[import-untyped]
+import openpyxl
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 

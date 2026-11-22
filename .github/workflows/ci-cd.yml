@@ -29,12 +29,12 @@ jobs:
 
       - name: Lint and Format Verification (Ruff)
         run: |
-          python -m ruff check backend/app backend/tests
-          python -m ruff format --check backend/app backend/tests
+          python -m ruff check backend/
+          python -m ruff format --check backend/
 
       - name: Static Type Checking (Mypy)
         run: |
-          python -m mypy backend/app
+          python -m mypy --config-file backend/pyproject.toml backend/app
 
       - name: Execute Full Pytest Test Suite
         run: |

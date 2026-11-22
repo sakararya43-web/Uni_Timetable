@@ -91,4 +91,30 @@ describe("QuickGuideBox Component", () => {
     expect(screen.getByText(/Quick summary:/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /expand guide box/i })).toBeInTheDocument();
   });
+
+  it("switches to dropdown menu method tab and displays dropdown workflow instructions", () => {
+    renderWithRouter(<QuickGuideBox />);
+
+    const dropdownTab = screen.getByRole("button", { name: /dropdown menu method tab/i });
+    fireEvent.click(dropdownTab);
+
+    expect(
+      screen.getByText(/The Dropdown Menu Method \(Zero CSV \/ Spreadsheet Required\)/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText("1. Exam Cycle Dropdown")).toBeInTheDocument();
+    expect(screen.getByText("2. Department & Semester Dropdowns")).toBeInTheDocument();
+    expect(screen.getByText("3. Student Enrollment Dropdowns")).toBeInTheDocument();
+    expect(screen.getByText("5. Department Timetable Filter Dropdown")).toBeInTheDocument();
+  });
+
+  it("switches method using the guide method select dropdown menu", () => {
+    renderWithRouter(<QuickGuideBox />);
+
+    const select = screen.getByLabelText(/select guide method/i);
+    fireEvent.change(select, { target: { value: "dropdown" } });
+
+    expect(
+      screen.getByText(/The Dropdown Menu Method \(Zero CSV \/ Spreadsheet Required\)/i)
+    ).toBeInTheDocument();
+  });
 });

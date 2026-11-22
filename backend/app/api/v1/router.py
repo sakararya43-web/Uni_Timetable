@@ -18,7 +18,7 @@ api_v1_router = APIRouter(prefix="/api/v1")
 
 
 @api_v1_router.get("/status", tags=["Status"])
-def get_api_v1_status() -> dict:
+def get_api_v1_status() -> dict[str, str]:
     return {
         "status": "operational",
         "version": "v1",

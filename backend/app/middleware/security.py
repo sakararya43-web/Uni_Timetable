@@ -6,10 +6,9 @@ PRD §19, Tasks P14.2, P14.3, P14.16.
 import threading
 import time
 from collections import defaultdict
-from collections.abc import Callable
 from datetime import UTC, datetime
 
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
@@ -17,7 +16,7 @@ from starlette.responses import JSONResponse, Response
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Enforces enterprise HTTP security headers across all responses."""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         response: Response = await call_next(request)
 
         # OWASP Recommended Security Headers
@@ -59,7 +58,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             "/generate": 15,
         }
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         # Check if rate-limit bypass header is set (for internal tests)
         if request.headers.get("X-Bypass-Rate-Limit") == "1":
             return await call_next(request)
@@ -113,7 +112,7 @@ class IdempotencyMiddleware(BaseHTTPMiddleware):
         self._active_keys: set[str] = set()
         self._lock = threading.Lock()
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         if request.method not in ("POST", "PATCH"):
             return await call_next(request)
 
