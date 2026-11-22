@@ -6,7 +6,8 @@ import {
   mockStudents,
   mockTimeSlots,
   mockScheduleVersions,
-  mockScheduleVersionDetail,
+  mockScheduleVersionDetails,
+  activeScheduleVersionDetail,
   mockCycleSummary,
   mockGraphSummary,
   mockRawGraph,
@@ -15,6 +16,8 @@ import {
   mockUserProfile,
   mockStudentTimetable,
   mockAuditLogs,
+  generateDynamicScheduleRun,
+  saveRunAsCandidateVersion,
 } from "./mockData";
 
 export interface ApiErrorDetail {
@@ -67,7 +70,7 @@ function getCookie(name: string): string | null {
  * Resolves fallback demonstration metadata when the backend API service is offline,
  * unseeded, unreachable, or running in standalone static frontend mode (e.g., Vercel previews).
  */
-function resolveMockData(endpoint: string, method = "GET"): unknown {
+function resolveMockData(endpoint: string, method = "GET", body?: unknown): unknown {
   const clean = endpoint.split("?")[0];
 
   // Authentication endpoints
@@ -103,22 +106,26 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
     return mockTimeSlots;
   }
 
-  // Schedule Runs & Candidate Saving (PRD Tasks P8.15, P8.16, P9.1)
-  if (clean.includes("/schedule-runs") || clean.endsWith("/save")) {
-    return mockScheduleVersionDetail;
-  }
+  // Dynamic Schedule Generation with algorithm variety (DSATUR, Welsh-Powell, Greedy)
   if (clean.includes("/generate")) {
-    return {
-      id: "run-demo",
-      schedulingCycleId: "cycle-demo-2026",
-      algorithm: "dsatur",
-      executionTimeMs: 1.84,
-      colorsUsed: 6,
-      isValid: true,
-      softScore: 0,
-      status: "success",
-      validationReport: { valid: true, hardViolations: [], softBreakdown: [] },
-    };
+    let payloadObj: { algorithm?: string } | undefined;
+    if (typeof body === "string") {
+      try {
+        payloadObj = JSON.parse(body);
+      } catch {
+        payloadObj = undefined;
+      }
+    } else if (body && typeof body === "object") {
+      payloadObj = body as { algorithm?: string };
+    }
+    return generateDynamicScheduleRun(payloadObj);
+  }
+
+  // Save generated schedule run as candidate version (PRD Tasks P8.15, P8.16, P9.1)
+  if (clean.includes("/schedule-runs") || clean.endsWith("/save")) {
+    const runIdMatch = clean.match(/\/schedule-runs\/([^/]+)\/save/);
+    const runId = runIdMatch ? runIdMatch[1] : undefined;
+    return saveRunAsCandidateVersion(runId);
   }
 
   // Schedule Versions & Timetable Operations
@@ -132,7 +139,7 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
     return { valid: true, conflicts: [], candidateSlotId: "slot-02" };
   }
   if (clean.includes("/clone") || clean.includes("/lock") || clean.includes("/unlock")) {
-    return mockScheduleVersionDetail;
+    return activeScheduleVersionDetail;
   }
   if (clean.endsWith("/schedules") && method === "GET") {
     return mockScheduleVersions;
@@ -141,7 +148,11 @@ function resolveMockData(endpoint: string, method = "GET"): unknown {
     if (clean.includes("/reports/distribution")) {
       return mockDistribution;
     }
-    return mockScheduleVersionDetail;
+    const match = clean.match(/\/schedules\/([^/]+)$/);
+    if (match && mockScheduleVersionDetails[match[1]]) {
+      return mockScheduleVersionDetails[match[1]];
+    }
+    return activeScheduleVersionDetail;
   }
 
   // Conflict Graph
@@ -240,7 +251,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     // Detect SPA fallback HTML rewrite (common when static host rewrites API routes to index.html)
     if (response.status === 200 && contentType.includes("text/html")) {
-      const fallback = resolveMockData(cleanEndpoint, method);
+      const fallback = resolveMockData(cleanEndpoint, method, options.body);
       if (fallback !== null) {
         return fallback as T;
       }
@@ -248,7 +259,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     if (!response.ok) {
       // Check if fallback data is available for this endpoint
-      const fallback = resolveMockData(cleanEndpoint, method);
+      const fallback = resolveMockData(cleanEndpoint, method, options.body);
       if (fallback !== null) {
         return fallback as T;
       }
@@ -278,7 +289,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
     // If backend returns empty array for core entities on unseeded live databases, fallback to demo data
     if (Array.isArray(json) && json.length === 0) {
-      const fallback = resolveMockData(cleanEndpoint, method);
+      const fallback = resolveMockData(cleanEndpoint, method, options.body);
       if (fallback !== null && Array.isArray(fallback) && fallback.length > 0) {
         return fallback as T;
       }
@@ -287,7 +298,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     return json as T;
   } catch (error) {
     // If backend is unreachable or offline, transparently serve demonstration dataset
-    const fallback = resolveMockData(cleanEndpoint, method);
+    const fallback = resolveMockData(cleanEndpoint, method, options.body);
     if (fallback !== null) {
       return fallback as T;
     }

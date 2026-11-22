@@ -10,6 +10,7 @@ import {
   UserProfile,
   StudentTimetableResponse,
   AuditLogItem,
+  ExamAssignmentItem,
 } from "../types/api";
 
 export const mockCycles: SchedulingCycle[] = [
@@ -245,6 +246,21 @@ export const mockTimeSlots: TimeSlot[] = [
   { id: "slot-12", schedulingCycleId: "cycle-demo-2026", date: "2026-06-16", startTime: "14:00", endTime: "17:00", durationMinutes: 180, sessionLabel: "Afternoon", slotIndex: 11, enabled: true, capacity: 200 },
 ];
 
+export const initialAssignments: ExamAssignmentItem[] = [
+  { id: "asg-01", scheduleVersionId: "ver-demo-1", examId: "exam-cs101", subjectCode: "CS101", subjectName: "Introduction to Programming", departmentCode: "CS", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 20, colorId: 1, locked: false, manualOverride: false },
+  { id: "asg-02", scheduleVersionId: "ver-demo-1", examId: "exam-ee101", subjectCode: "EE101", subjectName: "Linear Circuit Analysis", departmentCode: "EE", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 15, colorId: 1, locked: false, manualOverride: false },
+  { id: "asg-03", scheduleVersionId: "ver-demo-1", examId: "exam-cs102", subjectCode: "CS102", subjectName: "Discrete Mathematics", departmentCode: "CS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 2, locked: false, manualOverride: false },
+  { id: "asg-04", scheduleVersionId: "ver-demo-1", examId: "exam-ee102", subjectCode: "EE102", subjectName: "Digital Logic & Microprocessors", departmentCode: "EE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 2, locked: false, manualOverride: false },
+  { id: "asg-05", scheduleVersionId: "ver-demo-1", examId: "exam-cs201", subjectCode: "CS201", subjectName: "Data Structures & Algorithms", departmentCode: "CS", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 18, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-06", scheduleVersionId: "ver-demo-1", examId: "exam-ee201", subjectCode: "EE201", subjectName: "Signals and Linear Systems", departmentCode: "EE", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-07", scheduleVersionId: "ver-demo-1", examId: "exam-cs202", subjectCode: "CS202", subjectName: "Computer Organization & Architecture", departmentCode: "CS", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-08", scheduleVersionId: "ver-demo-1", examId: "exam-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields & Waves", departmentCode: "EE", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 12, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-09", scheduleVersionId: "ver-demo-1", examId: "exam-cs301", subjectCode: "CS301", subjectName: "Operating Systems & Concurrency", departmentCode: "CS", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 28, colorId: 5, locked: true, manualOverride: false },
+  { id: "asg-10", scheduleVersionId: "ver-demo-1", examId: "exam-cs302", subjectCode: "CS302", subjectName: "Database Management Systems", departmentCode: "CS", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 22, colorId: 6, locked: false, manualOverride: false },
+  { id: "asg-11", scheduleVersionId: "ver-demo-1", examId: "exam-cs303", subjectCode: "CS303", subjectName: "Computer Networks & Protocols", departmentCode: "CS", timeSlotId: "slot-07", slotDate: "2026-06-13", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 19, colorId: 7, locked: false, manualOverride: false },
+  { id: "asg-12", scheduleVersionId: "ver-demo-1", examId: "exam-cs401", subjectCode: "CS401", subjectName: "Advanced Machine Learning Capstone", departmentCode: "CS", timeSlotId: "slot-08", slotDate: "2026-06-13", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 8, colorId: 8, locked: false, manualOverride: false },
+];
+
 export const mockScheduleVersions: ScheduleVersionSummary[] = [
   {
     id: "ver-demo-1",
@@ -260,233 +276,208 @@ export const mockScheduleVersions: ScheduleVersionSummary[] = [
   },
 ];
 
-export const mockScheduleVersionDetail: ScheduleVersionDetail = {
-  ...mockScheduleVersions[0],
-  validationReport: {
-    valid: true,
-    hardViolations: [],
-    softPenaltyTotal: 0,
-    softBreakdown: [],
+export const mockScheduleVersionDetails: Record<string, ScheduleVersionDetail> = {
+  "ver-demo-1": {
+    ...mockScheduleVersions[0],
+    validationReport: {
+      valid: true,
+      hardViolations: [],
+      softPenaltyTotal: 0,
+      softBreakdown: [],
+    },
+    assignments: initialAssignments,
   },
-  assignments: [
-    {
-      id: "asg-01",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs101",
-      subjectCode: "CS101",
-      subjectName: "Introduction to Programming",
-      departmentCode: "CS",
-      timeSlotId: "slot-01",
-      slotDate: "2026-06-10",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 20,
-      colorId: 1,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-02",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-ee101",
-      subjectCode: "EE101",
-      subjectName: "Linear Circuit Analysis",
-      departmentCode: "EE",
-      timeSlotId: "slot-01",
-      slotDate: "2026-06-10",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 15,
-      colorId: 1,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-03",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs102",
-      subjectCode: "CS102",
-      subjectName: "Discrete Mathematics",
-      departmentCode: "CS",
-      timeSlotId: "slot-02",
-      slotDate: "2026-06-10",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 20,
-      colorId: 2,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-04",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-ee102",
-      subjectCode: "EE102",
-      subjectName: "Digital Logic & Microprocessors",
-      departmentCode: "EE",
-      timeSlotId: "slot-02",
-      slotDate: "2026-06-10",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 15,
-      colorId: 2,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-05",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs201",
-      subjectCode: "CS201",
-      subjectName: "Data Structures & Algorithms",
-      departmentCode: "CS",
-      timeSlotId: "slot-03",
-      slotDate: "2026-06-11",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 18,
-      colorId: 3,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-06",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-ee201",
-      subjectCode: "EE201",
-      subjectName: "Signals and Linear Systems",
-      departmentCode: "EE",
-      timeSlotId: "slot-03",
-      slotDate: "2026-06-11",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 12,
-      colorId: 3,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-07",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs202",
-      subjectCode: "CS202",
-      subjectName: "Computer Organization & Architecture",
-      departmentCode: "CS",
-      timeSlotId: "slot-04",
-      slotDate: "2026-06-11",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 18,
-      colorId: 4,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-08",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-ee202",
-      subjectCode: "EE202",
-      subjectName: "Electromagnetic Fields & Waves",
-      departmentCode: "EE",
-      timeSlotId: "slot-04",
-      slotDate: "2026-06-11",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 12,
-      colorId: 4,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-09",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs301",
-      subjectCode: "CS301",
-      subjectName: "Operating Systems & Concurrency",
-      departmentCode: "CS",
-      timeSlotId: "slot-05",
-      slotDate: "2026-06-12",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 28,
-      colorId: 5,
-      locked: true,
-      manualOverride: false,
-    },
-    {
-      id: "asg-10",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs302",
-      subjectCode: "CS302",
-      subjectName: "Database Management Systems",
-      departmentCode: "CS",
-      timeSlotId: "slot-06",
-      slotDate: "2026-06-12",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 22,
-      colorId: 6,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-11",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs303",
-      subjectCode: "CS303",
-      subjectName: "Computer Networks & Protocols",
-      departmentCode: "CS",
-      timeSlotId: "slot-07",
-      slotDate: "2026-06-13",
-      startTime: "09:00",
-      endTime: "12:00",
-      sessionLabel: "Morning",
-      durationMinutes: 180,
-      studentCount: 19,
-      colorId: 7,
-      locked: false,
-      manualOverride: false,
-    },
-    {
-      id: "asg-12",
-      scheduleVersionId: "ver-demo-1",
-      examId: "exam-cs401",
-      subjectCode: "CS401",
-      subjectName: "Advanced Machine Learning Capstone",
-      departmentCode: "CS",
-      timeSlotId: "slot-08",
-      slotDate: "2026-06-13",
-      startTime: "14:00",
-      endTime: "17:00",
-      sessionLabel: "Afternoon",
-      durationMinutes: 180,
-      studentCount: 8,
-      colorId: 8,
-      locked: false,
-      manualOverride: false,
-    },
-  ],
 };
+
+export let activeScheduleVersionDetail: ScheduleVersionDetail = mockScheduleVersionDetails["ver-demo-1"];
+
+// Dynamic Schedule Run Generator State
+let runSequence = 1;
+let lastRunDetails: {
+  runId: string;
+  algorithm: string;
+  colorsUsed: number;
+  softScore: number;
+  assignments: ExamAssignmentItem[];
+} | null = null;
+
+export function generateDynamicScheduleRun(payload?: { algorithm?: string }): {
+  id: string;
+  schedulingCycleId: string;
+  algorithm: string;
+  executionTimeMs: number;
+  colorsUsed: number;
+  isValid: boolean;
+  softScore: number;
+  status: string;
+  validationReport: {
+    valid: boolean;
+    hardViolations: Array<{ message: string }>;
+    softBreakdown: Array<{ rule: string; penalty: number; occurrences?: number }>;
+  };
+} {
+  const algo = (payload?.algorithm || "dsatur").toLowerCase();
+  runSequence++;
+  const runId = `run-${algo}-${Date.now().toString().slice(-4)}`;
+
+  let colorsUsed = 6;
+  let executionTimeMs = 1.84;
+  let softScore = 0;
+  let softBreakdown: Array<{ rule: string; penalty: number; occurrences?: number }> = [];
+
+  // Generate varied algorithm profiles
+  if (algo === "dsatur") {
+    colorsUsed = 6;
+    executionTimeMs = parseFloat((1.35 + Math.random() * 0.75).toFixed(2));
+    softScore = 0.0;
+    softBreakdown = [];
+  } else if (algo === "welsh_powell") {
+    colorsUsed = 6;
+    executionTimeMs = parseFloat((0.85 + Math.random() * 0.55).toFixed(2));
+    softScore = parseFloat((8.0 + (runSequence % 3) * 3.5).toFixed(1));
+    softBreakdown = [{ rule: "consecutive_exam_slots", penalty: softScore, occurrences: 1 + (runSequence % 2) }];
+  } else {
+    // Greedy algorithm
+    colorsUsed = 7 + (runSequence % 2); // 7 or 8 colors
+    executionTimeMs = parseFloat((0.45 + Math.random() * 0.35).toFixed(2));
+    softScore = parseFloat((22.0 + (runSequence % 4) * 4.0).toFixed(1));
+    softBreakdown = [
+      { rule: "suboptimal_color_dispersion", penalty: 16.0, occurrences: 2 },
+      { rule: "two_exams_same_day", penalty: softScore - 16.0, occurrences: 2 },
+    ];
+  }
+
+  // Create varied exam assignments based on algorithm
+  const slotList = mockTimeSlots;
+  const newAssignments: ExamAssignmentItem[] = [];
+
+  const subjectConfigs = [
+    { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+    { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+    { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+    { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+    { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+    { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+    { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+    { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+    { code: "CS301", name: "Operating Systems & Concurrency", dept: "CS", count: 28 }, // Hub
+    { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+    { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+    { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 }, // Isolated
+  ];
+
+  // Distinct mapping layouts by algorithm
+  let slotMapping: number[];
+  if (algo === "dsatur") {
+    // DSATUR: Optimal pairs across 6 slots
+    slotMapping = [0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 4];
+  } else if (algo === "welsh_powell") {
+    // Welsh-Powell: Degree-first ordering (CS301 Hub in slot 0, CS401 in slot 0)
+    slotMapping = [4, 3, 2, 4, 1, 5, 2, 5, 0, 1, 3, 0];
+  } else {
+    // Greedy: Spreads across 7 or 8 slots
+    slotMapping = [0, 1, 1, 2, 2, 3, 3, 5, 4, 5, 6, 7 % colorsUsed];
+  }
+
+  // Apply slight rotation based on runSequence for variety on repeat clicks
+  const offset = runSequence % 2;
+
+  subjectConfigs.forEach((sub, i) => {
+    const rawSlotIdx = (slotMapping[i] + offset) % Math.min(colorsUsed, slotList.length);
+    const slot = slotList[rawSlotIdx];
+    newAssignments.push({
+      id: `asg-gen-${algo}-${i}-${runSequence}`,
+      scheduleVersionId: "",
+      examId: `exam-${sub.code.toLowerCase()}`,
+      subjectCode: sub.code,
+      subjectName: sub.name,
+      departmentCode: sub.dept,
+      timeSlotId: slot.id,
+      slotDate: slot.date,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      sessionLabel: slot.sessionLabel,
+      durationMinutes: 180,
+      studentCount: sub.count,
+      colorId: rawSlotIdx + 1,
+      locked: sub.code === "CS301",
+      manualOverride: false,
+    });
+  });
+
+  lastRunDetails = {
+    runId,
+    algorithm: algo,
+    colorsUsed,
+    softScore,
+    assignments: newAssignments,
+  };
+
+  return {
+    id: runId,
+    schedulingCycleId: "cycle-demo-2026",
+    algorithm: algo,
+    executionTimeMs,
+    colorsUsed,
+    isValid: true,
+    softScore,
+    status: softScore === 0 ? "success" : "success_with_warnings",
+    validationReport: {
+      valid: true,
+      hardViolations: [],
+      softBreakdown,
+    },
+  };
+}
+
+export function saveRunAsCandidateVersion(runId?: string): ScheduleVersionDetail {
+  const nextVer = mockScheduleVersions.length + 1;
+  const newVerId = `ver-demo-${nextVer}`;
+  const algo = lastRunDetails?.algorithm || "dsatur";
+  const soft = lastRunDetails?.softScore ?? 0.0;
+  const colors = lastRunDetails?.colorsUsed ?? 6;
+
+  const assignments = (lastRunDetails?.assignments || initialAssignments).map((a) => ({
+    ...a,
+    scheduleVersionId: newVerId,
+  }));
+
+  const summary: ScheduleVersionSummary = {
+    id: newVerId,
+    versionNumber: nextVer,
+    status: "Candidate",
+    scheduleRunId: runId || lastRunDetails?.runId || `run-${algo}-saved`,
+    assignmentCount: 12,
+    hardViolationCount: 0,
+    softScore: soft,
+    rowVersion: 1,
+    publishedAt: null,
+    createdAt: new Date().toISOString(),
+  };
+
+  // Prepend so latest version is at the top of the version selector
+  mockScheduleVersions.unshift(summary);
+
+  const detail: ScheduleVersionDetail = {
+    ...summary,
+    validationReport: {
+      valid: true,
+      hardViolations: [],
+      softPenaltyTotal: soft,
+      softBreakdown: soft > 0 ? [{ rule: "consecutive_exam_slots", penalty: soft, occurrences: 2 }] : [],
+    },
+    assignments,
+  };
+
+  mockScheduleVersionDetails[newVerId] = detail;
+  activeScheduleVersionDetail = detail;
+
+  // Update cycle summary metrics
+  mockCycleSummary.totalSlots = 18;
+  mockCycleSummary.slotsUsed = colors;
+
+  return detail;
+}
 
 export const mockCycleSummary: CycleSummaryReport = {
   cycleId: "cycle-demo-2026",
@@ -498,7 +489,7 @@ export const mockCycleSummary: CycleSummaryReport = {
   totalStudents: 50,
   totalEnrollments: 153,
   totalSlots: 18,
-  slotsUsed: 8,
+  slotsUsed: 6,
   graphVertices: 12,
   graphEdges: 20,
   averageDegree: 3.33,

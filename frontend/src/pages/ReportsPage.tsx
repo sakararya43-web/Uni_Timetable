@@ -11,10 +11,15 @@ import {
   CartesianGrid,
 } from "recharts";
 import { api } from "../services/api";
-import { SchedulingCycle, ScheduleVersionSummary, CycleSummaryReport } from "../types/api";
+import { SchedulingCycle, ScheduleVersionSummary, CycleSummaryReport, ScheduleVersionDetail } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
 import { EmptyState } from "../components/ui/EmptyState";
+import {
+  exportTimetableCsv,
+  exportTimetableExcel,
+  exportTimetablePdf,
+} from "../services/exportService";
 
 interface ScheduleDistribution {
   scheduleVersionId: string;
@@ -80,7 +85,20 @@ export const ReportsPage: React.FC = () => {
 
   const handleExport = (type: "csv" | "pdf" | "excel") => {
     if (!selectedVersionId) return;
-    window.open(`/api/v1/schedules/${selectedVersionId}/export/${type}`, "_blank");
+    api
+      .get<ScheduleVersionDetail>(`/api/v1/schedules/${selectedVersionId}`)
+      .then((detail) => {
+        if (type === "csv") {
+          exportTimetableCsv(detail);
+        } else if (type === "excel") {
+          exportTimetableExcel(detail);
+        } else if (type === "pdf") {
+          exportTimetablePdf(detail, summary?.cycleName);
+        }
+      })
+      .catch((err) => {
+        console.error("Export generation failed:", err);
+      });
   };
 
   return (

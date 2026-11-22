@@ -32,6 +32,11 @@ import { Dialog } from "../components/ui/Dialog";
 import { PublishScheduleModal } from "../components/timetable/PublishScheduleModal";
 import { MoveExamModal } from "../components/timetable/MoveExamModal";
 import { RegenerateModal } from "../components/timetable/RegenerateModal";
+import {
+  exportTimetableCsv,
+  exportTimetableExcel,
+  exportTimetablePdf,
+} from "../services/exportService";
 
 const statusVariants: Record<string, BadgeVariant> = {
   Candidate: "warning",
@@ -143,8 +148,17 @@ export const TimetablePage: React.FC = () => {
   }, [selectedVersionId, reloadDetail]);
 
   const handleExport = (type: "csv" | "pdf" | "excel") => {
-    if (!selectedVersionId) return;
-    window.open(`/api/v1/schedules/${selectedVersionId}/export/${type}`, "_blank");
+    if (!versionDetail) return;
+    const cycleName =
+      cycles.find((c) => c.id === selectedCycleId)?.name ||
+      "June 2026 Academic Final Examinations";
+    if (type === "csv") {
+      exportTimetableCsv(versionDetail);
+    } else if (type === "excel") {
+      exportTimetableExcel(versionDetail);
+    } else if (type === "pdf") {
+      exportTimetablePdf(versionDetail, cycleName);
+    }
   };
 
   const handlePrint = () => {

@@ -15,6 +15,7 @@ import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
 import { EmptyState } from "../components/ui/EmptyState";
+import { exportStudentTimetablePdf } from "../services/exportService";
 
 export const StudentTimetablePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"timetable" | "academic">("timetable");
@@ -41,8 +42,8 @@ export const StudentTimetablePage: React.FC = () => {
   };
 
   const handleDownloadPDF = () => {
-    if (!timetable?.scheduleVersionId) return;
-    window.open(`/api/v1/schedules/${timetable.scheduleVersionId}/export/pdf`, "_blank");
+    if (!timetable) return;
+    exportStudentTimetablePdf(timetable);
   };
 
   return (
