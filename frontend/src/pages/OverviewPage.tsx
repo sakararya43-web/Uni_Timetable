@@ -13,7 +13,7 @@ import {
   Globe,
 } from "lucide-react";
 import { api } from "../services/api";
-import { SchedulingCycle, CycleSummaryReport } from "../types/api";
+import { SchedulingCycle, CycleSummaryReport, unwrapCycles } from "../types/api";
 import { Badge, BadgeVariant } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { StaleDataBanner } from "../components/common/StaleDataBanner";
@@ -40,7 +40,7 @@ export const OverviewPage: React.FC = () => {
   const fetchCycles = async () => {
     try {
       const data = await api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles");
-      const list = Array.isArray(data) ? data : (data as any)?.items || [];
+      const list = unwrapCycles(data);
       setCycles(list);
       if (list.length > 0 && !selectedCycleId) {
         setSelectedCycleId(list[0].id);

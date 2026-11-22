@@ -370,8 +370,15 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     const json = await response.json();
 
     // If backend returns paginated object { items: [...] } for /cycles and an array is expected, unwrap it
-    if (cleanEndpoint === "/api/v1/cycles" && method === "GET" && json && Array.isArray((json as any).items)) {
-      return (json as any).items as T;
+    if (
+      cleanEndpoint === "/api/v1/cycles" &&
+      method === "GET" &&
+      typeof json === "object" &&
+      json !== null &&
+      "items" in json &&
+      Array.isArray((json as { items: unknown[] }).items)
+    ) {
+      return (json as { items: unknown[] }).items as T;
     }
 
     // If backend returns empty array for core entities on unseeded live databases, fallback to demo data

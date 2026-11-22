@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, CheckCircle, AlertTriangle, XCircle, ArrowRight, Save } from "lucide-react";
 import { api } from "../services/api";
-import { SchedulingCycle } from "../types/api";
+import { SchedulingCycle, unwrapCycles } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
@@ -43,7 +43,7 @@ export const GeneratePage: React.FC = () => {
   useEffect(() => {
     api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        const list = unwrapCycles(data);
         setCycles(list);
         if (list.length > 0) setSelectedCycleId(list[0].id);
       })

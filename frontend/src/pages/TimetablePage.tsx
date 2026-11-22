@@ -24,6 +24,7 @@ import {
   ExamAssignmentItem,
   TimeSlot,
   Department,
+  unwrapCycles,
 } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { Badge, BadgeVariant } from "../components/ui/Badge";
@@ -108,7 +109,7 @@ export const TimetablePage: React.FC = () => {
     setIsLoading(true);
     api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        const list = unwrapCycles(data);
         setCycles(list);
         if (list.length > 0) {
           setSelectedCycleId(list[0].id);

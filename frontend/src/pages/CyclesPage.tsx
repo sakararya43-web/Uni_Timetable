@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { api } from "../services/api";
-import { SchedulingCycle, TimeSlot } from "../types/api";
+import { SchedulingCycle, TimeSlot, unwrapCycles } from "../types/api";
 import { Badge, BadgeVariant } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Dialog } from "../components/ui/Dialog";
@@ -43,7 +43,7 @@ export const CyclesPage: React.FC = () => {
         api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles"),
         api.get<Array<{ id: string; name: string }>>("/api/v1/academic/years"),
       ]);
-      const list = Array.isArray(cyclesData) ? cyclesData : (cyclesData as any)?.items || [];
+      const list = unwrapCycles(cyclesData);
       setCycles(list);
       setAcademicYears(yearsData);
       if (yearsData.length > 0 && !academicYearId) {

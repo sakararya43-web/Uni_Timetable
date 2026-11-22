@@ -103,6 +103,31 @@ export interface SchedulingCycle {
   createdAt: string;
 }
 
+export interface PaginatedCyclesResponse {
+  items: SchedulingCycle[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
+
+export function unwrapCycles(data: SchedulingCycle[] | PaginatedCyclesResponse | unknown): SchedulingCycle[] {
+  if (Array.isArray(data)) {
+    return data as SchedulingCycle[];
+  }
+  if (
+    data &&
+    typeof data === "object" &&
+    "items" in data &&
+    Array.isArray((data as { items: unknown }).items)
+  ) {
+    return (data as { items: SchedulingCycle[] }).items;
+  }
+  return [];
+}
+
 export interface TimeSlot {
   id: string;
   schedulingCycleId: string;

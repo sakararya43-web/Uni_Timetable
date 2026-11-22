@@ -11,7 +11,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { api } from "../services/api";
-import { SchedulingCycle, ScheduleVersionSummary, CycleSummaryReport, ScheduleVersionDetail } from "../types/api";
+import { SchedulingCycle, ScheduleVersionSummary, CycleSummaryReport, ScheduleVersionDetail, unwrapCycles } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -42,7 +42,7 @@ export const ReportsPage: React.FC = () => {
     setIsLoading(true);
     api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        const list = unwrapCycles(data);
         setCycles(list);
         if (list.length > 0) {
           setSelectedCycleId(list[0].id);

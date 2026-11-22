@@ -13,7 +13,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { Network, RefreshCw, Download, Filter, Search, Info, Sparkles, RotateCcw, CheckCircle2 } from "lucide-react";
 import { api } from "../services/api";
-import { SchedulingCycle } from "../types/api";
+import { SchedulingCycle, unwrapCycles } from "../types/api";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
@@ -68,7 +68,7 @@ export const GraphPage: React.FC = () => {
     setIsLoading(true);
     api.get<SchedulingCycle[] | { items: SchedulingCycle[] }>("/api/v1/cycles")
       .then((data) => {
-        const list = Array.isArray(data) ? data : (data as any)?.items || [];
+        const list = unwrapCycles(data);
         setCycles(list);
         if (list.length > 0) {
           setSelectedCycleId(list[0].id);

@@ -12,13 +12,18 @@ import {
   StudentTimetableResponse,
   AuditLogItem,
   ExamAssignmentItem,
+  CycleConfig,
 } from "../types/api";
 
 const STORAGE_KEY_CYCLES = "timetabling_mock_cycles";
 
 function isBrowser(): boolean {
   try {
-    return typeof window !== "undefined" && typeof document !== "undefined" && typeof (window as any).process?.versions?.node === "undefined";
+    return (
+      typeof window !== "undefined" &&
+      typeof document !== "undefined" &&
+      typeof (window as unknown as { process?: { versions?: { node?: string } } }).process?.versions?.node === "undefined"
+    );
   } catch {
     return false;
   }
@@ -1181,7 +1186,7 @@ export function addMockCycle(payload: {
   startDate?: string;
   end_date?: string;
   endDate?: string;
-  configuration?: any;
+  configuration?: Partial<CycleConfig> | Record<string, unknown>;
 }): SchedulingCycle {
   const id = `cycle-${Date.now().toString().slice(-6)}`;
   const ayId = payload.academic_year_id || payload.academicYearId || "ay-2026";
@@ -1197,7 +1202,7 @@ export function addMockCycle(payload: {
     timezone: "UTC",
     graphStale: true,
     dataVersion: 1,
-    configurationJson: payload.configuration || {
+    configurationJson: (payload.configuration as CycleConfig) || {
       examDaysOfWeek: [1, 2, 3, 4, 5],
       sessions: [
         { label: "Morning", startTime: "09:00", endTime: "12:00", enabled: true },
