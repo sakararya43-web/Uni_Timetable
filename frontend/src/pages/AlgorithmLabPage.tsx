@@ -86,6 +86,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
         { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+        { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+        { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
       ],
     },
     {
@@ -95,6 +97,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
         { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+        { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
+        { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
       ],
     },
     {
@@ -104,6 +108,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
         { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+        { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+        { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
       ],
     },
     {
@@ -113,6 +119,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
         { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+        { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
+        { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
       ],
     },
     {
@@ -121,6 +129,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       sessionLabel: "Slot 5 (Morning)",
       exams: [
         { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+        { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
+        { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
       ],
     },
     {
@@ -131,6 +141,7 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
         { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
         { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
         { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+        { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
       ],
     },
   ],
@@ -141,7 +152,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       sessionLabel: "Slot 1 (Morning)",
       exams: [
         { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+        { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
         { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+        { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
       ],
     },
     {
@@ -150,7 +163,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       sessionLabel: "Slot 2 (Afternoon)",
       exams: [
         { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+        { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
         { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+        { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
       ],
     },
     {
@@ -160,6 +175,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
         { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+        { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+        { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
       ],
     },
     {
@@ -169,6 +186,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
         { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+        { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
+        { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
       ],
     },
     {
@@ -178,6 +197,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
         { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+        { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+        { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
       ],
     },
     {
@@ -187,6 +208,7 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
         { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+        { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
       ],
     },
   ],
@@ -197,6 +219,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       sessionLabel: "Slot 1 (Morning)",
       exams: [
         { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+        { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+        { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+        { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
       ],
     },
     {
@@ -204,8 +229,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       colorNumber: 2,
       sessionLabel: "Slot 2 (Afternoon)",
       exams: [
-        { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
         { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+        { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+        { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
       ],
     },
     {
@@ -213,8 +239,10 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       colorNumber: 3,
       sessionLabel: "Slot 3 (Morning)",
       exams: [
-        { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
         { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+        { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+        { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+        { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
       ],
     },
     {
@@ -222,8 +250,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       colorNumber: 4,
       sessionLabel: "Slot 4 (Afternoon)",
       exams: [
-        { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
         { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+        { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+        { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
       ],
     },
     {
@@ -232,6 +261,8 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       sessionLabel: "Slot 5 (Morning)",
       exams: [
         { code: "CS301", name: "Operating Systems & Concurrency", dept: "CS", count: 28 },
+        { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
+        { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
       ],
     },
     {
@@ -239,8 +270,9 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       colorNumber: 6,
       sessionLabel: "Slot 6 (Afternoon)",
       exams: [
-        { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
         { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+        { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
+        { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
       ],
     },
     {
@@ -250,6 +282,7 @@ const DEFAULT_ALGO_SLOTS: Record<string, AlgorithmSlotOutput[]> = {
       exams: [
         { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
         { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+        { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
       ],
     },
   ],

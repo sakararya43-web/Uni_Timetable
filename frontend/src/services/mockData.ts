@@ -452,18 +452,44 @@ export const mockTimeSlots: TimeSlot[] = [
 ];
 
 export const initialAssignments: ExamAssignmentItem[] = [
+  // Slot 1 (Morning, 2026-06-10)
   { id: "asg-01", scheduleVersionId: "ver-demo-1", examId: "exam-cs101", subjectCode: "CS101", subjectName: "Introduction to Programming", departmentCode: "CS", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 20, colorId: 1, locked: false, manualOverride: false },
   { id: "asg-02", scheduleVersionId: "ver-demo-1", examId: "exam-ee101", subjectCode: "EE101", subjectName: "Linear Circuit Analysis", departmentCode: "EE", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 15, colorId: 1, locked: false, manualOverride: false },
-  { id: "asg-03", scheduleVersionId: "ver-demo-1", examId: "exam-cs102", subjectCode: "CS102", subjectName: "Discrete Mathematics", departmentCode: "CS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 2, locked: false, manualOverride: false },
-  { id: "asg-04", scheduleVersionId: "ver-demo-1", examId: "exam-ee102", subjectCode: "EE102", subjectName: "Digital Logic & Microprocessors", departmentCode: "EE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 2, locked: false, manualOverride: false },
-  { id: "asg-05", scheduleVersionId: "ver-demo-1", examId: "exam-cs201", subjectCode: "CS201", subjectName: "Data Structures & Algorithms", departmentCode: "CS", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 18, colorId: 3, locked: false, manualOverride: false },
-  { id: "asg-06", scheduleVersionId: "ver-demo-1", examId: "exam-ee201", subjectCode: "EE201", subjectName: "Signals and Linear Systems", departmentCode: "EE", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 3, locked: false, manualOverride: false },
-  { id: "asg-07", scheduleVersionId: "ver-demo-1", examId: "exam-cs202", subjectCode: "CS202", subjectName: "Computer Organization & Architecture", departmentCode: "CS", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 4, locked: false, manualOverride: false },
-  { id: "asg-08", scheduleVersionId: "ver-demo-1", examId: "exam-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields & Waves", departmentCode: "EE", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 12, colorId: 4, locked: false, manualOverride: false },
-  { id: "asg-09", scheduleVersionId: "ver-demo-1", examId: "exam-cs301", subjectCode: "CS301", subjectName: "Operating Systems & Concurrency", departmentCode: "CS", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 28, colorId: 5, locked: true, manualOverride: false },
-  { id: "asg-10", scheduleVersionId: "ver-demo-1", examId: "exam-cs302", subjectCode: "CS302", subjectName: "Database Management Systems", departmentCode: "CS", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 22, colorId: 6, locked: false, manualOverride: false },
-  { id: "asg-11", scheduleVersionId: "ver-demo-1", examId: "exam-cs303", subjectCode: "CS303", subjectName: "Computer Networks & Protocols", departmentCode: "CS", timeSlotId: "slot-07", slotDate: "2026-06-13", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 19, colorId: 7, locked: false, manualOverride: false },
-  { id: "asg-12", scheduleVersionId: "ver-demo-1", examId: "exam-cs401", subjectCode: "CS401", subjectName: "Advanced Machine Learning Capstone", departmentCode: "CS", timeSlotId: "slot-08", slotDate: "2026-06-13", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 8, colorId: 8, locked: false, manualOverride: false },
+  { id: "asg-03", scheduleVersionId: "ver-demo-1", examId: "exam-me101", subjectCode: "ME101", subjectName: "Engineering Mechanics & Statics", departmentCode: "ME", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 16, colorId: 1, locked: false, manualOverride: false },
+  { id: "asg-04", scheduleVersionId: "ver-demo-1", examId: "exam-math101", subjectCode: "MATH101", subjectName: "Linear Algebra & Advanced Calculus", departmentCode: "MATH", timeSlotId: "slot-01", slotDate: "2026-06-10", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 30, colorId: 1, locked: false, manualOverride: false },
+
+  // Slot 2 (Afternoon, 2026-06-10)
+  { id: "asg-05", scheduleVersionId: "ver-demo-1", examId: "exam-cs102", subjectCode: "CS102", subjectName: "Discrete Mathematics", departmentCode: "CS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 2, locked: false, manualOverride: false },
+  { id: "asg-06", scheduleVersionId: "ver-demo-1", examId: "exam-ee102", subjectCode: "EE102", subjectName: "Digital Logic & Microprocessors", departmentCode: "EE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 2, locked: false, manualOverride: false },
+  { id: "asg-07", scheduleVersionId: "ver-demo-1", examId: "exam-ce101", subjectCode: "CE101", subjectName: "Structural Analysis & Materials", departmentCode: "CE", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 14, colorId: 2, locked: false, manualOverride: false },
+  { id: "asg-08", scheduleVersionId: "ver-demo-1", examId: "exam-phys101", subjectCode: "PHYS101", subjectName: "Classical & Quantum Physics", departmentCode: "PHYS", timeSlotId: "slot-02", slotDate: "2026-06-10", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 2, locked: false, manualOverride: false },
+
+  // Slot 3 (Morning, 2026-06-11)
+  { id: "asg-09", scheduleVersionId: "ver-demo-1", examId: "exam-cs201", subjectCode: "CS201", subjectName: "Data Structures & Algorithms", departmentCode: "CS", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 18, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-10", scheduleVersionId: "ver-demo-1", examId: "exam-ee201", subjectCode: "EE201", subjectName: "Signals and Linear Systems", departmentCode: "EE", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-11", scheduleVersionId: "ver-demo-1", examId: "exam-it101", subjectCode: "IT101", subjectName: "Cloud Infrastructure & Distributed Systems", departmentCode: "IT", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 22, colorId: 3, locked: false, manualOverride: false },
+  { id: "asg-12", scheduleVersionId: "ver-demo-1", examId: "exam-chem101", subjectCode: "CHEM101", subjectName: "General & Physical Chemistry", departmentCode: "CHEM", timeSlotId: "slot-03", slotDate: "2026-06-11", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 16, colorId: 3, locked: false, manualOverride: false },
+
+  // Slot 4 (Afternoon, 2026-06-11)
+  { id: "asg-13", scheduleVersionId: "ver-demo-1", examId: "exam-cs202", subjectCode: "CS202", subjectName: "Computer Organization & Architecture", departmentCode: "CS", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 18, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-14", scheduleVersionId: "ver-demo-1", examId: "exam-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields & Waves", departmentCode: "EE", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 12, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-15", scheduleVersionId: "ver-demo-1", examId: "exam-me201", subjectCode: "ME201", subjectName: "Thermodynamics & Fluid Dynamics", departmentCode: "ME", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 4, locked: false, manualOverride: false },
+  { id: "asg-16", scheduleVersionId: "ver-demo-1", examId: "exam-mgmt101", subjectCode: "MGMT101", subjectName: "Principles of Management & Economics", departmentCode: "MGMT", timeSlotId: "slot-04", slotDate: "2026-06-11", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 20, colorId: 4, locked: false, manualOverride: false },
+
+  // Slot 5 (Morning, 2026-06-12)
+  { id: "asg-17", scheduleVersionId: "ver-demo-1", examId: "exam-cs301", subjectCode: "CS301", subjectName: "Operating Systems & Concurrency", departmentCode: "CS", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 28, colorId: 5, locked: true, manualOverride: false },
+  { id: "asg-18", scheduleVersionId: "ver-demo-1", examId: "exam-ai101", subjectCode: "AI101", subjectName: "Machine Learning & Neural Networks", departmentCode: "AI", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 25, colorId: 5, locked: false, manualOverride: false },
+  { id: "asg-19", scheduleVersionId: "ver-demo-1", examId: "exam-bme101", subjectCode: "BME101", subjectName: "Biomedical Instrumentation & Sensors", departmentCode: "BME", timeSlotId: "slot-05", slotDate: "2026-06-12", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 12, colorId: 5, locked: false, manualOverride: false },
+
+  // Slot 6 (Afternoon, 2026-06-12)
+  { id: "asg-20", scheduleVersionId: "ver-demo-1", examId: "exam-cs302", subjectCode: "CS302", subjectName: "Database Management Systems", departmentCode: "CS", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 22, colorId: 6, locked: false, manualOverride: false },
+  { id: "asg-21", scheduleVersionId: "ver-demo-1", examId: "exam-che101", subjectCode: "CHE101", subjectName: "Chemical Reaction Engineering", departmentCode: "CHE", timeSlotId: "slot-06", slotDate: "2026-06-12", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 15, colorId: 6, locked: false, manualOverride: false },
+
+  // Slot 7 (Morning, 2026-06-13)
+  { id: "asg-22", scheduleVersionId: "ver-demo-1", examId: "exam-cs303", subjectCode: "CS303", subjectName: "Computer Networks & Protocols", departmentCode: "CS", timeSlotId: "slot-07", slotDate: "2026-06-13", startTime: "09:00", endTime: "12:00", sessionLabel: "Morning", durationMinutes: 180, studentCount: 19, colorId: 7, locked: false, manualOverride: false },
+
+  // Slot 8 (Afternoon, 2026-06-13)
+  { id: "asg-23", scheduleVersionId: "ver-demo-1", examId: "exam-cs401", subjectCode: "CS401", subjectName: "Advanced Machine Learning Capstone", departmentCode: "CS", timeSlotId: "slot-08", slotDate: "2026-06-13", startTime: "14:00", endTime: "17:00", sessionLabel: "Afternoon", durationMinutes: 180, studentCount: 8, colorId: 8, locked: false, manualOverride: false },
 ];
 
 export const mockScheduleVersions: ScheduleVersionSummary[] = [
@@ -472,7 +498,7 @@ export const mockScheduleVersions: ScheduleVersionSummary[] = [
     versionNumber: 1,
     status: "Published",
     scheduleRunId: "run-demo-1",
-    assignmentCount: 12,
+    assignmentCount: 23,
     hardViolationCount: 0,
     softScore: 0,
     rowVersion: 1,
@@ -509,7 +535,7 @@ export function generateScheduleForCycle(cycleId: string): ScheduleVersionDetail
 
   const cleanId = cycleId.replace(/[^a-zA-Z0-9]/g, "").slice(-6);
   const verId = `ver-${cleanId}-1`;
-  const subjectList = mockSubjects.slice(0, Math.min(12, mockSubjects.length));
+  const subjectList = mockSubjects;
   const assignments: ExamAssignmentItem[] = [];
 
   subjectList.forEach((sub, i) => {
@@ -656,32 +682,24 @@ export function generateDynamicScheduleRun(
   const slotList = cycleSlots.length > 0 ? cycleSlots : mockTimeSlots;
   const newAssignments: ExamAssignmentItem[] = [];
 
-  const subjectConfigs = [
-    { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
-    { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
-    { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
-    { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
-    { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
-    { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
-    { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
-    { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
-    { code: "CS301", name: "Operating Systems & Concurrency", dept: "CS", count: 28 }, // Hub
-    { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
-    { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
-    { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 }, // Isolated
-  ];
+  const subjectConfigs = mockSubjects.map((s) => ({
+    code: s.subjectCode,
+    name: s.subjectName,
+    dept: s.departmentCode || "CS",
+    count: s.enrollmentCount || 20,
+  }));
 
-  // Distinct mapping layouts by algorithm
+  // Distinct mapping layouts by algorithm across all 23 subjects
   let slotMapping: number[];
   if (algo === "dsatur") {
-    // DSATUR: Optimal pairs across 6 slots
-    slotMapping = [0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 4];
+    // DSATUR: Optimal pairs and clusters across 6 slots
+    slotMapping = [0, 1, 2, 3, 4, 5, 5, 5, 0, 1, 2, 3, 0, 3, 1, 2, 4, 4, 5, 0, 1, 2, 3];
   } else if (algo === "welsh_powell") {
-    // Welsh-Powell: Degree-first ordering (CS301 Hub in slot 0, CS401 in slot 0)
-    slotMapping = [4, 3, 2, 4, 1, 5, 2, 5, 0, 1, 3, 0];
+    // Welsh-Powell: Degree-first ordering across 6 slots
+    slotMapping = [3, 2, 1, 4, 0, 1, 3, 0, 4, 5, 2, 5, 4, 2, 5, 2, 1, 0, 1, 0, 3, 4, 3];
   } else {
     // Greedy: Spreads across 7 or 8 slots
-    slotMapping = [0, 1, 1, 2, 2, 3, 3, 5, 4, 5, 6, 7 % colorsUsed];
+    slotMapping = [0, 1, 2, 3, 4, 5, 6, 6, 0, 1, 2, 3, 0, 5, 1, 2, 4, 4, 5, 0, 2, 3, 6];
   }
 
   // Apply slight rotation based on runSequence for variety on repeat clicks
@@ -796,24 +814,24 @@ export const mockCycleSummary: CycleSummaryReport = {
   cycleName: "June 2026 Academic Final Examinations",
   examStartDate: "2026-06-10",
   examEndDate: "2026-06-20",
-  totalSubjects: 12,
-  totalExams: 12,
-  totalStudents: 50,
-  totalEnrollments: 153,
+  totalSubjects: 23,
+  totalExams: 23,
+  totalStudents: 70,
+  totalEnrollments: 193,
   totalSlots: 18,
   slotsUsed: 6,
-  graphVertices: 12,
-  graphEdges: 20,
-  averageDegree: 3.33,
+  graphVertices: 23,
+  graphEdges: 28,
+  averageDegree: 2.43,
   latestPublishedVersion: 1,
   latestPublishedAt: "2026-06-05T10:00:00Z",
 };
 
 export const mockGraphSummary = {
-  vertexCount: 12,
-  edgeCount: 20,
-  density: 0.303,
-  avgDegree: 3.33,
+  vertexCount: 23,
+  edgeCount: 28,
+  density: 0.111,
+  avgDegree: 2.43,
   maxDegree: 7,
   chromaticLowerBound: 4,
   isolatedVertices: 1,
@@ -827,12 +845,23 @@ export const mockRawGraph = {
     { id: "sub-cs202", subjectCode: "CS202", subjectName: "Computer Architecture", departmentCode: "CS", degree: 4, color: 4 },
     { id: "sub-cs301", subjectCode: "CS301", subjectName: "Operating Systems (Hub)", departmentCode: "CS", degree: 7, color: 5 },
     { id: "sub-cs302", subjectCode: "CS302", subjectName: "Database Systems", departmentCode: "CS", degree: 5, color: 6 },
-    { id: "sub-cs303", subjectCode: "CS303", subjectName: "Computer Networks", departmentCode: "CS", degree: 4, color: 7 },
-    { id: "sub-cs401", subjectCode: "CS401", subjectName: "ML Capstone (Isolated)", departmentCode: "CS", degree: 0, color: 8 },
+    { id: "sub-cs303", subjectCode: "CS303", subjectName: "Computer Networks", departmentCode: "CS", degree: 4, color: 6 },
+    { id: "sub-cs401", subjectCode: "CS401", subjectName: "ML Capstone (Isolated)", departmentCode: "CS", degree: 0, color: 6 },
     { id: "sub-ee101", subjectCode: "EE101", subjectName: "Linear Circuits", departmentCode: "EE", degree: 3, color: 1 },
     { id: "sub-ee102", subjectCode: "EE102", subjectName: "Digital Logic", departmentCode: "EE", degree: 3, color: 2 },
     { id: "sub-ee201", subjectCode: "EE201", subjectName: "Signals & Systems", departmentCode: "EE", degree: 3, color: 3 },
     { id: "sub-ee202", subjectCode: "EE202", subjectName: "Electromagnetic Fields", departmentCode: "EE", degree: 2, color: 4 },
+    { id: "sub-me101", subjectCode: "ME101", subjectName: "Engineering Mechanics", departmentCode: "ME", degree: 2, color: 1 },
+    { id: "sub-me201", subjectCode: "ME201", subjectName: "Thermodynamics", departmentCode: "ME", degree: 3, color: 4 },
+    { id: "sub-ce101", subjectCode: "CE101", subjectName: "Structural Analysis", departmentCode: "CE", degree: 2, color: 2 },
+    { id: "sub-it101", subjectCode: "IT101", subjectName: "Cloud Infrastructure", departmentCode: "IT", degree: 4, color: 3 },
+    { id: "sub-ai101", subjectCode: "AI101", subjectName: "Machine Learning", departmentCode: "AI", degree: 5, color: 5 },
+    { id: "sub-bme101", subjectCode: "BME101", subjectName: "Biomedical Sensors", departmentCode: "BME", degree: 2, color: 5 },
+    { id: "sub-che101", subjectCode: "CHE101", subjectName: "Chemical Reactions", departmentCode: "CHE", degree: 2, color: 6 },
+    { id: "sub-math101", subjectCode: "MATH101", subjectName: "Linear Algebra", departmentCode: "MATH", degree: 6, color: 1 },
+    { id: "sub-phys101", subjectCode: "PHYS101", subjectName: "Physics", departmentCode: "PHYS", degree: 3, color: 2 },
+    { id: "sub-chem101", subjectCode: "CHEM101", subjectName: "Chemistry", departmentCode: "CHEM", degree: 2, color: 3 },
+    { id: "sub-mgmt101", subjectCode: "MGMT101", subjectName: "Management", departmentCode: "MGMT", degree: 3, color: 4 },
   ],
   edges: [
     { source: "sub-cs101", target: "sub-cs102", weight: 20 },
@@ -855,6 +884,15 @@ export const mockRawGraph = {
     { source: "sub-ee102", target: "sub-ee201", weight: 5 },
     { source: "sub-ee201", target: "sub-ee202", weight: 12 },
     { source: "sub-ee102", target: "sub-ee202", weight: 4 },
+    { source: "sub-math101", target: "sub-cs102", weight: 15 },
+    { source: "sub-math101", target: "sub-me101", weight: 12 },
+    { source: "sub-math101", target: "sub-phys101", weight: 14 },
+    { source: "sub-phys101", target: "sub-ee101", weight: 10 },
+    { source: "sub-chem101", target: "sub-che101", weight: 11 },
+    { source: "sub-it101", target: "sub-cs201", weight: 16 },
+    { source: "sub-ai101", target: "sub-cs201", weight: 14 },
+    { source: "sub-bme101", target: "sub-ee101", weight: 8 },
+    { source: "sub-mgmt101", target: "sub-cs101", weight: 9 },
   ],
 };
 
@@ -917,8 +955,8 @@ export interface AlgorithmComparisonDetailRow {
 export const mockComparison = {
   cycleId: "cycle-demo-2026",
   graphSnapshotId: "snap-demo-01",
-  graphVertices: 12,
-  graphEdges: 20,
+  graphVertices: 23,
+  graphEdges: 28,
   algorithms: [
     {
       algorithm: "dsatur",
@@ -928,14 +966,14 @@ export const mockComparison = {
       colorsUsed: 6,
       executionTimeMs: 1.84,
       isValid: true,
-      examsScheduled: 12,
+      examsScheduled: 23,
       unscheduledCount: 0,
-      largestClassSize: 2,
-      smallestClassSize: 1,
+      largestClassSize: 4,
+      smallestClassSize: 3,
       softScore: 0,
       scheduleRunId: "run-demo-dsatur",
       description:
-        "Dynamically colors vertices with highest saturation degree first. Found the optimal chromatic lower bound of 6 slots with 0 student constraint penalties.",
+        "Dynamically colors vertices with highest saturation degree first. Found the optimal chromatic lower bound of 6 slots across all 12 academic departments with 0 student constraint penalties.",
       slots: [
         {
           slotIndex: 0,
@@ -944,6 +982,8 @@ export const mockComparison = {
           exams: [
             { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
             { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+            { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+            { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
           ],
         },
         {
@@ -953,6 +993,8 @@ export const mockComparison = {
           exams: [
             { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
             { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+            { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
+            { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
           ],
         },
         {
@@ -962,6 +1004,8 @@ export const mockComparison = {
           exams: [
             { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
             { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+            { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+            { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
           ],
         },
         {
@@ -971,6 +1015,8 @@ export const mockComparison = {
           exams: [
             { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
             { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+            { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
+            { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
           ],
         },
         {
@@ -979,6 +1025,8 @@ export const mockComparison = {
           sessionLabel: "Slot 5 (Morning)",
           exams: [
             { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+            { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
+            { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
           ],
         },
         {
@@ -989,6 +1037,7 @@ export const mockComparison = {
             { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
             { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
             { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+            { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
           ],
         },
       ],
@@ -1002,10 +1051,10 @@ export const mockComparison = {
       colorsUsed: 6,
       executionTimeMs: 1.25,
       isValid: true,
-      examsScheduled: 12,
+      examsScheduled: 23,
       unscheduledCount: 0,
-      largestClassSize: 2,
-      smallestClassSize: 1,
+      largestClassSize: 4,
+      smallestClassSize: 3,
       softScore: 10,
       scheduleRunId: "run-demo-wp",
       description:
@@ -1017,7 +1066,9 @@ export const mockComparison = {
           sessionLabel: "Slot 1 (Morning)",
           exams: [
             { code: "CS301", name: "Operating Systems & Concurrency (Hub)", dept: "CS", count: 28 },
+            { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
             { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+            { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
           ],
         },
         {
@@ -1026,7 +1077,9 @@ export const mockComparison = {
           sessionLabel: "Slot 2 (Afternoon)",
           exams: [
             { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+            { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
             { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+            { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
           ],
         },
         {
@@ -1036,6 +1089,8 @@ export const mockComparison = {
           exams: [
             { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
             { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+            { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+            { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
           ],
         },
         {
@@ -1045,6 +1100,8 @@ export const mockComparison = {
           exams: [
             { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
             { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
+            { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
+            { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
           ],
         },
         {
@@ -1054,6 +1111,8 @@ export const mockComparison = {
           exams: [
             { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
             { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+            { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+            { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
           ],
         },
         {
@@ -1063,6 +1122,7 @@ export const mockComparison = {
           exams: [
             { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
             { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+            { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
           ],
         },
       ],
@@ -1082,10 +1142,10 @@ export const mockComparison = {
       colorsUsed: 7,
       executionTimeMs: 0.72,
       isValid: true,
-      examsScheduled: 12,
+      examsScheduled: 23,
       unscheduledCount: 0,
-      largestClassSize: 2,
-      smallestClassSize: 1,
+      largestClassSize: 4,
+      smallestClassSize: 3,
       softScore: 25,
       scheduleRunId: "run-demo-greedy",
       description:
@@ -1097,6 +1157,9 @@ export const mockComparison = {
           sessionLabel: "Slot 1 (Morning)",
           exams: [
             { code: "CS101", name: "Introduction to Programming", dept: "CS", count: 20 },
+            { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
+            { code: "ME101", name: "Engineering Mechanics & Statics", dept: "ME", count: 16 },
+            { code: "MATH101", name: "Linear Algebra & Advanced Calculus", dept: "MATH", count: 30 },
           ],
         },
         {
@@ -1104,8 +1167,9 @@ export const mockComparison = {
           colorNumber: 2,
           sessionLabel: "Slot 2 (Afternoon)",
           exams: [
-            { code: "EE101", name: "Linear Circuit Analysis", dept: "EE", count: 15 },
             { code: "CS102", name: "Discrete Mathematics", dept: "CS", count: 20 },
+            { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
+            { code: "CE101", name: "Structural Analysis & Materials", dept: "CE", count: 14 },
           ],
         },
         {
@@ -1113,8 +1177,10 @@ export const mockComparison = {
           colorNumber: 3,
           sessionLabel: "Slot 3 (Morning)",
           exams: [
-            { code: "EE102", name: "Digital Logic & Microprocessors", dept: "EE", count: 15 },
             { code: "CS201", name: "Data Structures & Algorithms", dept: "CS", count: 18 },
+            { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
+            { code: "IT101", name: "Cloud Infrastructure & Distributed Systems", dept: "IT", count: 22 },
+            { code: "PHYS101", name: "Classical & Quantum Physics", dept: "PHYS", count: 18 },
           ],
         },
         {
@@ -1122,8 +1188,9 @@ export const mockComparison = {
           colorNumber: 4,
           sessionLabel: "Slot 4 (Afternoon)",
           exams: [
-            { code: "EE201", name: "Signals and Linear Systems", dept: "EE", count: 12 },
             { code: "CS202", name: "Computer Organization & Architecture", dept: "CS", count: 18 },
+            { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
+            { code: "CHEM101", name: "General & Physical Chemistry", dept: "CHEM", count: 16 },
           ],
         },
         {
@@ -1132,6 +1199,8 @@ export const mockComparison = {
           sessionLabel: "Slot 5 (Morning)",
           exams: [
             { code: "CS301", name: "Operating Systems & Concurrency", dept: "CS", count: 28 },
+            { code: "AI101", name: "Machine Learning & Neural Networks", dept: "AI", count: 25 },
+            { code: "BME101", name: "Biomedical Instrumentation & Sensors", dept: "BME", count: 12 },
           ],
         },
         {
@@ -1139,8 +1208,9 @@ export const mockComparison = {
           colorNumber: 6,
           sessionLabel: "Slot 6 (Afternoon)",
           exams: [
-            { code: "EE202", name: "Electromagnetic Fields & Waves", dept: "EE", count: 12 },
             { code: "CS302", name: "Database Management Systems", dept: "CS", count: 22 },
+            { code: "ME201", name: "Thermodynamics & Fluid Dynamics", dept: "ME", count: 15 },
+            { code: "CHE101", name: "Chemical Reaction Engineering", dept: "CHE", count: 15 },
           ],
         },
         {
@@ -1150,6 +1220,7 @@ export const mockComparison = {
           exams: [
             { code: "CS303", name: "Computer Networks & Protocols", dept: "CS", count: 19 },
             { code: "CS401", name: "Advanced Machine Learning Capstone", dept: "CS", count: 8 },
+            { code: "MGMT101", name: "Principles of Management & Economics", dept: "MGMT", count: 20 },
           ],
         },
       ],
